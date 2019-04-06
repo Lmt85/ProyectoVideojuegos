@@ -22,6 +22,12 @@ public class KeyManager implements KeyListener{
     public boolean down;
     public boolean left;
     public boolean right;
+    
+    public boolean north;
+    public boolean east;
+    public boolean south;
+    public boolean west;
+    
     public boolean space;
     public boolean paused;
     public boolean save;
@@ -72,10 +78,16 @@ public class KeyManager implements KeyListener{
      * code to be executed once every frame. updates the axis pressed values
      */
     public void tick(){
-        up = keys[KeyEvent.VK_UP] || keys[KeyEvent.VK_W];
-        down = keys[KeyEvent.VK_DOWN] || keys[KeyEvent.VK_S];
-        left = keys[KeyEvent.VK_LEFT] || keys[KeyEvent.VK_A];
-        right = keys[KeyEvent.VK_RIGHT] || keys[KeyEvent.VK_D]; 
+        up = keys[KeyEvent.VK_W];
+        down = keys[KeyEvent.VK_S];
+        left =  keys[KeyEvent.VK_A];
+        right = keys[KeyEvent.VK_D]; 
+        
+        north = keys[KeyEvent.VK_UP];
+        east = keys[KeyEvent.VK_RIGHT];
+        south = keys[KeyEvent.VK_DOWN];
+        west = keys[KeyEvent.VK_LEFT];
+                
         space = keys[KeyEvent.VK_SPACE];
         paused = keys[KeyEvent.VK_P];
         save = keys[KeyEvent.VK_G];

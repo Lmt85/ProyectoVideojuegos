@@ -9,6 +9,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import maths.Vector2;
 
+
 /**
  * This class sets the standards for a tangible game object.
  * @author Carlos Adrian Guerra Vazquez A00823198
@@ -16,7 +17,6 @@ import maths.Vector2;
  * @version 1.0
  */
 public class Sprite {
-
     protected boolean visible;      //to store the visibility
     protected BufferedImage image;  //to store the image
     protected Vector2 position;     //to store the position
