@@ -17,7 +17,7 @@ import java.awt.event.KeyListener;
  * @version 1.0
  */
 public class KeyManager implements KeyListener{
-    //publicly accesible axis values
+    //self explanatory flags that stores if the respective key is pressed
     public boolean up;
     public boolean down;
     public boolean left;
@@ -26,6 +26,7 @@ public class KeyManager implements KeyListener{
     public boolean paused;
     public boolean save;
     public boolean load;
+    public boolean restart;
     
     //key array for pressed and released keys
     public boolean keys[];
@@ -79,6 +80,7 @@ public class KeyManager implements KeyListener{
         paused = keys[KeyEvent.VK_P];
         save = keys[KeyEvent.VK_G];
         load = keys[KeyEvent.VK_C];
+        restart = keys[KeyEvent.VK_R];
     }
     
     /**

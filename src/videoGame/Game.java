@@ -26,56 +26,65 @@ import maths.Vector2;
  * @date 28/01/2019
  * @version 1.0
  */
-public class Game implements Runnable{
+public class Game implements Runnable, Commons {
     //Necessary graphic objects 
     private BufferStrategy bs;  // to have several buffers when displaying in a canvas
     private Graphics g;         // to paint objects in the display canvas
+    
     //display stuff
     private Display display;    // to display in the game in its canvas
     String title;               // title of the window
-    final private int width;          // width of the window
-    final private int height;         // height of the window
+    private int height;
+    private int width;
     private KeyManager keyManager;  //key manager asociated with the display
     private MouseManager mouseManager; //mouse manager asociated with the display
+    Font font; // font used to display the score and game over message
     
     //thread stuff
     private Thread thread;      // thread to create the game. points to the instance of this Game as a Runnable
     private boolean running;    // to set the game running status (controls the in thread execution)
     private double tps; //ticks per second
-    private final boolean showTPS = false; //controls if the tps will be show on the console
+    private final boolean showTPS = true; //controls if the tps will be show on the console
     int fps = 60; //max frames per second the game will run at
     
     //Game objects
-    Player player;
-    Ball ball;
-    BrickManager brickManager;
+    Player player; // to store the player
+    Shot shot; // to store the shot
+//    AlienManager alienManager; // to manage each alien
     
     //Game state
-    private boolean paused = false;
+    private boolean paused = false; // states whether or not the game is paused
     private boolean pauseTrig = false;
-    private int gameState = 0; // 0 -> gamae playing, -1 -> game lost, 1 -> game won
-    
-    Font font; // font used to display the score and game over message
+    private int gameState = 0; // 0 -> game playing, -1 -> game lost, 1 -> game won
     
     //Save state
     private String fileName;    // Save filename
-    private String[] arr;       // To load the player and ball
+    private String[] arr;       // To load the game objects
     
+    //Internal game atributes
+    public String message;  // Stores endgame message
+
+    //Sound
+    SoundClip music;    // Stores looping music
+    SoundClip laser;    // Stores the laser sound
+    SoundClip alienOof; // Stores alien death sound
+    SoundClip dead;     // Stores player death sound
     /**
     * to create title, width and height and set the game is still not running
     * @param title to set the title of the window
     * @param width to set the width of the window
     * @param height  to set the height of the window
     */
-    public Game(String title, int width, int height) {
-        this.title = title;
-        this.width = width;
-        this.height = height;
+    public Game() {
+        this.title = "SpaceInvaders";   //Name of the frame
+        
+        // Sets game dimensions
+        this.width = Commons.BOARD_WIDTH;
+        this.height = Commons.BOARD_HEIGHT;
         running = false;
         keyManager = new KeyManager();
         mouseManager = new MouseManager();
-        font = new Font("consolas", Font.BOLD, 60);
-        fileName = "bbSave.txt";
+        font = new Font("consolas", Font.BOLD, 10);
         //Please do not initialize game objects here, those go on the init method
     }
     
@@ -189,35 +198,34 @@ public class Game implements Runnable{
         }
         else
         {            
-            g = bs.getDrawGraphics();
+            g = bs.getDrawGraphics(); // gets the graphics of the buffer strategy
             
-            g.setColor(Color.GREEN);
-            g.setFont(font);
+            g.setColor(Color.GREEN);   // sets the painting color to green
+            g.setFont(font);           // sets the font
             
-            //game objects render
-            g.drawImage(Assets.background, 0, 0, width, height, null);
-            brickManager.render(g);
-            player.render(g);
-            ball.render(g);
+            g.drawImage(Assets.background, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
             
-            //game state options
+            //game objects to render
+            player.render(g);   //renders the player
+            shot.render(g);     //renders the shot if visible
+//            alienManager.render(g); //renders the aliens if visible
+            
+            //game state renders
             if(gameState != 0){
-                if(gameState == -1){//lost
-                    g.drawString("Game Over", width / 2 - 160, height / 2);
-                }else if(gameState == 1){//won
-                    g.drawString("You Won", width / 2 - 130, height / 2);
+                if(gameState == -1){//lost screen
+                    g.drawString(message, Commons.BOARD_WIDTH/2 - 50, Commons.BOARD_HEIGHT/2);
+                }else if(gameState == 1){//won screen
+                    g.drawString(message, Commons.BOARD_WIDTH/2 - 50, Commons.BOARD_HEIGHT/2);
                 }
-                g.drawString("Press <SPACE> to restart", width / 2 - 420, height - 200);
+            }else if(paused){ //triggers if paused and playing, displays paused message
+                g.drawString("<PAUSED>", 10, 10);
             }
-            if(paused){
-                g.drawString("<PAUSED>", 0, 40);
-            }
-            if(keyManager.save) {
-                
-                g.drawString("<SAVED>", width - 260, 40);
+            if(keyManager.save) { //displays saved message if saved
+                g.drawString("<SAVED>", Commons.BOARD_WIDTH - 100, 10);
             }
             
-            g.drawString("Lives: " + player.lives, width - 350, height - 10);
+            //displays the amount of aliens destroyed
+//            g.drawString("Destroyed: " + alienManager.destroyed + "/24", 10, Commons.BOARD_HEIGHT - 10);
             
             bs.show();
             g.dispose();
@@ -230,18 +238,24 @@ public class Game implements Runnable{
     * Game objects initialization
     */
     private void init() {
+        // Initializes the display with the given dimensions
         display = new Display(title, width, height); 
         
+        // initializes all the assets of the game
         Assets.init(); 
         
-        //create and init game objects
-        player = new Player(width / 2, 200, 150, 10, this);
-        ball = new Ball(50, 50, this);
-        brickManager = new BrickManager(this, width / 10, 50 ,4, 150);
-                
-        player.init(ball);
-        ball.init(player);
-        brickManager.init(ball, player);
+        // Loads all the sound related assets
+        music = new SoundClip("/sound/DarkIntentions.WAV");
+        music.setLooping(true);
+        
+        //Creates and initializes game objects
+        player = new Player(new Vector2(Commons.START_X,Commons.START_Y), new Vector2(),true,Commons.PLAYER_WIDTH,Commons.PLAYER_HEIGHT,Assets.player, this);
+        shot = new Shot(new Vector2(0,0), new Vector2(0,-4), false, 2, 5, Assets.shot, this, player);
+//        alienManager = new AlienManager(this);
+        
+        player.init();
+        shot.init();
+//        alienManager.init();
         
         display.getJframe().addKeyListener(keyManager);
         display.getJframe().addMouseListener(mouseManager);
@@ -254,43 +268,48 @@ public class Game implements Runnable{
      * code to be executed every tick before render()
      */
     private void tick(){
+//        if (alienManager.destroyed == NUMBER_OF_ALIENS_TO_DESTROY) { 
+//            /*
+//                Will set gamestate as 1, which means the player won
+//                this happens when all aliens are destroyed
+//            */
+//            setGameState(1);
+//            message = "Game won!";
+//        }
+        
         keyManager.tick(); //key manager must precede all user ralated actions
-        
-        //if the game is paused or the game state is not 0 (playing) the game object wont tick
-        if(!paused && gameState == 0){
-            player.tick();
-            ball.tick();
-            brickManager.tick();
-
-        }else{
-            /**
-             * if the game state is diferent from zero and the user press the 
-             * space bar, the game would reset by executing the reboot method 
-             * of all game objects
-             */
-            if(keyManager.keys[KeyEvent.VK_SPACE] && gameState != 0){
-                gameState = 0;
-                player.reboot();
-                ball.reboot();
-                brickManager.reboot();
-            }
-        }       
-        //Game state updates
-        if(player.lives <= 0){
-            gameState = -1; //lost
-        }
-        if(brickManager.bricks.isEmpty()){
-            gameState = 1;
-        }
-        
-        //Save the game
-        if(keyManager.save) {
+        if(!paused && gameState == 0){ //game playing and not paused
+            player.tick(); // ticks the player
+            shot.tick();   // ticks the shot
+//            alienManager.tick(); // ticks the manager
             
-            saveGame();
+            //Checks collision between aliens and shot
+//            checkShotCollision();
+//            checkBombCollision();
         }
         
-        if(keyManager.load  && gameState == 0) {
-            loadGame();
+        
+        if(keyManager.save && gameState == 0) {
+            /**
+             * will save the game if the game is playing and g key is pressed
+             */
+            saveGame("save.txt");
+        }
+        
+        if(keyManager.load && gameState == 0) {
+            /**
+             * will load the game if playing and c key is pressed
+             */
+            loadGame("save.txt");
+        }
+        
+        if(keyManager.restart) {
+            /**
+             * Restarts the music, sets the gameState as playing and loads the game
+             */
+            music.play();
+            setGameState(0);
+            loadGame("restartGame.txt");
         }
         
         //Triggers the pause of the game when 'P' is pressed
@@ -306,76 +325,146 @@ public class Game implements Runnable{
         }
     }
     
-    private void saveGame() {
-        try {
-            FileWriter fw = new FileWriter(fileName);
-            fw.write(player.toString());
-            fw.write(ball.toString());
-            for(Brick b : brickManager.bricks){
-                fw.write(b.toString());
-            }
-            fw.write("====\n");
-            for(FallingItem fi : brickManager.items){
-                fw.write(fi.toString());
-            }
-            fw.write("====\n");
-            
-            fw.close();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
+    /**
+     * Method that saves the current game, including each of the object's important attributes
+     * @param fileName 
+     */
+    private void saveGame(String fileName) {
+//        try {
+//            FileWriter fw = new FileWriter(fileName); //FileWriter to write each line in fileName path
+//            fw.write(player.toString());   //Inserts the player object
+//            fw.write(shot.toString());      //Inserts the shot object
+//            fw.write(alienManager.toString());//Inserts the alienManager direction and destroyd qty
+//            for(Alien a : alienManager.aliens){
+//                fw.write(a.toString()); //Inserts each alien in the alienManager
+//                fw.write(a.getBomb().toString()); //Inserts each alien's bomb
+//            }
+//            fw.close(); //Finishes writing in the file and closes it
+//        } catch(IOException e) {
+//            e.printStackTrace();
+//        }
     }
     
-    private void loadGame() {
-        try {
-            //clears the brick arraylist
-            brickManager.bricks = new ArrayList<>();
-            brickManager.items = new ArrayList<>();
-            
-            BufferedReader br = new BufferedReader(new FileReader(fileName));
-            
-            //Reads player data
-            String data = br.readLine();
-            arr = data.split(" ");
-            player.position.setX(Double.parseDouble(arr[0]));
-            player.position.setY(Double.parseDouble(arr[1]));
-            player.setWidth(Integer.parseInt(arr[2]));
-            player.setHeight(Integer.parseInt(arr[3]));
-            player.setLives(Integer.parseInt(arr[4]));
-            player.setLaunched(Boolean.parseBoolean(arr[5]));
-            
-            //Reads ball data
-            data = br.readLine();
-            arr = data.split(" ");
-            ball.position.setX(Double.parseDouble(arr[0]));
-            ball.position.setY(Double.parseDouble(arr[1]));
-            Vector2 auxVec = new Vector2(Double.parseDouble(arr[2]), Double.parseDouble(arr[3]));
-            ball.setVelocity(auxVec);
-            ball.setWidth(Integer.parseInt(arr[4]));
-            ball.setHeight(Integer.parseInt(arr[5]));
-            
-            //Reads brick data and adds it to the BrickManager bricks arraylist
-            data = br.readLine();
-            Brick b;
-            while(!data.equals("====")) {
-                arr = data.split(" ");
-                b = new Brick(Double.parseDouble(arr[0]),Double.parseDouble(arr[1]),Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]), ball);
-                brickManager.bricks.add(b);
-                data = br.readLine();
-            }
-            
-            //Reads falling items data and adds it to the BrickManager items arraylist
-            data = br.readLine();
-            FallingItem fi;
-            while(!data.equals("====")){
-                arr = data.split(" ");
-                fi = new FallingItem(Double.parseDouble(arr[0]), Double.parseDouble(arr[1]), Integer.parseInt(arr[2]), this);
-                brickManager.items.add(fi);
-                data = br.readLine();
-            }
-            
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
+    /**
+     * Method that loads a game with the param's path
+     * @param fileName 
+     */
+    private void loadGame(String fileName) {
+//        try {
+//            //clears the aliens list
+//            alienManager.aliens = new ArrayList<>();    //Empties the alien array
+//            BufferedReader br = new BufferedReader(new FileReader(fileName));   //To Read each line
+//            
+//            //Reads player data
+//            String data = br.readLine();
+//            arr = data.split(" ");
+//            player.position.setX(Double.parseDouble(arr[0]));   //stores the x coordinate
+//            player.position.setY(Double.parseDouble(arr[1]));   //stores the y coordinate
+//            player.setVisible(Boolean.parseBoolean(arr[2]));    //stores the visibility
+//            player.setDx(Integer.parseInt(arr[3]));             //stores the dx
+//            
+//            //Reads shot data
+//            data = br.readLine();
+//            arr = data.split(" ");
+//            shot.position.setX(Double.parseDouble(arr[0]));     //stores the x coordinate
+//            shot.position.setY(Double.parseDouble(arr[1]));     //stores the y coordinate
+//            shot.setVisible(Boolean.parseBoolean(arr[2]));      //stores the visibility
+//            
+//            //Reads direction and destroyed
+//            data = br.readLine();
+//            arr = data.split(" ");
+//            alienManager.setDirection(Integer.parseInt(arr[0]));
+//            alienManager.setDestroyed(Integer.parseInt(arr[1]));
+//            
+//            //Reads alien and bomb data
+//            data = br.readLine();
+//            Alien a;
+//            while(data != null) {
+//                arr = data.split(" ");
+//                // creates an alien instance with the read values x, y and visibility
+//                a = new Alien(Double.parseDouble(arr[0]),Double.parseDouble(arr[1]), Boolean.parseBoolean(arr[2]), Commons.ALIEN_WIDTH,Commons.ALIEN_HEIGHT,Assets.alien);
+//                
+//                data = br.readLine();
+//                arr = data.split(" ");
+//                a.getBomb().position.setX(Double.parseDouble(arr[0]));  //stores the x coordinate
+//                a.getBomb().position.setY(Double.parseDouble(arr[1]));  //stores the y coordinate
+//                a.getBomb().setVisible(Boolean.parseBoolean(arr[2]));   //stores the visibility
+//                
+//                alienManager.aliens.add(a); //adds the created alien to the alienManager's array
+//                data = br.readLine();
+//            }
+//            
+//        } catch(IOException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    /**
+     * Returns the current gamestate.
+     * @return 0 for playing, -1 if lost, 1 if won
+     */
+    public int getGameState() {
+        return gameState;
+    }
+
+    /**
+     * Sets the current gamestate to the introduced value in the param
+     * @param gameState 
+     */
+    public void setGameState(int gameState) {
+        this.gameState = gameState;
+    }
+    
+    /**
+     * Method that checks the collision between the shot and an alien
+     */
+    public void checkShotCollision() {
+//        if(shot.isVisible()) {
+//            int shotX = (int)shot.position.getX();  //Stores the shot's current x position
+//            int shotY = (int)shot.position.getY();  //Stores the shot's current y position
+//            for(Alien a : alienManager.aliens) { //For each alien in the array
+//                if (a.isVisible() ) {            // If the alien is visible
+//                    int alienX = (int)a.position.getX(); 
+//                    int alienY = (int)a.position.getY();
+//                    //checks if the alien contains the shot
+//                    if (shotX >= (alienX) && shotX <= (alienX + ALIEN_WIDTH)    
+//                            && shotY >= alienY && shotY <= (alienY + ALIEN_HEIGHT)) {
+//                        shot.setVisible(false); // makes shot invisible
+//                        a.setVisible(false);    // makes collisioned alien invisible
+//                        alienOof.stop();        // stops the current sound
+//                        alienOof.play();        // plays alien death sound
+//                        alienManager.destroyed++;// adds 1 to the destroyed alien count
+//                    }
+//                }
+//            }
+//        }
+    }
+    
+    /**
+     * Method that checks the collision between the bomb and the player
+     */
+    public void checkBombCollision() {
+//        for(Alien a : alienManager.aliens) { // For each alien's bomb
+//            Alien.Bomb b = a.getBomb();
+//            int bombX = (int)b.position.getX();
+//            int bombY = (int)b.position.getY();
+//            int playerX = (int)player.position.getX();
+//            int playerY = (int)player.position.getY();
+//
+//            if (b.isVisible()) {    // if the bomb exists/isVisible
+//
+//                if (bombX >= (playerX)  //it checks if the bomb is contained within the player
+//                        && bombX <= (playerX + PLAYER_WIDTH)
+//                        && bombY >= (playerY)
+//                        && bombY <= (playerY + PLAYER_HEIGHT)) {
+//                    player.setVisible(false);   //Sets the player invisible
+//                    b.setVisible(false);        //Sets the bomb invisible
+//                    setGameState(-1);           //Sets the gamestate as lost
+//                    message = "Aliens got you!";//Sets losing message
+//                    music.stop();               //Stops the music
+//                    dead.play();                //Plays player death sound
+//                }
+//            }
+//        }
     }
 }

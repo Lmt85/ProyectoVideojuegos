@@ -17,7 +17,8 @@ public class BrickBreakerGame {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Game g = new Game("Juego", 1500, 900); //creates a game which  contains it's own thread
+        System.setProperty("sun.java2d.opengl","true");
+        Game g = new Game(); //creates a game which  contains it's own thread
         g.start(); //starts the game thread and thus the game itself
     } 
     

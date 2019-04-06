@@ -1,210 +1,95 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package videoGame;
 
 import java.awt.Graphics;
-import java.awt.Rectangle;
-import static java.lang.Math.abs;
-import maths.Vector2;
+import java.awt.image.BufferedImage;
 
 /**
- * The player of the game. the bar at the bottom
- * 
- * @author Carlos Adrian Guerra Vazquez A00823198
- * @date 05/02/2019
- * @version 1.0
+ * Implements the player of the game, which is only able to move
+ * @author marcelosuarez
  */
-public class Player extends Item{
-    
-    private Game game;
-    Rectangle collider;
-    Ball ball; //reference to the ball  
-    private Animation animation; //stores the animation of the bar
-    
-    private double speed;
-    private int width;
-    private int height;
-    public int lives;
-    private int initLives; //saves the initial lives of the player at construction, so they can be restored at reboot
-    private int launchSpeed;
-    public int margin;
-    //intertnal state
-    public boolean launched; //if the ball has been launched. if not the player would launch the ball by pressing space
+public class Player extends Sprite implements GameObject {
+    private Game game;      // References the game
     
     /**
-     * The player constructor receives the bar dimensions, an initial position 
-     * , lives, and a reference to the game were the player recides.
-     * @param x x position at init
-     * @param width the bar width
-     * @param height the bar height
-     * @param lives the lives at init
-     * @param game a reference to the game
+     * Constructor with parameters, these parameters are passed directly to the Sprite class
+     * @param x
+     * @param y
+     * @param visible
+     * @param width
+     * @param height
+     * @param image
+     * @param game 
      */
-    public Player(double x, int width, int height, int lives, Game game) {
-        super(x, game.getHeight()- height);
-        //defined at constructor
-        this.speed = 20;
-        this.launchSpeed = 10;
-        this.margin = 50;
-        this.launched = false;
-        //defined ny constructor
+    public Player(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game) {
+        super(position, speed, visible, width, height, image);
         this.game = game;
-        this.width = width;
-        this.height = height;
-        this.lives = lives;
-        this.initLives = lives;
-        //initialising objects
-        animation = new Animation(Assets.playerAnim,150);
-        collider = new Rectangle((int)position.getX(), (int)position.getY() + margin, width, height - margin);
+        
     }
     
-    /**
-     * Executes the player initialization. Adds a reference to a Ball in the game
-     * @param ball the ball in the game
-     */
-    public void init(Ball ball){
-        this.ball = ball;
+    @Override
+    public void init() {
     }
-    
-    /**
-     * Executes every frame of the game, contains all the player's logic, 
-     * including movement, collisions, states, etc.
-     */
+
     @Override
     public void tick() {
-        animation.tick();
-        /**
-         * if the ball collides with the player
-         */
-        if(ball.getCollider().intersects(collider)){
-            //Vertical collision
-            if((ball.previousPosition.getX() > collider.x || ball.previousPosition.getX() + ball.getWidth() > collider.x )
-            && (ball.previousPosition.getX() < collider.x + width || ball.previousPosition.getX() + ball.getWidth() < collider.x + width)){ 
-                //top wall
-                if(ball.previousPosition.getY() + ball.getHeight() <= collider.y){
-                    ball.velocity.setY(-abs(ball.velocity.getY()));
-                    //Adds horizontal speed to the bal depedning on were it collided in the player
-                    ball.velocity.setX((ball.velocity.getX()) + (ball.position.getX() - (collider.x + (width/2) - (ball.getWidth()/2) ) ) / width * 6);
-                //bottom wall
-                }else if(ball.previousPosition.getY() >= collider.y + height){
-                    ball.velocity.setY(abs(ball.velocity.getY()));
-                }
-            //Horizontal colision
-            }else if((ball.previousPosition.getY() >=  collider.y - ball.getWidth()  )){
-               //left wall
-               if(ball.previousPosition.getX() + ball.getWidth()<= collider.y){
-                   ball.velocity.setX(-abs(ball.velocity.getX()));
-                   //adds horizontal speed to the ball if collided while moving
-                   //if(game.getKeyManager().left)
-                        //ball.velocity.setX(ball.velocity.getX() - speed);
-               //right wall
-               }else if(ball.previousPosition.getX() >= collider.x + width ){
-                    ball.velocity.setX(abs(ball.velocity.getX()));
-                    //adds horizontal speed to the ball if collided while moving
-                    //if(game.getKeyManager().right)
-                       // ball.velocity.setX(ball.velocity.getX() + speed);
-               }
-           }else{
-                System.out.println("Ball: " + ball.position.getX() + ", " + ball.position.getY());
-                System.out.println("Player: " + collider.x + ", " + collider.y);
-           }
+        setSpeed(0,0);
+        // To change player speed left 
+        if (game.getKeyManager().left) {
+            speed.setX(-2);
         }
         
-        //if the user presses the right key or 'D' the player moves to the right
-        if(game.getKeyManager().right){
-            position.setX(position.getX() + speed);
-        }
-        //if the user presses the left key or 'A' the player moves to the left
-        if(game.getKeyManager().left){
-            position.setX(position.getX() - speed);
+        // To change player speed right
+        if (game.getKeyManager().right) {
+            speed.setX(2);
         }
         
-        //Collisions with the walls
-        if(position.getX() < -(width / 2)){
-            position.setX((-width) / 2);
-        }else if(position.getX() + width / 2 > game.getWidth()){
-            position.setX(game.getWidth() - (width / 2));
+        // To change player speed up
+        if (game.getKeyManager().up) {
+            speed.setY(-2);
         }
         
-        //controls the ball if  it has'nt launched and  launches it when the user presses space
-        if(!launched){
-            ball.setPositionRelativeToPlayer();
-            if(game.getKeyManager().space){
-                ball.setVelocity(new Vector2(0,-launchSpeed));
-                launched = true;
-            } 
+        // To change player speed down
+        if (game.getKeyManager().down) {
+            speed.setY(2);
         }
         
-        //Update the collider's position
-        collider.x = (int)position.getX();
-        collider.y = (int)position.getY() + margin;
+        //moves player
+        setPosition(getPosition().add(getSpeed()));
         
-        //updates the collider width
-        collider.width = width;
-        collider.height = height - margin;
+        
+        // So player doesn't go past the left border
+        if (position.getX() <= 2) {
+            position.setX(2);
+        }
+        
+        // So the player doesn't go past the right border
+        if (position.getX() >= Commons.BOARD_WIDTH - Commons.PLAYER_WIDTH) {
+            position.setX(Commons.BOARD_WIDTH - Commons.PLAYER_WIDTH);
+        }
     }
-    
+
     /**
-     * renders the player
-     * @param g Graphics object to render in
+     * Renders the player if not hit by a bomb
+     * @param g 
      */
     @Override
     public void render(Graphics g) {
-        g.drawImage(animation.getCurrentFrame(), (int)position.getX(), (int)position.getY(), width, height, null);
-        
-        //g.drawRect(collider.x, collider.y, collider.width, collider.height);
-        //g.drawRect( (int)((position.getX() + (width/2) - (ball.getWidth()/2) )), (int)position.getY() , 10, 10);
-    }
-    
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-    
-    public void reboot() {
-        lives = initLives;
-    }
-    
-    public void setHeight(int height) {
-       this.height = height;
-    }
-    
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getLives() {
-        return lives;
-    }
-
-    public void setLives(int lives) {
-        this.lives = lives;
-    }
-
-    public void setLaunched(boolean launched) {
-        this.launched = launched;
-    }
-
-    public Rectangle getCollider() {
-        return collider;
-    }
-    
-    public void setModifier(int type){
-        if(type == 1){
-            width += 40;
-        }else if(type == 2){
-            ball.setVelocity(ball.getVelocity().add(ball.getVelocity().norm().scalar(5)));
+        if (isVisible()) { 
+            g.drawImage(getImage(), (int)position.getX(), (int) position.getY(), null);
         }
     }
     
     /**
-     * Returns all the attributes needed to save the current player state
-     * @return a string that describes the player
-     */
+    * Converts the object to a string with most important attributes.
+    * @return a string with most important attributes.
+    */
     @Override
     public String toString() {
-        return String.valueOf(position.getX() + " " + position.getY() + " " + width + " " + height + " " +  lives + " " + launched + "\n");
+        return String.valueOf(position.getX() + " " + position.getY() + " " + visible + " " + speed.getX() + "\n");
     }
-    
 }

@@ -4,12 +4,13 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/videoGame/Shot.java</file>
-            <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/videoGame/Alien.java</file>
             <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/videoGame/MouseManager.java</file>
+            <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/videoGame/Alien.java</file>
             <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/videoGame/Assets.java</file>
             <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/videoGame/SoundClip.java</file>
             <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/videoGame/Display.java</file>
             <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/videoGame/SpriteSheet.java</file>
+            <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/maths/IntVector2.java</file>
             <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/videoGame/AlienManager.java</file>
             <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/videoGame/Player.java</file>
             <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/videoGame/GameObject.java</file>
@@ -21,6 +22,7 @@
             <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/videoGame/Commons.java</file>
             <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/brickbreakergame/BrickBreakerGame.java</file>
             <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/videoGame/CircleCollider.java</file>
+            <file>file:/Users/marcelosuarez/Google%20Drive/Tec/4to%20Semestre/VideoJuegos/BrickBreaker/src/maths/Vector2.java</file>
         </group>
     </open-files>
 </project-private>
