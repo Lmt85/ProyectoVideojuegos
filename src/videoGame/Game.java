@@ -302,7 +302,31 @@ public class Game implements Runnable, Commons {
         
         if (!paused && gameState == 0) { //game playing and not paused
             
-            if (getKeyManager().space && getPlayer().canShoot()) { // If space is pressed and shoot is not on cd
+            // Sets orientation depending on key pressed
+            // north,east,south,west = arrow keys
+            // up,right,down,left    = w,a,s,d keys
+            // Coded so that arrow keys override direction
+            if (getKeyManager().north) {
+                getPlayer().setOrientation(Sprite.Orientation.NORTH);
+            } else if (getKeyManager().east) {
+                getPlayer().setOrientation(Sprite.Orientation.EAST);
+            } else if (getKeyManager().south) {
+                getPlayer().setOrientation(Sprite.Orientation.SOUTH);
+            } else if (getKeyManager().west) {
+                getPlayer().setOrientation(Sprite.Orientation.WEST);
+            } else if (getKeyManager().up) {
+                getPlayer().setOrientation(Sprite.Orientation.NORTH);
+            } else if (getKeyManager().right) {
+                getPlayer().setOrientation(Sprite.Orientation.EAST);
+            } else if (getKeyManager().down) {
+                getPlayer().setOrientation(Sprite.Orientation.SOUTH);
+            } else if (getKeyManager().left) {
+                getPlayer().setOrientation(Sprite.Orientation.WEST);
+            }
+            
+            if ((getKeyManager().north || getKeyManager().east || 
+                    getKeyManager().south || getKeyManager().west )
+                    && getPlayer().canShoot()) { // If space is pressed and shoot is not on cd
                 System.out.println("Shot");
                 getPlayer().shoots();
                 getPlayer().setShoot(false);
@@ -347,33 +371,15 @@ public class Game implements Runnable, Commons {
                 getPlayer().getSpeed().setY(2);
             }
 
-            // Sets orientation depending on key pressed
-            // north,east,south,west = arrow keys
-            // up,right,down,left    = w,a,s,d keys
-            // Coded so that arrow keys override direction
-            if (getKeyManager().north) {
-                getPlayer().setOrientation(Sprite.Orientation.NORTH);
-            } else if (getKeyManager().east) {
-                getPlayer().setOrientation(Sprite.Orientation.EAST);
-            } else if (getKeyManager().south) {
-                getPlayer().setOrientation(Sprite.Orientation.SOUTH);
-            } else if (getKeyManager().west) {
-                getPlayer().setOrientation(Sprite.Orientation.WEST);
-            } else if (getKeyManager().up) {
-                getPlayer().setOrientation(Sprite.Orientation.NORTH);
-            } else if (getKeyManager().right) {
-                getPlayer().setOrientation(Sprite.Orientation.EAST);
-            } else if (getKeyManager().down) {
-                getPlayer().setOrientation(Sprite.Orientation.SOUTH);
-            } else if (getKeyManager().left) {
-                getPlayer().setOrientation(Sprite.Orientation.WEST);
-            }
+            
 
             getPlayer().tick();         // Ticks player
             if(!getPlayer().getBullets().isEmpty()) {
-                for(Player.PlayerBullet p : getPlayer().getBullets()) {
-                    if(p.isVisible()) p.tick();
-                    else getPlayer().getBullets().remove(getPlayer().getBullets().indexOf(p));
+                for (int i = 0; i < getPlayer().getBullets().size(); i++) {
+                    if(getPlayer().getBullets().get(i).isVisible()) {
+                        getPlayer().getBullets().get(i).tick();
+                    }
+                    else getPlayer().getBullets().remove(i);
                 }
             }
         }
