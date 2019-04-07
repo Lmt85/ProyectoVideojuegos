@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
  * @date 28/01/2019
  * @version 1.0
  */
-public class Alien extends Sprite implements GameObject{
+public class Enemy extends Sprite implements GameObject{
 
     private Bomb bomb;  //Stores the bomb for each alien
     
@@ -22,7 +22,7 @@ public class Alien extends Sprite implements GameObject{
      * @param height
      * @param image 
      */
-    public Alien(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image){  
+    public Enemy(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image){  
         super(position,speed,visible,width,height,image);
         bomb = new Bomb(position,speed,false,width,height,Assets.bomb); //For each instance, it initializes a bomb, which isn't visible at first
     }

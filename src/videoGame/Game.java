@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import maths.Vector2;
+import java.util.LinkedList;
 
 /**
  * Here lies all objects that belong to a particular instance of a Game, 
@@ -49,7 +50,7 @@ public class Game implements Runnable, Commons {
     
     //Game objects
     Player player; // to store the player
-    Shot shot; // to store the shot
+    public LinkedList<Shot> shots; // to store shots 
 //    AlienManager alienManager; // to manage each alien
     
     //Game state
@@ -206,8 +207,14 @@ public class Game implements Runnable, Commons {
             g.drawImage(Assets.background, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
             
             //game objects to render
-            player.render(g);   //renders the player
-            shot.render(g);     //renders the shot if visible
+            player.render(g);   //renders the player 
+
+            if(shots!=null){
+                for(Shot shot: shots){
+                shot.render(g);     //renders the shot if visible
+                }
+            }
+            
 //            alienManager.render(g); //renders the aliens if visible
             
             //game state renders
@@ -250,11 +257,18 @@ public class Game implements Runnable, Commons {
         
         //Creates and initializes game objects
         player = new Player(new Vector2(Commons.START_X,Commons.START_Y), new Vector2(),true,Commons.PLAYER_WIDTH,Commons.PLAYER_HEIGHT,Assets.player, this);
-        shot = new Shot(new Vector2(0,0), new Vector2(0,-4), false, 2, 5, Assets.shot, this, player);
+       
+        
+       for(Shot shot: shots){
+            shot = new Shot(new Vector2(0,0), new Vector2(0,-4), false, 2, 5, Assets.shot, this, player);
+            shots.add(new Shot(new Vector2(0,0), new Vector2(0,-4), false, 2, 5, Assets.shot, this, player));
+            shot.init();
+       } 
+        
 //        alienManager = new AlienManager(this);
         
         player.init();
-        shot.init();
+        
 //        alienManager.init();
         
         display.getJframe().addKeyListener(keyManager);
@@ -280,7 +294,11 @@ public class Game implements Runnable, Commons {
         keyManager.tick(); //key manager must precede all user ralated actions
         if(!paused && gameState == 0){ //game playing and not paused
             player.tick(); // ticks the player
-            shot.tick();   // ticks the shot
+            
+            for(Shot shot: shots){
+                shot.tick();   // ticks the shot
+            }
+            
 //            alienManager.tick(); // ticks the manager
             
             //Checks collision between aliens and shot
