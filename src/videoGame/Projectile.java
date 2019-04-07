@@ -2,10 +2,6 @@ package videoGame;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import static java.lang.System.console;
-import javax.swing.ImageIcon;
-import static videoGame.Commons.H_SPACE;
-import static videoGame.Commons.V_SPACE;
 
 /**
  * This class defines each of the methods of the shot
@@ -59,28 +55,3 @@ public class Projectile extends Sprite implements GameObject, Commons {
     }
 
 }
-
-
-//            if (game.getKeyManager().space) {
-//                setVisible(true);
-//                setPositionRelativeToPlayer();
-//                setOrientation(game.player.getOrientation());
-//                
-//                switch(getOrientation()) {
-//                    case NORTH: setSpeed(new maths.Vector2(0,-4));
-//                    break;
-//                    case EAST: setSpeed(new maths.Vector2(4,0));
-//                    break;
-//                    case SOUTH: setSpeed(new maths.Vector2(0,4));
-//                    break;
-//                    case WEST: setSpeed(new maths.Vector2(-4,0));
-//                }
-//            }
-//        } else {
-//            if (getPosition().getY() < 0 || getPosition().getY() + Commons.BOMB_HEIGHT >= Commons.BOARD_HEIGHT || getPosition().getX() < 0 || getPosition().getX() + Commons.BOMB_WIDTH >= Commons.BOARD_WIDTH) {
-//                setVisible(false);
-//                setSpeed(new maths.Vector2(0,0));
-//            }
-//            else setPosition(getPosition().add(getSpeed()));
-//        }
-
