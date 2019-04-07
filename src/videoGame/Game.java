@@ -1,4 +1,3 @@
-
 package videoGame;
 
 import java.awt.Color;
@@ -15,52 +14,52 @@ import javax.swing.JLabel;
 import maths.Vector2;
 
 /**
- * Here lies all objects that belong to a particular instance of a Game, 
- * including the window (Display) with it corresponding Graphics and BufferStrategy,
- * keyManager, and mouseManager, as well as the thread were the game operates 
- * and as such this class implements the Runnable interface so it can override 
- * the run() method in order to interact with the thread in such a way that the 
- * graphics are painted every tick.
- * 
+ * Here lies all objects that belong to a particular instance of a Game,
+ * including the window (Display) with it corresponding Graphics and
+ * BufferStrategy, keyManager, and mouseManager, as well as the thread were the
+ * game operates and as such this class implements the Runnable interface so it
+ * can override the run() method in order to interact with the thread in such a
+ * way that the graphics are painted every tick.
+ *
  * @author Carlos Adrian Guerra Vazquez A00823198
  * @date 28/01/2019
  * @version 1.0
  */
 public class Game implements Runnable, Commons {
+
     //Necessary graphic objects 
     private BufferStrategy bs;  // to have several buffers when displaying in a canvas
     private Graphics g;         // to paint objects in the display canvas
-    
-    //display stuff
+
+    //Display variables
     private Display display;    // to display in the game in its canvas
     String title;               // title of the window
-    private int height;
-    private int width;
-    private KeyManager keyManager;  //key manager asociated with the display
-    private MouseManager mouseManager; //mouse manager asociated with the display
+    private int height;         // height og the window
+    private int width;          // width of the window
+    private KeyManager keyManager;  // key manager asociated with the display
+    private MouseManager mouseManager; // mouse manager asociated with the display
     Font font; // font used to display the score and game over message
-    
-    //thread stuff
-    private Thread thread;      // thread to create the game. points to the instance of this Game as a Runnable
-    private boolean running;    // to set the game running status (controls the in thread execution)
-    private double tps; //ticks per second
-    private final boolean showTPS = true; //controls if the tps will be show on the console
-    int fps = 60; //max frames per second the game will run at
-    
+
+    //Thread variables
+    private Thread thread;                 // thread to create the game. points to the instance of this Game as a Runnable
+    private boolean running;               // to set the game running status (controls the in thread execution)
+    private double tps;                    //ticks per second
+    private final boolean showTPS = false; //controls if the tps will be show on the console
+    int fps = 60;                          //max frames per second the game will run at
+
     //Game objects
     Player player; // to store the player
-    Shot shot; // to store the shot
 //    AlienManager alienManager; // to manage each alien
-    
+
     //Game state
     private boolean paused = false; // states whether or not the game is paused
     private boolean pauseTrig = false;
     private int gameState = 0; // 0 -> game playing, -1 -> game lost, 1 -> game won
-    
+
     //Save state
     private String fileName;    // Save filename
     private String[] arr;       // To load the game objects
-    
+
     //Internal game atributes
     public String message;  // Stores endgame message
 
@@ -69,27 +68,34 @@ public class Game implements Runnable, Commons {
     SoundClip laser;    // Stores the laser sound
     SoundClip alienOof; // Stores alien death sound
     SoundClip dead;     // Stores player death sound
+
     /**
-    * to create title, width and height and set the game is still not running
-    * @param title to set the title of the window
-    * @param width to set the width of the window
-    * @param height  to set the height of the window
-    */
+     * to create title, width and height and set the game is still not running
+     * IMPORTANT: Please do not initialize game objects here, those go on the
+     * init method
+     *
+     * @param title to set the title of the window
+     * @param width to set the width of the window
+     * @param height to set the height of the window
+     */
     public Game() {
-        this.title = "SpaceInvaders";   //Name of the frame
-        
+        // Name of the game
+        this.title = "OxiLife";
+
         // Sets game dimensions
         this.width = Commons.BOARD_WIDTH;
         this.height = Commons.BOARD_HEIGHT;
+
+        // Initializes game functions
         running = false;
         keyManager = new KeyManager();
         mouseManager = new MouseManager();
         font = new Font("consolas", Font.BOLD, 10);
-        //Please do not initialize game objects here, those go on the init method
     }
-    
+
     /**
      * returns the width of the display
+     *
      * @return integer width
      */
     public int getWidth() {
@@ -98,94 +104,125 @@ public class Game implements Runnable, Commons {
 
     /**
      * returns the height of the display
+     *
      * @return integer height
      */
     public int getHeight() {
         return height;
     }
-    
-    /**
-     * Override of the Runnable's ()run method.
-     * Were all code to be executed cyclically by the game thread lies
-     */
-    @Override
-    public void run() { 
-        init(); //display initialization
-        
-        //time for  each tick in nanoseconds, 
-        //ejm: at 50fps each tick takes 0.01666_ seconds wich is equal to 16666666.6_ nanoseconds
-        double timeTick = 1000000000 / fps;
-        double delta = 0; 
-        long now; //current frame time
-        long lastTime = System.nanoTime(); //the previos frame time 
-        double initTickTime = lastTime;
-        while (running) {            
-            now = System.nanoTime();
-            delta += (now - lastTime) / timeTick;
-            lastTime = now;
-            //delta acumulates enogh tick fractions until a tick is completed and we can now advance in the tick
-            if(delta >= 1){
-                
-                tick();
-                render();
-                delta--;
-                
-                tps = 1000000000 / (now - initTickTime);
-                if(showTPS){System.out.println("tps: " + tps);}
-                initTickTime = now;
-            }  
-        }
-        stop();
-    }
-    
-    /**
-    * setting the thread for the game. Method to be publicly used by the implementer of this Game.
-    */
-    public synchronized void start(){
-        if(!running){
-            running = true;
-            thread = new Thread(this); //points thread to this Game instance as a Runnabe so we can use run() as overriden.
-            thread.start(); //Thread class mathod that starts the tread
-        }
-    }
-    
-    /**
-    * stopping the thread for the game.
-    */
-    public synchronized void stop(){
-        if(running){
-            running = false;
-            try{
-                thread.join();
-            }catch(InterruptedException ie){
-                ie.printStackTrace();
-            }
-        }
-    }
-    
+
     /**
      * provides the key manager of this game
+     *
      * @return This game and display <b>keyManager</b>
      */
     public KeyManager getKeyManager() {
         return keyManager;
     }
-    
+
     /**
      * provides the mouse manager of this game
+     *
      * @return This game and display <b>mouseManager</b>
      */
     public MouseManager getMouseManager() {
         return mouseManager;
     }
-    
-    
+
+    /**
+     * Returns the current gamestate.
+     *
+     * @return 0 for playing, -1 if lost, 1 if won
+     */
+    public int getGameState() {
+        return gameState;
+    }
+
+    /**
+     * Sets the current gamestate to the introduced value in the param
+     *
+     * @param gameState
+     */
+    public void setGameState(int gameState) {
+        this.gameState = gameState;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    /**
+     * Override of the Runnable's ()run method. Were all code to be executed
+     * cyclically by the game thread lies
+     */
+    @Override
+    public void run() {
+        init(); //display initialization
+
+        //time for  each tick in nanoseconds, 
+        //ejm: at 50fps each tick takes 0.01666_ seconds wich is equal to 16666666.6_ nanoseconds
+        double timeTick = 1000000000 / fps;
+        double delta = 0;
+        long now; //current frame time
+        long lastTime = System.nanoTime(); //the previos frame time 
+        double initTickTime = lastTime;
+        while (running) {
+            now = System.nanoTime();
+            delta += (now - lastTime) / timeTick;
+            lastTime = now;
+            //delta acumulates enogh tick fractions until a tick is completed and we can now advance in the tick
+            if (delta >= 1) {
+
+                tick();
+                render();
+                delta--;
+
+                tps = 1000000000 / (now - initTickTime);
+                if (showTPS) {
+                    System.out.println("tps: " + tps);
+                }
+                initTickTime = now;
+            }
+        }
+        stop();
+    }
+
+    /**
+     * setting the thread for the game. Method to be publicly used by the
+     * implementer of this Game.
+     */
+    public synchronized void start() {
+        if (!running) {
+            running = true;
+            thread = new Thread(this); //points thread to this Game instance as a Runnabe so we can use run() as overriden.
+            thread.start(); //Thread class mathod that starts the tread
+        }
+    }
+
+    /**
+     * stopping the thread for the game.
+     */
+    public synchronized void stop() {
+        if (running) {
+            running = false;
+            try {
+                thread.join();
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
+        }
+    }
+
     /**
      * rendering of all game elements.
      */
-    private void render(){
+    private void render() {
         bs = display.getCanvas().getBufferStrategy();
-        
+
         /* if it is null, we define one with 3 buffers to display images of
          * the game, if not null, then we display
          * every image of the game but
@@ -195,139 +232,187 @@ public class Game implements Runnable, Commons {
          */
         if (bs == null) { //if we dont have a buffer strategy we make our Display's canvas crate one for itself.
             display.getCanvas().createBufferStrategy(3);
-        }
-        else
-        {            
+        } else {
             g = bs.getDrawGraphics(); // gets the graphics of the buffer strategy
-            
+
             g.setColor(Color.GREEN);   // sets the painting color to green
             g.setFont(font);           // sets the font
-            
+
             g.drawImage(Assets.background, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
-            
+
             //game objects to render
-            player.render(g);   //renders the player
-            shot.render(g);     //renders the shot if visible
+            getPlayer().render(g);   //renders the player
+            getPlayer().getP().render(g);        //renders the bullet if visible
 //            alienManager.render(g); //renders the aliens if visible
-            
+
             //game state renders
-            if(gameState != 0){
-                if(gameState == -1){//lost screen
-                    g.drawString(message, Commons.BOARD_WIDTH/2 - 50, Commons.BOARD_HEIGHT/2);
-                }else if(gameState == 1){//won screen
-                    g.drawString(message, Commons.BOARD_WIDTH/2 - 50, Commons.BOARD_HEIGHT/2);
+            if (gameState != 0) {
+                if (gameState == -1) {//lost screen
+                    g.drawString(message, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
+                } else if (gameState == 1) {//won screen
+                    g.drawString(message, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
                 }
-            }else if(paused){ //triggers if paused and playing, displays paused message
+            } else if (paused) { //triggers if paused and playing, displays paused message
                 g.drawString("<PAUSED>", 10, 10);
             }
-            if(keyManager.save) { //displays saved message if saved
+            if (keyManager.save) { //displays saved message if saved
                 g.drawString("<SAVED>", Commons.BOARD_WIDTH - 100, 10);
             }
-            
+
             //displays the amount of aliens destroyed
 //            g.drawString("Destroyed: " + alienManager.destroyed + "/24", 10, Commons.BOARD_HEIGHT - 10);
-            
             bs.show();
             g.dispose();
         }
     }
-    
+
     /**
-    * initializing the display window of the game
-    * asset loading
-    * Game objects initialization
-    */
+     * initializing the display window of the game asset loading Game objects
+     * initialization
+     */
     private void init() {
         // Initializes the display with the given dimensions
-        display = new Display(title, width, height); 
-        
+        display = new Display(title, width, height);
+
         // initializes all the assets of the game
-        Assets.init(); 
-        
+        Assets.init();
+
         // Loads all the sound related assets
         music = new SoundClip("/sound/DarkIntentions.WAV");
         music.setLooping(true);
-        
+
         //Creates and initializes game objects
-        player = new Player(new Vector2(Commons.START_X,Commons.START_Y), new Vector2(),true,Commons.PLAYER_WIDTH,Commons.PLAYER_HEIGHT,Assets.player, this);
-        shot = new Shot(new Vector2(0,0), new Vector2(0,-4), false, 2, 5, Assets.shot, this, player);
+        player = new Player(new Vector2(Commons.START_X, Commons.START_Y), new Vector2(), true, Commons.PLAYER_WIDTH, Commons.PLAYER_HEIGHT, Assets.player);
 //        alienManager = new AlienManager(this);
-        
+
         player.init();
-        shot.init();
 //        alienManager.init();
-        
+
         display.getJframe().addKeyListener(keyManager);
         display.getJframe().addMouseListener(mouseManager);
         display.getJframe().addMouseMotionListener(mouseManager);
         display.getCanvas().addMouseListener(mouseManager);
         display.getCanvas().addMouseMotionListener(mouseManager);
     }
-    
+
     /**
-     * code to be executed every tick before render()
+     * Code to be executed every game tick before render()
      */
-    private void tick(){
-//        if (alienManager.destroyed == NUMBER_OF_ALIENS_TO_DESTROY) { 
-//            /*
-//                Will set gamestate as 1, which means the player won
-//                this happens when all aliens are destroyed
-//            */
-//            setGameState(1);
-//            message = "Game won!";
-//        }
-        
+    private void tick() {
         keyManager.tick(); //key manager must precede all user ralated actions
-        if(!paused && gameState == 0){ //game playing and not paused
-            player.tick(); // ticks the player
-            shot.tick();   // ticks the shot
-//            alienManager.tick(); // ticks the manager
-            
-            //Checks collision between aliens and shot
-//            checkShotCollision();
-//            checkBombCollision();
+        if (!paused && gameState == 0) { //game playing and not paused
+            if (keyManager.space && !getPlayer().getP().isVisible()) { // If space is pressed and no bullet on screen
+                getPlayer().getP().setVisible(true);
+                setPositionRelativeToPlayer(getPlayer().getP());
+                getPlayer().getP().setOrientation(getPlayer().getOrientation());    // Bullet Inherits orientation
+                switch (getPlayer().getOrientation()) {  // Sets speed based on bullet orientation
+                    case NORTH:
+                        getPlayer().getP().setSpeed(new maths.Vector2(0, -4));
+                        break;
+                    case EAST:
+                        getPlayer().getP().setSpeed(new maths.Vector2(4, 0));
+                        break;
+                    case SOUTH:
+                        getPlayer().getP().setSpeed(new maths.Vector2(0, 4));
+                        break;
+                    case WEST:
+                        getPlayer().getP().setSpeed(new maths.Vector2(-4, 0));
+                }
+            }
+
+            // Resets player speed so it only moves when key is pressed
+            getPlayer().setSpeed(0, 0);
+            // To change player speed left 
+            if (getKeyManager().left) {
+                getPlayer().getSpeed().setX(-2);
+            }
+
+            // To change player speed right
+            if (getKeyManager().right) {
+                getPlayer().getSpeed().setX(2);
+            }
+
+            // To change player speed up
+            if (getKeyManager().up) {
+                getPlayer().getSpeed().setY(-2);
+            }
+
+            // To change player speed down
+            if (getKeyManager().down) {
+                getPlayer().getSpeed().setY(2);
+            }
+
+            // Sets orientation depending on key pressed 
+            // north,east,south,west = arrow keys
+            // up,right,down,left    = w,a,s,d keys
+            // Coded so that arrow keys override direction
+            if (getKeyManager().north) {
+                getPlayer().setOrientation(Sprite.Orientation.NORTH);
+            } else if (getKeyManager().east) {
+                getPlayer().setOrientation(Sprite.Orientation.EAST);
+            } else if (getKeyManager().south) {
+                getPlayer().setOrientation(Sprite.Orientation.SOUTH);
+            } else if (getKeyManager().west) {
+                getPlayer().setOrientation(Sprite.Orientation.WEST);
+            } else if (getKeyManager().up) {
+                getPlayer().setOrientation(Sprite.Orientation.NORTH);
+            } else if (getKeyManager().right) {
+                getPlayer().setOrientation(Sprite.Orientation.EAST);
+            } else if (getKeyManager().down) {
+                getPlayer().setOrientation(Sprite.Orientation.SOUTH);
+            } else if (getKeyManager().left) {
+                getPlayer().setOrientation(Sprite.Orientation.WEST);
+            }
+
+            getPlayer().tick();         // Ticks player
+            if (getPlayer().getP().isVisible()) {
+                getPlayer().getP().tick();   // Ticks player bullet if visible
+            }
         }
-        
-        
-        if(keyManager.save && gameState == 0) {
+
+        if (keyManager.save && gameState == 0) {
             /**
              * will save the game if the game is playing and g key is pressed
              */
             saveGame("save.txt");
         }
-        
-        if(keyManager.load && gameState == 0) {
+
+        if (keyManager.load && gameState == 0) {
             /**
              * will load the game if playing and c key is pressed
              */
             loadGame("save.txt");
         }
-        
-        if(keyManager.restart) {
+
+        if (keyManager.restart) {
             /**
-             * Restarts the music, sets the gameState as playing and loads the game
+             * Restarts the music, sets the gameState as playing and loads the
+             * game
              */
             music.play();
             setGameState(0);
             loadGame("restartGame.txt");
         }
-        
+
         //Triggers the pause of the game when 'P' is pressed
-        if(!paused && keyManager.paused && !pauseTrig){
+        if (!paused && keyManager.paused && !pauseTrig) {
             paused = true;
-        }else if(paused && keyManager.paused && !pauseTrig){
+        } else if (paused && keyManager.paused && !pauseTrig) {
             paused = false;
         }
-        if(keyManager.paused){
+        if (keyManager.paused) {
             pauseTrig = true;
-        }else{
+        } else {
             pauseTrig = false;
         }
+
     }
-    
+
     /**
-     * Method that saves the current game, including each of the object's important attributes
-     * @param fileName 
+     * Method that saves the current game, including each of the object's
+     * important attributes
+     *
+     * @param fileName
      */
     private void saveGame(String fileName) {
 //        try {
@@ -344,10 +429,11 @@ public class Game implements Runnable, Commons {
 //            e.printStackTrace();
 //        }
     }
-    
+
     /**
      * Method that loads a game with the param's path
-     * @param fileName 
+     *
+     * @param fileName
      */
     private void loadGame(String fileName) {
 //        try {
@@ -400,22 +486,6 @@ public class Game implements Runnable, Commons {
     }
 
     /**
-     * Returns the current gamestate.
-     * @return 0 for playing, -1 if lost, 1 if won
-     */
-    public int getGameState() {
-        return gameState;
-    }
-
-    /**
-     * Sets the current gamestate to the introduced value in the param
-     * @param gameState 
-     */
-    public void setGameState(int gameState) {
-        this.gameState = gameState;
-    }
-    
-    /**
      * Method that checks the collision between the shot and an alien
      */
     public void checkShotCollision() {
@@ -439,7 +509,7 @@ public class Game implements Runnable, Commons {
 //            }
 //        }
     }
-    
+
     /**
      * Method that checks the collision between the bomb and the player
      */
@@ -466,5 +536,9 @@ public class Game implements Runnable, Commons {
 //                }
 //            }
 //        }
+    }
+
+    public void setPositionRelativeToPlayer(Sprite p) {
+        p.setPosition(new Vector2(getPlayer().position.getX() + H_SPACE, getPlayer().position.getY() - V_SPACE));
     }
 }

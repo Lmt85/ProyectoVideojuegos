@@ -12,18 +12,21 @@ import maths.Vector2;
 
 /**
  * This class sets the standards for a tangible game object.
- * @author Carlos Adrian Guerra Vazquez A00823198
+ * @author Adrian Marcelo Suárez Ponce A01197108
  * @date 28/01/2019
  * @version 1.0
  */
 public class Sprite {
+    public enum Orientation {
+        NORTH, EAST, SOUTH, WEST, NO_O;
+    }
     protected boolean visible;      //to store the visibility
     protected BufferedImage image;  //to store the image
     protected Vector2 position;     //to store the position
     protected Vector2 speed;        //to store the speed vector
     protected int width;            //to store the object's width
     protected int height;           //to store the object's width
-
+    protected Orientation o;        //to store the object's orientation
     
     public Sprite(Vector2 position, Vector2 speed, boolean visible, int width, int height, BufferedImage image) {
         this.position = position;
@@ -105,5 +108,28 @@ public class Sprite {
         return position;
     }
     
+    public void setOrientation(Orientation o) {
+        this.o = o;
+    }
+    
+    public Orientation getOrientation() {
+        return o;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
     
 }

@@ -7,13 +7,16 @@ package videoGame;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
+import maths.Vector2;
 
 /**
  * Implements the player of the game, which is only able to move
- * @author marcelosuarez
+ * @author Adrián Marcelo Suárez Ponce A01197108
  */
 public class Player extends Sprite implements GameObject {
-    private Game game;      // References the game
+    public PlayerBullet p;
+    
     
     /**
      * Constructor with parameters, these parameters are passed directly to the Sprite class
@@ -25,9 +28,8 @@ public class Player extends Sprite implements GameObject {
      * @param image
      * @param game 
      */
-    public Player(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game) {
+    public Player(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image) {
         super(position, speed, visible, width, height, image);
-        this.game = game;
         
     }
     
@@ -38,6 +40,7 @@ public class Player extends Sprite implements GameObject {
 
         @Override
         public void init() {
+            
         }
 
         /**
@@ -46,12 +49,12 @@ public class Player extends Sprite implements GameObject {
          */
         @Override
         public void tick() {
-            if (isVisible()) {
-                position.setY(position.getY() + 1);
-                if (position.getY() >= Commons.GROUND - Commons.BOMB_HEIGHT) {
+            setPosition(getPosition().add(getSpeed()));
+            if (getPosition().getX() >= Commons.BOARD_WIDTH + BOMB_WIDTH || 
+                getPosition().getX() < 0 - Commons.BOMB_WIDTH ||
+                getPosition().getY() < 0 - Commons.BOMB_HEIGHT ||
+                getPosition().getY() >= Commons.BOARD_HEIGHT + Commons.BOMB_HEIGHT) 
                     setVisible(false);
-                }
-            }
         }
 
         /**
@@ -61,6 +64,7 @@ public class Player extends Sprite implements GameObject {
         @Override
         public void render(Graphics g) {
             if (isVisible()) {
+                g.drawRect((int)position.getX(),(int) position.getY(), width, height);
                 g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), null);
             }
         }
@@ -77,44 +81,23 @@ public class Player extends Sprite implements GameObject {
     
     @Override
     public void init() {
+        p = new PlayerBullet(new Vector2(), new Vector2(), false, Commons.BOMB_WIDTH, Commons.BOMB_HEIGHT,Assets.bomb);
     }
 
     @Override
     public void tick() {
-        setSpeed(0,0);
-        // To change player speed left 
-        if (game.getKeyManager().left) {
-            speed.setX(-2);
-        }
         
-        // To change player speed right
-        if (game.getKeyManager().right) {
-            speed.setX(2);
-        }
-        
-        // To change player speed up
-        if (game.getKeyManager().up) {
-            speed.setY(-2);
-        }
-        
-        // To change player speed down
-        if (game.getKeyManager().down) {
-            speed.setY(2);
-        }
-        
-        //moves player
+        // moves player
         setPosition(getPosition().add(getSpeed()));
         
+        // player boundaries
+        if(getPosition().getX() >= Commons.BOARD_WIDTH - Commons.PLAYER_WIDTH) setPosition(Commons.BOARD_WIDTH - Commons.PLAYER_WIDTH,getPosition().getY());
+        if(getPosition().getX() < 0) setPosition(0,getPosition().getY());    
+        if(getPosition().getY() < 0) setPosition(getPosition().getX(),0);
+        if(getPosition().getY() >= Commons.BOARD_HEIGHT - Commons.PLAYER_HEIGHT) setPosition(getPosition().getX(),Commons.BOARD_HEIGHT - Commons.PLAYER_HEIGHT);
         
-        // So player doesn't go past the left border
-        if (position.getX() <= 2) {
-            position.setX(2);
-        }
+        System.out.println(o);
         
-        // So the player doesn't go past the right border
-        if (position.getX() >= Commons.BOARD_WIDTH - Commons.PLAYER_WIDTH) {
-            position.setX(Commons.BOARD_WIDTH - Commons.PLAYER_WIDTH);
-        }
     }
 
     /**
@@ -136,4 +119,14 @@ public class Player extends Sprite implements GameObject {
     public String toString() {
         return String.valueOf(position.getX() + " " + position.getY() + " " + visible + " " + speed.getX() + "\n");
     }
+
+    public PlayerBullet getP() {
+        return p;
+    }
+
+    public void setP(PlayerBullet p) {
+        this.p = p;
+    }
+    
+    
 }
