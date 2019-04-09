@@ -5,25 +5,44 @@
  */
 package videoGame;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import maths.Vector2;
 
 
 /**
  * This class sets the standards for a tangible game object.
- * @author Carlos Adrian Guerra Vazquez A00823198
+ * @author Adrian Marcelo Suárez Ponce A01197108
  * @date 28/01/2019
  * @version 1.0
  */
 public class Sprite {
+    public enum Orientation {
+        NORTH, EAST, SOUTH, WEST, NO_O;
+        
+        protected Vector2 speed(int value) {
+            Vector2 vec = new Vector2();
+            switch(this) {
+                case NORTH: vec.set(0, -value);
+                break;
+                case EAST: vec.set(value,0);
+                break;
+                case SOUTH: vec.set(0,value);
+                break;
+                case WEST: vec.set(-value,0);
+                break;
+                case NO_O: vec.set(0,0);
+            }
+            
+            return vec;
+        }
+    }
     protected boolean visible;      //to store the visibility
     protected BufferedImage image;  //to store the image
     protected Vector2 position;     //to store the position
     protected Vector2 speed;        //to store the speed vector
     protected int width;            //to store the object's width
     protected int height;           //to store the object's width
-
+    protected Orientation o;        //to store the object's orientation
     
     public Sprite(Vector2 position, Vector2 speed, boolean visible, int width, int height, BufferedImage image) {
         this.position = position;
@@ -105,5 +124,11 @@ public class Sprite {
         return position;
     }
     
+    public void setOrientation(Orientation o) {
+        this.o = o;
+    }
     
+    public Orientation getOrientation() {
+        return o;
+    }    
 }

@@ -2,8 +2,6 @@ package videoGame;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import static java.lang.System.console;
-import javax.swing.ImageIcon;
 
 /**
  * This class defines each of the methods of the shot
@@ -13,12 +11,10 @@ import javax.swing.ImageIcon;
  */
 public class Projectile extends Sprite implements GameObject, Commons {
     double damage;
-    Game game;
     
     public Projectile(maths.Vector2 position, maths.Vector2 speed,  boolean visible, int width, int height, BufferedImage image, double damage){ 
         super(position, speed, visible,width,height,image);
         this.damage = damage;
-        
     }
 
     @Override
@@ -57,12 +53,5 @@ public class Projectile extends Sprite implements GameObject, Commons {
     public String toString() {
         return String.valueOf(position.getX() + " " + position.getY() + " " + visible + "\n");
     }
-    
-    /**
-     * Sets the position relative to the player
-     */
-    private void setPositionRelativeToPlayer(){
-//        position.setX(player.position.getX() + H_SPACE);
-//        position.setY(player.position.getY() - V_SPACE);
-    }
+
 }
