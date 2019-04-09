@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -34,6 +36,7 @@ public class Game implements Runnable, Commons {
     private Graphics g;         // to paint objects in the display canvas
 
     //Display variables
+    private Camera camera;      // to create a camera that follows the player
     private Display display;    // to display in the game in its canvas
     String title;               // title of the window
     private int height;         // height og the window
@@ -50,6 +53,7 @@ public class Game implements Runnable, Commons {
     int fps = 60;                          //max frames per second the game will run at
 
     //Game objects
+    LevelManager levelManager;
     Player player; // to store the player
 //    AlienManager alienManager; // to manage each alien
 
@@ -164,7 +168,7 @@ public class Game implements Runnable, Commons {
     @Override
     public void run() {
         init(); //display initialization
-
+        
         //time for  each tick in nanoseconds,
         //ejm: at 50fps each tick takes 0.01666_ seconds wich is equal to 16666666.6_ nanoseconds
         double timeTick = 1000000000 / fps;
@@ -236,17 +240,26 @@ public class Game implements Runnable, Commons {
             display.getCanvas().createBufferStrategy(3);
         } else {
             g = bs.getDrawGraphics(); // gets the graphics of the buffer strategy
-
+            Graphics2D g2d = (Graphics2D) g;
             g.setColor(Color.GREEN);   // sets the painting color to green
             g.setFont(font);           // sets the font
 
             g.drawImage(Assets.background, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
-
-            //game objects to render
-            getPlayer().render(g);   //renders the player
+            
+            //////////////////////////////////// Rendering Block
+            
+            g2d.translate(-camera.getX(), -camera.getY());
+            
+            
+            getLevelManager().render(g);
+            getPlayer().render(g);
+            
             if(!getPlayer().getBullets().isEmpty()) 
                 for(Player.PlayerBullet p : getPlayer().getBullets()) p.render(g);
 
+            g2d.translate(camera.getX(), camera.getY());
+            
+            ////////////////////////////////////
             //game state renders
             if (gameState != 0) {
                 if (gameState == -1) {//lost screen
@@ -278,7 +291,8 @@ public class Game implements Runnable, Commons {
 
         // initializes all the assets of the game
         Assets.init();
-
+        camera = new Camera(0,0,this);
+        
         // Loads all the sound related assets
         music = new SoundClip("/sound/DarkIntentions.WAV");
         music.setLooping(true);
@@ -286,18 +300,23 @@ public class Game implements Runnable, Commons {
         //Creates and initializes game objects
         setPlayer(new Player(new Vector2(Commons.START_X, Commons.START_Y), new Vector2(), true, Commons.PLAYER_WIDTH, Commons.PLAYER_HEIGHT, Assets.player));
         getPlayer().init();
-
+                   
         display.getJframe().addKeyListener(keyManager);
         display.getJframe().addMouseListener(mouseManager);
         display.getJframe().addMouseMotionListener(mouseManager);
         display.getCanvas().addMouseListener(mouseManager);
         display.getCanvas().addMouseMotionListener(mouseManager);
+        
+        // Level Manager
+        levelManager = new LevelManager();
+        levelManager.loadLevel(Assets.map);
     }
 
     /**
      * Code to be executed every game tick before render()
      */
     private void tick() {
+        camera.tick(player);          //ticks the camera relative to the player
         getKeyManager().tick(); //key manager must precede all user ralated actions
         
         if (!paused && gameState == 0) { //game playing and not paused
@@ -331,49 +350,20 @@ public class Game implements Runnable, Commons {
                 getPlayer().shoots();
                 getPlayer().setShoot(false);
                 getPlayer().resetShotcd();
-//                getPlayer().getP().setVisible(true);
-//                setPositionRelativeToPlayer(getPlayer().getP());
-//                getPlayer().getP().setOrientation(getPlayer().getOrientation());    // Bullet Inherits orientation
-//                switch (getPlayer().getOrientation()) {  // Sets speed based on bullet orientation
-//                    case NORTH:
-//                        getPlayer().getP().setSpeed(new maths.Vector2(0, -4));
-//                        break;
-//                    case EAST:
-//                        getPlayer().getP().setSpeed(new maths.Vector2(4, 0));
-//                        break;
-//                    case SOUTH:
-//                        getPlayer().getP().setSpeed(new maths.Vector2(0, 4));
-//                        break;
-//                    case WEST:
-//                        getPlayer().getP().setSpeed(new maths.Vector2(-4, 0));
-//                }
             }
-
-            // Resets player speed so it only moves when key is pressed
-            getPlayer().setSpeed(0, 0);
-            // To change player speed left
-            if (getKeyManager().left) {
-                getPlayer().getSpeed().setX(-2);
-            }
-
-            // To change player speed right
-            if (getKeyManager().right) {
-                getPlayer().getSpeed().setX(2);
-            }
-
-            // To change player speed up
-            if (getKeyManager().up) {
-                getPlayer().getSpeed().setY(-2);
-            }
-
-            // To change player speed down
-            if (getKeyManager().down) {
-                getPlayer().getSpeed().setY(2);
-            }
-
             
+            // Player movement
+            if (getKeyManager().left) getPlayer().getSpeed().setX(-2);
+            else if(!getKeyManager().right) getPlayer().getSpeed().setX(0);
+            if (getKeyManager().right) getPlayer().getSpeed().setX(2);
+            else if(!getKeyManager().left) getPlayer().getSpeed().setX(0);
+            if (getKeyManager().up) getPlayer().getSpeed().setY(-2);
+            else if(!getKeyManager().down) getPlayer().getSpeed().setY(0);
+            if (getKeyManager().down) getPlayer().getSpeed().setY(2);
+            else if(!getKeyManager().up) getPlayer().getSpeed().setY(0);
 
-            getPlayer().tick();         // Ticks player
+            // Ticks game objects
+            getPlayer().tick();
             if(!getPlayer().getBullets().isEmpty()) {
                 for (int i = 0; i < getPlayer().getBullets().size(); i++) {
                     if(getPlayer().getBullets().get(i).isVisible()) {
@@ -537,4 +527,13 @@ public class Game implements Runnable, Commons {
     public void setPositionRelativeToPlayer(Sprite p) {
         p.setPosition(new Vector2(getPlayer().position.getX() + H_SPACE, getPlayer().position.getY() - V_SPACE));
     }
+
+    public LevelManager getLevelManager() {
+        return levelManager;
+    }
+
+    public void setLevelManager(LevelManager levelManager) {
+        this.levelManager = levelManager;
+    }
+    
 }

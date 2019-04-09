@@ -151,7 +151,7 @@ public class Player extends Sprite implements GameObject {
     }
 
     public void resetShotcd() {
-        this.shotcd = 5;
+        this.shotcd = 30;
     }
     
     public void shoots() {
