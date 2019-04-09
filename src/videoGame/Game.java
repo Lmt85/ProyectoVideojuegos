@@ -10,8 +10,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import javax.swing.JLabel;
 import maths.Vector2;
+import videoGame.Player.PlayerBullet;
 
 /**
  * Here lies all objects that belong to a particular instance of a Game,
@@ -21,13 +23,13 @@ import maths.Vector2;
  * can override the run() method in order to interact with the thread in such a
  * way that the graphics are painted every tick.
  *
- * @author Carlos Adrian Guerra Vazquez A00823198
+ * @author Adrián Marcelo Suárez Ponce A01197108
  * @date 28/01/2019
  * @version 1.0
  */
 public class Game implements Runnable, Commons {
 
-    //Necessary graphic objects 
+    //Necessary graphic objects
     private BufferStrategy bs;  // to have several buffers when displaying in a canvas
     private Graphics g;         // to paint objects in the display canvas
 
@@ -163,12 +165,12 @@ public class Game implements Runnable, Commons {
     public void run() {
         init(); //display initialization
 
-        //time for  each tick in nanoseconds, 
+        //time for  each tick in nanoseconds,
         //ejm: at 50fps each tick takes 0.01666_ seconds wich is equal to 16666666.6_ nanoseconds
         double timeTick = 1000000000 / fps;
         double delta = 0;
         long now; //current frame time
-        long lastTime = System.nanoTime(); //the previos frame time 
+        long lastTime = System.nanoTime(); //the previos frame time
         double initTickTime = lastTime;
         while (running) {
             now = System.nanoTime();
@@ -226,8 +228,8 @@ public class Game implements Runnable, Commons {
         /* if it is null, we define one with 3 buffers to display images of
          * the game, if not null, then we display
          * every image of the game but
-         * after clearing the Rectanlge, getting the graphic object from the 
-         * buffer strategy element. 
+         * after clearing the Rectanlge, getting the graphic object from the
+         * buffer strategy element.
          * show the graphic and dispose it to the trash system
          */
         if (bs == null) { //if we dont have a buffer strategy we make our Display's canvas crate one for itself.
@@ -242,8 +244,8 @@ public class Game implements Runnable, Commons {
 
             //game objects to render
             getPlayer().render(g);   //renders the player
-            getPlayer().getP().render(g);        //renders the bullet if visible
-//            alienManager.render(g); //renders the aliens if visible
+            if(!getPlayer().getBullets().isEmpty()) 
+                for(Player.PlayerBullet p : getPlayer().getBullets()) p.render(g);
 
             //game state renders
             if (gameState != 0) {
@@ -282,11 +284,8 @@ public class Game implements Runnable, Commons {
         music.setLooping(true);
 
         //Creates and initializes game objects
-        player = new Player(new Vector2(Commons.START_X, Commons.START_Y), new Vector2(), true, Commons.PLAYER_WIDTH, Commons.PLAYER_HEIGHT, Assets.player);
-//        alienManager = new AlienManager(this);
-
-        player.init();
-//        alienManager.init();
+        setPlayer(new Player(new Vector2(Commons.START_X, Commons.START_Y), new Vector2(), true, Commons.PLAYER_WIDTH, Commons.PLAYER_HEIGHT, Assets.player));
+        getPlayer().init();
 
         display.getJframe().addKeyListener(keyManager);
         display.getJframe().addMouseListener(mouseManager);
@@ -299,50 +298,11 @@ public class Game implements Runnable, Commons {
      * Code to be executed every game tick before render()
      */
     private void tick() {
-        keyManager.tick(); //key manager must precede all user ralated actions
+        getKeyManager().tick(); //key manager must precede all user ralated actions
+        
         if (!paused && gameState == 0) { //game playing and not paused
-            if (keyManager.space && !getPlayer().getP().isVisible()) { // If space is pressed and no bullet on screen
-                getPlayer().getP().setVisible(true);
-                setPositionRelativeToPlayer(getPlayer().getP());
-                getPlayer().getP().setOrientation(getPlayer().getOrientation());    // Bullet Inherits orientation
-                switch (getPlayer().getOrientation()) {  // Sets speed based on bullet orientation
-                    case NORTH:
-                        getPlayer().getP().setSpeed(new maths.Vector2(0, -4));
-                        break;
-                    case EAST:
-                        getPlayer().getP().setSpeed(new maths.Vector2(4, 0));
-                        break;
-                    case SOUTH:
-                        getPlayer().getP().setSpeed(new maths.Vector2(0, 4));
-                        break;
-                    case WEST:
-                        getPlayer().getP().setSpeed(new maths.Vector2(-4, 0));
-                }
-            }
-
-            // Resets player speed so it only moves when key is pressed
-            getPlayer().setSpeed(0, 0);
-            // To change player speed left 
-            if (getKeyManager().left) {
-                getPlayer().getSpeed().setX(-2);
-            }
-
-            // To change player speed right
-            if (getKeyManager().right) {
-                getPlayer().getSpeed().setX(2);
-            }
-
-            // To change player speed up
-            if (getKeyManager().up) {
-                getPlayer().getSpeed().setY(-2);
-            }
-
-            // To change player speed down
-            if (getKeyManager().down) {
-                getPlayer().getSpeed().setY(2);
-            }
-
-            // Sets orientation depending on key pressed 
+            
+            // Sets orientation depending on key pressed
             // north,east,south,west = arrow keys
             // up,right,down,left    = w,a,s,d keys
             // Coded so that arrow keys override direction
@@ -363,48 +323,84 @@ public class Game implements Runnable, Commons {
             } else if (getKeyManager().left) {
                 getPlayer().setOrientation(Sprite.Orientation.WEST);
             }
+            
+            if ((getKeyManager().north || getKeyManager().east || 
+                    getKeyManager().south || getKeyManager().west )
+                    && getPlayer().canShoot()) { // If space is pressed and shoot is not on cd
+                System.out.println("Shot");
+                getPlayer().shoots();
+                getPlayer().setShoot(false);
+                getPlayer().resetShotcd();
+//                getPlayer().getP().setVisible(true);
+//                setPositionRelativeToPlayer(getPlayer().getP());
+//                getPlayer().getP().setOrientation(getPlayer().getOrientation());    // Bullet Inherits orientation
+//                switch (getPlayer().getOrientation()) {  // Sets speed based on bullet orientation
+//                    case NORTH:
+//                        getPlayer().getP().setSpeed(new maths.Vector2(0, -4));
+//                        break;
+//                    case EAST:
+//                        getPlayer().getP().setSpeed(new maths.Vector2(4, 0));
+//                        break;
+//                    case SOUTH:
+//                        getPlayer().getP().setSpeed(new maths.Vector2(0, 4));
+//                        break;
+//                    case WEST:
+//                        getPlayer().getP().setSpeed(new maths.Vector2(-4, 0));
+//                }
+            }
+
+            // Resets player speed so it only moves when key is pressed
+            getPlayer().setSpeed(0, 0);
+            // To change player speed left
+            if (getKeyManager().left) {
+                getPlayer().getSpeed().setX(-2);
+            }
+
+            // To change player speed right
+            if (getKeyManager().right) {
+                getPlayer().getSpeed().setX(2);
+            }
+
+            // To change player speed up
+            if (getKeyManager().up) {
+                getPlayer().getSpeed().setY(-2);
+            }
+
+            // To change player speed down
+            if (getKeyManager().down) {
+                getPlayer().getSpeed().setY(2);
+            }
+
+            
 
             getPlayer().tick();         // Ticks player
-            if (getPlayer().getP().isVisible()) {
-                getPlayer().getP().tick();   // Ticks player bullet if visible
+            if(!getPlayer().getBullets().isEmpty()) {
+                for (int i = 0; i < getPlayer().getBullets().size(); i++) {
+                    if(getPlayer().getBullets().get(i).isVisible()) {
+                        getPlayer().getBullets().get(i).tick();
+                    }
+                    else getPlayer().getBullets().remove(i);
+                }
             }
         }
 
-        if (keyManager.save && gameState == 0) {
-            /**
-             * will save the game if the game is playing and g key is pressed
-             */
-            saveGame("save.txt");
-        }
+        // Saves game and loads game
+        if (keyManager.save && gameState == 0) saveGame("save.txt");
+        if (keyManager.load && gameState == 0) loadGame("save.txt");
 
-        if (keyManager.load && gameState == 0) {
-            /**
-             * will load the game if playing and c key is pressed
-             */
-            loadGame("save.txt");
-        }
-
+        // When restart key pressed, music is restarted, gameState is set as playing, and game is loaded
         if (keyManager.restart) {
-            /**
-             * Restarts the music, sets the gameState as playing and loads the
-             * game
-             */
             music.play();
             setGameState(0);
             loadGame("restartGame.txt");
         }
 
         //Triggers the pause of the game when 'P' is pressed
-        if (!paused && keyManager.paused && !pauseTrig) {
-            paused = true;
-        } else if (paused && keyManager.paused && !pauseTrig) {
-            paused = false;
-        }
-        if (keyManager.paused) {
-            pauseTrig = true;
-        } else {
-            pauseTrig = false;
-        }
+        if (!paused && keyManager.paused && !pauseTrig) paused = true;
+        else if (paused && keyManager.paused && !pauseTrig) paused = false;
+        
+        if (keyManager.paused) pauseTrig = true;
+        else pauseTrig = false;
 
     }
 
@@ -440,7 +436,7 @@ public class Game implements Runnable, Commons {
 //            //clears the aliens list
 //            alienManager.aliens = new ArrayList<>();    //Empties the alien array
 //            BufferedReader br = new BufferedReader(new FileReader(fileName));   //To Read each line
-//            
+//
 //            //Reads player data
 //            String data = br.readLine();
 //            arr = data.split(" ");
@@ -448,20 +444,20 @@ public class Game implements Runnable, Commons {
 //            player.position.setY(Double.parseDouble(arr[1]));   //stores the y coordinate
 //            player.setVisible(Boolean.parseBoolean(arr[2]));    //stores the visibility
 //            player.setDx(Integer.parseInt(arr[3]));             //stores the dx
-//            
+//
 //            //Reads shot data
 //            data = br.readLine();
 //            arr = data.split(" ");
 //            shot.position.setX(Double.parseDouble(arr[0]));     //stores the x coordinate
 //            shot.position.setY(Double.parseDouble(arr[1]));     //stores the y coordinate
 //            shot.setVisible(Boolean.parseBoolean(arr[2]));      //stores the visibility
-//            
+//
 //            //Reads direction and destroyed
 //            data = br.readLine();
 //            arr = data.split(" ");
 //            alienManager.setDirection(Integer.parseInt(arr[0]));
 //            alienManager.setDestroyed(Integer.parseInt(arr[1]));
-//            
+//
 //            //Reads alien and bomb data
 //            data = br.readLine();
 //            Alien a;
@@ -469,17 +465,17 @@ public class Game implements Runnable, Commons {
 //                arr = data.split(" ");
 //                // creates an alien instance with the read values x, y and visibility
 //                a = new Alien(Double.parseDouble(arr[0]),Double.parseDouble(arr[1]), Boolean.parseBoolean(arr[2]), Commons.ALIEN_WIDTH,Commons.ALIEN_HEIGHT,Assets.alien);
-//                
+//
 //                data = br.readLine();
 //                arr = data.split(" ");
 //                a.getBomb().position.setX(Double.parseDouble(arr[0]));  //stores the x coordinate
 //                a.getBomb().position.setY(Double.parseDouble(arr[1]));  //stores the y coordinate
 //                a.getBomb().setVisible(Boolean.parseBoolean(arr[2]));   //stores the visibility
-//                
+//
 //                alienManager.aliens.add(a); //adds the created alien to the alienManager's array
 //                data = br.readLine();
 //            }
-//            
+//
 //        } catch(IOException e) {
 //            e.printStackTrace();
 //        }
@@ -494,10 +490,10 @@ public class Game implements Runnable, Commons {
 //            int shotY = (int)shot.position.getY();  //Stores the shot's current y position
 //            for(Alien a : alienManager.aliens) { //For each alien in the array
 //                if (a.isVisible() ) {            // If the alien is visible
-//                    int alienX = (int)a.position.getX(); 
+//                    int alienX = (int)a.position.getX();
 //                    int alienY = (int)a.position.getY();
 //                    //checks if the alien contains the shot
-//                    if (shotX >= (alienX) && shotX <= (alienX + ALIEN_WIDTH)    
+//                    if (shotX >= (alienX) && shotX <= (alienX + ALIEN_WIDTH)
 //                            && shotY >= alienY && shotY <= (alienY + ALIEN_HEIGHT)) {
 //                        shot.setVisible(false); // makes shot invisible
 //                        a.setVisible(false);    // makes collisioned alien invisible

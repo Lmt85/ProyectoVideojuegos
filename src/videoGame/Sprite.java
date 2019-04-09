@@ -5,7 +5,6 @@
  */
 package videoGame;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import maths.Vector2;
 
@@ -19,6 +18,23 @@ import maths.Vector2;
 public class Sprite {
     public enum Orientation {
         NORTH, EAST, SOUTH, WEST, NO_O;
+        
+        protected Vector2 speed(int value) {
+            Vector2 vec = new Vector2();
+            switch(this) {
+                case NORTH: vec.set(0, -value);
+                break;
+                case EAST: vec.set(value,0);
+                break;
+                case SOUTH: vec.set(0,value);
+                break;
+                case WEST: vec.set(-value,0);
+                break;
+                case NO_O: vec.set(0,0);
+            }
+            
+            return vec;
+        }
     }
     protected boolean visible;      //to store the visibility
     protected BufferedImage image;  //to store the image
@@ -114,22 +130,5 @@ public class Sprite {
     
     public Orientation getOrientation() {
         return o;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-    
+    }    
 }

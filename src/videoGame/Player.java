@@ -15,7 +15,10 @@ import maths.Vector2;
  * @author Adrián Marcelo Suárez Ponce A01197108
  */
 public class Player extends Sprite implements GameObject {
-    public PlayerBullet p;
+    private PlayerBullet p;
+    private LinkedList<PlayerBullet> bullets;
+    private boolean shoot;                      //stores whether or not the player can shoot;
+    private int shotcd;
     
     
     /**
@@ -30,7 +33,7 @@ public class Player extends Sprite implements GameObject {
      */
     public Player(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image) {
         super(position, speed, visible, width, height, image);
-        
+        bullets = new LinkedList<>();
     }
     
     public class PlayerBullet extends Projectile implements GameObject{
@@ -40,7 +43,6 @@ public class Player extends Sprite implements GameObject {
 
         @Override
         public void init() {
-            
         }
 
         /**
@@ -49,12 +51,14 @@ public class Player extends Sprite implements GameObject {
          */
         @Override
         public void tick() {
-            setPosition(getPosition().add(getSpeed()));
-            if (getPosition().getX() >= Commons.BOARD_WIDTH + BOMB_WIDTH || 
-                getPosition().getX() < 0 - Commons.BOMB_WIDTH ||
-                getPosition().getY() < 0 - Commons.BOMB_HEIGHT ||
-                getPosition().getY() >= Commons.BOARD_HEIGHT + Commons.BOMB_HEIGHT) 
-                    setVisible(false);
+            if(isVisible()) {
+                setPosition(getPosition().add(getSpeed()));
+                if (getPosition().getX() >= Commons.BOARD_WIDTH + BOMB_WIDTH || 
+                    getPosition().getX() < 0 - Commons.BOMB_WIDTH ||
+                    getPosition().getY() < 0 - Commons.BOMB_HEIGHT ||
+                    getPosition().getY() >= Commons.BOARD_HEIGHT + Commons.BOMB_HEIGHT) 
+                        setVisible(false);
+            }
         }
 
         /**
@@ -81,7 +85,8 @@ public class Player extends Sprite implements GameObject {
     
     @Override
     public void init() {
-        p = new PlayerBullet(new Vector2(), new Vector2(), false, Commons.BOMB_WIDTH, Commons.BOMB_HEIGHT,Assets.bomb);
+        setShoot(true);
+        setOrientation(Sprite.Orientation.NORTH);
     }
 
     @Override
@@ -96,7 +101,12 @@ public class Player extends Sprite implements GameObject {
         if(getPosition().getY() < 0) setPosition(getPosition().getX(),0);
         if(getPosition().getY() >= Commons.BOARD_HEIGHT - Commons.PLAYER_HEIGHT) setPosition(getPosition().getX(),Commons.BOARD_HEIGHT - Commons.PLAYER_HEIGHT);
         
-        System.out.println(o);
+        if(!canShoot()) {
+            shotcd--;
+            if(shotcd < 0) {
+                setShoot(true);
+            }
+        }
         
     }
 
@@ -127,6 +137,39 @@ public class Player extends Sprite implements GameObject {
     public void setP(PlayerBullet p) {
         this.p = p;
     }
+
+    public LinkedList<PlayerBullet> getBullets() {
+        return bullets;
+    }
+    
+    public boolean canShoot() {
+        return shoot;
+    }
+    
+    public void setShoot(boolean shoot) {
+        this.shoot = shoot;
+    }
+
+    public void resetShotcd() {
+        this.shotcd = 5;
+    }
+    
+    public void shoots() {
+        bullets.addFirst(new PlayerBullet(getPosition(),
+                        getOrientation().speed(3), true, Commons.BOMB_WIDTH,
+                        Commons.BOMB_HEIGHT, Assets.bomb));
+        System.out.println(bullets.size());
+    }
+
+    public int getShotcd() {
+        return shotcd;
+    }
+
+    public void setShotcd(int shotcd) {
+        this.shotcd = shotcd;
+    }
+    
     
     
 }
+

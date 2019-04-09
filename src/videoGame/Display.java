@@ -10,7 +10,7 @@ import javax.swing.JFrame;
  * Provides he necessary components to create a window.
  * It is composed of a JFrame and a canvas to accompany the JFrame.
  * 
- * @author Carlos Adrian Guerra Vazquez A00823198
+ * @author Adrián Marcelo Suárez Ponce A01197108
  * @date 28/01/2019
  * @version 1.0
  */
