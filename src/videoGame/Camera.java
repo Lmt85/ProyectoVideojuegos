@@ -24,10 +24,10 @@ public class Camera {
         x += ((player.getPosition().getX() - x) - game.getWidth()/2) * 0.05f;
         y += ((player.getPosition().getY() - y) - game.getHeight()/2) * 0.05f;
         
-        if(x < 0 - Commons.PLAYER_WIDTH) x = -Commons.PLAYER_WIDTH;
-        if(x > Commons.BOARD_WIDTH + Commons.PLAYER_WIDTH) x = Commons.BOARD_WIDTH + Commons.PLAYER_WIDTH;
-        if(y < 0 - Commons.PLAYER_HEIGHT) y = -Commons.PLAYER_HEIGHT;
-        if(y > Commons.BOARD_HEIGHT + Commons.PLAYER_HEIGHT) y = Commons.BOARD_HEIGHT + Commons.PLAYER_HEIGHT;
+//        if(x < 0 - Commons.PLAYER_WIDTH) x = -Commons.PLAYER_WIDTH;
+//        if(x > Commons.BOARD_WIDTH + Commons.PLAYER_WIDTH) x = Commons.BOARD_WIDTH + Commons.PLAYER_WIDTH;
+//        if(y < 0 - Commons.PLAYER_HEIGHT) y = -Commons.PLAYER_HEIGHT;
+//        if(y > Commons.BOARD_HEIGHT + Commons.PLAYER_HEIGHT) y = Commons.BOARD_HEIGHT + Commons.PLAYER_HEIGHT;
         
     }
 
