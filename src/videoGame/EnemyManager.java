@@ -4,6 +4,16 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+import static videoGame.Commons.ALIEN_HEIGHT;
+import static videoGame.Commons.ALIEN_INIT_X;
+import static videoGame.Commons.ALIEN_INIT_Y;
+import static videoGame.Commons.ALIEN_WIDTH;
+import static videoGame.Commons.BOARD_WIDTH;
+import static videoGame.Commons.BORDER_LEFT;
+import static videoGame.Commons.BORDER_RIGHT;
+import static videoGame.Commons.CHANCE;
+import static videoGame.Commons.GO_DOWN;
+import static videoGame.Commons.GROUND;
 
 /**
  * This class manages the aliens as a whole, moving them in the same direction, encapsulating them
@@ -14,8 +24,8 @@ import java.util.Random;
  * @date 28/01/2019
  * @version 1.0
  */
-public class AlienManager implements GameObject, Commons{
-    public ArrayList<Alien> aliens; //array to store the aliens
+public class EnemyManager implements GameObject, Commons{
+    public ArrayList<Enemy> enemies; //array to store the aliens
     Game game;                      //reference to the game
     int direction = 1;              //direction of the block of aliens
     int destroyed = 0;              //counts the number of destroyed aliens
@@ -26,8 +36,8 @@ public class AlienManager implements GameObject, Commons{
      * where the aliens will be stored.
      * @param game 
      */
-    public AlienManager(Game game) {
-        aliens = new ArrayList<>();
+    public EnemyManager(Game game) {
+        enemies = new ArrayList<>();
         this.game = game;
     }
     
@@ -37,12 +47,7 @@ public class AlienManager implements GameObject, Commons{
      */
     @Override
     public void init() {
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 6; j++) {
-                Alien alien = new Alien(new maths.Vector2(ALIEN_INIT_X + 18 * j, ALIEN_INIT_Y + 18 * i), new maths.Vector2(), true, ALIEN_WIDTH, ALIEN_HEIGHT, Assets.alien);
-                aliens.add(alien);
-            }
-        }
+        
     }
     
     /**
@@ -54,29 +59,29 @@ public class AlienManager implements GameObject, Commons{
     public void tick() {
         // moves aliens uniformly
         Random generator = new Random();
-        for (Alien alien: aliens) { 
+        for (Enemy enemy: enemies) { 
             
             int shot = generator.nextInt(odds);
-            Alien.Bomb b = alien.getBomb();
-            if (shot == CHANCE && alien.isVisible() && !b.isVisible()) {
+            Enemy.Bomb b = enemy.getBomb();
+            if (shot == CHANCE && enemy.isVisible() && !b.isVisible()) {
 
                 b.setVisible(true);
-                b.position.setX(alien.position.getX());
-                b.position.setY(alien.position.getY());
+                b.position.setX(enemy.position.getX());
+                b.position.setY(enemy.position.getY());
             }
             
             b.tick();
             
-            int x = (int)alien.position.getX();
+            int x = (int)enemy.position.getX();
             
             if (x  >= BOARD_WIDTH - BORDER_RIGHT && direction != -1) {
 
                 direction = -1;
-                Iterator i1 = aliens.iterator();
+                Iterator i1 = enemies.iterator();
 
                 while (i1.hasNext()) {
 
-                    Alien a2 = (Alien) i1.next();
+                    Enemy a2 = (Enemy) i1.next();
                     a2.position.setY(a2.position.getY() + GO_DOWN);
                 }
             }
@@ -84,29 +89,18 @@ public class AlienManager implements GameObject, Commons{
             if (x <= BORDER_LEFT && direction != 1) {
 
                 direction = 1;
-                Iterator i2 = aliens.iterator();
+                Iterator i2 = enemies.iterator();
 
                 while (i2.hasNext()) {
 
-                    Alien a = (Alien) i2.next();
+                    Enemy a = (Enemy) i2.next();
                     a.position.setY(a.position.getY() + GO_DOWN);
                 }
             }
         }
 
-        Iterator it = aliens.iterator();
+        Iterator it = enemies.iterator();
 
-        while (it.hasNext()) {
-            
-            Alien alien = (Alien) it.next();
-            
-            if (alien.isVisible()) {
-                if (alien.position.getY() > GROUND - ALIEN_HEIGHT) {
-                    game.setGameState(-1);
-                    game.message = "Invasion!";
-                } else alien.act(direction);
-            }
-        }
     }
 
     /**
@@ -116,9 +110,9 @@ public class AlienManager implements GameObject, Commons{
      */
     @Override
     public void render(Graphics g) {
-        for (Alien alien: aliens) {
-            Alien.Bomb b = alien.getBomb();
-            alien.render(g);
+        for (Enemy enemy: enemies) {
+            Enemy.Bomb b = enemy.getBomb();
+            enemy.render(g);
             b.render(g);
         }
     }
