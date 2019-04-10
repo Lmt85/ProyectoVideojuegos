@@ -51,7 +51,7 @@ public class Enemy extends Sprite implements GameObject{
 
     @Override
     public void tick() {
-       
+        setPosition(getPosition().add(getSpeed()));
     }
     
     /**
@@ -98,12 +98,7 @@ public class Enemy extends Sprite implements GameObject{
          */
         @Override
         public void tick() {
-            if (isVisible()) {
-                position.setY(position.getY() + 1);
-                if (position.getY() >= Commons.GROUND - Commons.BOMB_HEIGHT) {
-                    setVisible(false);
-                }
-            }
+            
         }
 
         /**
