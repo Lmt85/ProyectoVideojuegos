@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package brickbreakergame;
+package TrashedyGame;
 
 import videoGame.Game;
 
@@ -11,7 +11,7 @@ import videoGame.Game;
  *
  * @author carlo
  */
-public class BrickBreakerGame {
+public class TrashedyGame {
 
     /**
      * @param args the command line arguments

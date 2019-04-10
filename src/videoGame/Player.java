@@ -96,10 +96,10 @@ public class Player extends Sprite implements GameObject {
         setPosition(getPosition().add(getSpeed()));
         
         // player boundaries
-        if(getPosition().getX() >= Commons.BOARD_WIDTH - Commons.PLAYER_WIDTH) setPosition(Commons.BOARD_WIDTH - Commons.PLAYER_WIDTH,getPosition().getY());
-        if(getPosition().getX() < 0) setPosition(0,getPosition().getY());    
-        if(getPosition().getY() < 0) setPosition(getPosition().getX(),0);
-        if(getPosition().getY() >= Commons.BOARD_HEIGHT - Commons.PLAYER_HEIGHT) setPosition(getPosition().getX(),Commons.BOARD_HEIGHT - Commons.PLAYER_HEIGHT);
+//        if(getPosition().getX() >= Commons.BOARD_WIDTH - Commons.PLAYER_WIDTH) setPosition(Commons.BOARD_WIDTH - Commons.PLAYER_WIDTH,getPosition().getY());
+//        if(getPosition().getX() < 0) setPosition(0,getPosition().getY());    
+//        if(getPosition().getY() < 0) setPosition(getPosition().getX(),0);
+//        if(getPosition().getY() >= Commons.BOARD_HEIGHT - Commons.PLAYER_HEIGHT) setPosition(getPosition().getX(),Commons.BOARD_HEIGHT - Commons.PLAYER_HEIGHT);
         
         if(!canShoot()) {
             shotcd--;
@@ -151,7 +151,7 @@ public class Player extends Sprite implements GameObject {
     }
 
     public void resetShotcd() {
-        this.shotcd = 5;
+        this.shotcd = 30;
     }
     
     public void shoots() {

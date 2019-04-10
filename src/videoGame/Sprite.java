@@ -15,7 +15,7 @@ import maths.Vector2;
  * @date 28/01/2019
  * @version 1.0
  */
-public class Sprite {
+public abstract class Sprite implements GameObject {
     public enum Orientation {
         NORTH, EAST, SOUTH, WEST, NO_O;
         
