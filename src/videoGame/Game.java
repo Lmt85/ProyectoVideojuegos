@@ -91,7 +91,8 @@ public class Game implements Runnable, Commons {
         // Sets game dimensions
         this.width = Commons.BOARD_WIDTH;
         this.height = Commons.BOARD_HEIGHT;
-
+        System.out.println(Commons.BOARD_WIDTH);
+        System.out.println(width);
         // Initializes game functions
         running = false;
         keyManager = new KeyManager();
@@ -372,6 +373,7 @@ public class Game implements Runnable, Commons {
                     else getPlayer().getBullets().remove(i);
                 }
             }
+            checkCollisions();
         }
 
         // Saves game and loads game
@@ -528,13 +530,28 @@ public class Game implements Runnable, Commons {
         p.setPosition(new Vector2(getPlayer().position.getX() + H_SPACE, getPlayer().position.getY() - V_SPACE));
     }
 
-
     public LevelManager getLevelManager() {
         return levelManager;
     }
 
     public void setLevelManager(LevelManager levelManager) {
         this.levelManager = levelManager;
+    }
+    
+
+    private void checkCollisions() {
+        for(Sprite s : getLevelManager().getLevel()) {
+            if(s.getBounds().intersects(getPlayer().getBounds())) {
+                getPlayer().setPosition(getPlayer().getPosition().add(getPlayer().getSpeed().scalar(-1)));
+            }
+            for(Projectile p: getPlayer().getBullets()) {
+                if(s.getBounds().intersects(p.getBounds())) {
+                    
+                    p.setVisible(false);
+                    
+                }
+            }
+        }
     }
     
 }

@@ -38,4 +38,13 @@ public class LevelManager {
             }
         }
     }
+
+    public LinkedList<Sprite> getLevel() {
+        return level;
+    }
+
+    public void setLevel(LinkedList<Sprite> level) {
+        this.level = level;
+    }
+       
 }

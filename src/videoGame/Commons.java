@@ -1,11 +1,11 @@
 package videoGame;
 
 public interface Commons {
-    public static final int scale = 1;
+    public static int scale = 1;
     
     //Game constants
-    public static final int BOARD_WIDTH = 358 * scale;
-    public static final int BOARD_HEIGHT = 350 * scale;
+    public static int BOARD_WIDTH = 358 * scale;
+    public static int BOARD_HEIGHT = 350 * scale;
     public static final int GROUND = 290 * scale;
     public static final int BORDER_RIGHT = 30 * scale;
     public static final int BORDER_LEFT = 5 * scale;
@@ -17,8 +17,8 @@ public interface Commons {
     public  final int V_SPACE = 1* scale;
 
     //Bomb constants
-    public static final int BOMB_HEIGHT = 6* scale;
-    public static final int BOMB_WIDTH = 6* scale;
+    public static int BOMB_HEIGHT = 6* scale;
+    public static int BOMB_WIDTH = 6* scale;
     
     //Player constants
     public static final int PLAYER_WIDTH = 15* scale;

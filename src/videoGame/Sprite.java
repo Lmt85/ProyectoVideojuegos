@@ -5,6 +5,7 @@
  */
 package videoGame;
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import maths.Vector2;
 
@@ -130,5 +131,33 @@ public abstract class Sprite implements GameObject {
     
     public Orientation getOrientation() {
         return o;
-    }    
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public Orientation getO() {
+        return o;
+    }
+
+    public void setO(Orientation o) {
+        this.o = o;
+    }
+        
+    public Rectangle getBounds() {
+        return new Rectangle((int)this.getPosition().getX(),(int)this.getPosition().getY(),this.getWidth(),this.getHeight());
+    }
 }
