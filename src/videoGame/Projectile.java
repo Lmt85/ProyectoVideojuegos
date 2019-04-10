@@ -39,7 +39,7 @@ public class Projectile extends Sprite implements GameObject, Commons {
     @Override
     public void render(Graphics g) {
         if (isVisible()) {
-            g.drawRect((int)position.getX(),(int) position.getY(), width, height);
+            g.drawRect((int)position.getX(),(int) position.getY(), Commons.BOMB_WIDTH, Commons.BOMB_HEIGHT);
             g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), null);
         }
     }
