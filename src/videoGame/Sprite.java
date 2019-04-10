@@ -5,8 +5,12 @@
  */
 package videoGame;
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import static java.lang.Math.random;
+import static java.lang.StrictMath.random;
 import maths.Vector2;
+import java.util.Random;
 
 
 /**
@@ -15,10 +19,10 @@ import maths.Vector2;
  * @date 28/01/2019
  * @version 1.0
  */
-public class Sprite {
+public abstract class Sprite implements GameObject {
     public enum Orientation {
         NORTH, EAST, SOUTH, WEST, NO_O;
-        
+     
         protected Vector2 speed(int value) {
             Vector2 vec = new Vector2();
             switch(this) {
@@ -35,6 +39,12 @@ public class Sprite {
             
             return vec;
         }
+        
+       public static Orientation getRandomOrientation(){
+           Random random = new Random();
+           return values()[random.nextInt(values().length)];
+       }       
+                
     }
     protected boolean visible;      //to store the visibility
     protected BufferedImage image;  //to store the image
@@ -130,5 +140,33 @@ public class Sprite {
     
     public Orientation getOrientation() {
         return o;
-    }    
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public Orientation getO() {
+        return o;
+    }
+
+    public void setO(Orientation o) {
+        this.o = o;
+    }
+        
+    public Rectangle getBounds() {
+        return new Rectangle((int)this.getPosition().getX(),(int)this.getPosition().getY(),this.getWidth(),this.getHeight());
+    }
 }

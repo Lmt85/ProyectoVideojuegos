@@ -18,14 +18,17 @@ public class Assets {
     public static BufferedImage bomb;
     public static BufferedImage player;
     public static BufferedImage explosion;
-    
+    public static BufferedImage map;
+    public static BufferedImage wall;
     
     /**
      * loads all of the game assets as images
      */
     public static void init(){
         background = ImageLoader.loadImage("/images/background.png"); 
+        map = ImageLoader.loadImage("/images/Map.png");
         
+        wall = ImageLoader.loadImage("/images/Wall.png");
         alien = ImageLoader.loadImage("/images/alien.png"); 
         shot = ImageLoader.loadImage("/images/shot.png"); 
         bomb = ImageLoader.loadImage("/images/bomb.png"); 
