@@ -15,7 +15,13 @@ import maths.Vector2;
  * @author Adrián Marcelo Suárez Ponce
  */
 public class LevelManager {
-    LinkedList<Sprite> level = new LinkedList<>();
+    LinkedList<Sprite> level;
+    Game game;
+    
+    public LevelManager(Game game) {
+        level = new LinkedList<>();
+        this.game = game;
+    }
     
     public void render(Graphics g) {
         for(int i = 0; i < level.size(); i++) {
@@ -33,8 +39,11 @@ public class LevelManager {
                 
                 int pixel = map.getRGB(i,j);
                 int red = (pixel >> 16) & 0xff;
+                int green = (pixel >> 8) & 0xff;
+                int blue = (pixel) & 0xff;
                        
-                if(red == 255) level.add(new Block(new Vector2(i * 32, j * 32), new Vector2(0,0),true, 32,32,Assets.wall));
+                if(red == 255) level.add(new Block(new Vector2(i * 64, j * 64), new Vector2(0,0),true, 64,64,Assets.wall));
+                if(blue == 255) game.getEnemyManager().getEnemies().add(new Enemy(new Vector2(i * 32, j * 32), new Vector2(0,0),true, Commons.ALIEN_WIDTH,Commons.ALIEN_HEIGHT,Assets.alien));
             }
         }
     }

@@ -10,8 +10,6 @@ import java.awt.image.BufferedImage;
  * @version 1.0
  */
 public class Enemy extends Sprite implements GameObject{
-
-    private Bomb bomb;  //Stores the bomb for each alien
     
     /**
      * Constructor with parameters, these parameters are passed directly to the Sprite class
@@ -24,7 +22,7 @@ public class Enemy extends Sprite implements GameObject{
      */
     public Enemy(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image){  
         super(position,speed,visible,width,height,image);
-        bomb = new Bomb(position,speed,false,width,height,Assets.bomb); //For each instance, it initializes a bomb, which isn't visible at first
+//        bomb = new Bomb(position,speed,false,width,height,Assets.bomb); //For each instance, it initializes a bomb, which isn't visible at first
     }
 
     /**
@@ -39,17 +37,17 @@ public class Enemy extends Sprite implements GameObject{
      * This method sets a bomb as the instance's bomb
      * @param bomb 
      */
-    public void setBomb(Bomb bomb) {
-        this.bomb = bomb;
-    }
+//    public void setBomb(Bomb bomb) {
+////        this.bomb = bomb;
+//    }
 
     /**
      * This method returns the bomb
      * @return instance's bomb.
      */
-    public Bomb getBomb() {
-        return bomb;
-    }
+//    public Bomb getBomb() {
+////        return bomb; return null
+//    }
 
     @Override
     public void tick() {
@@ -62,9 +60,8 @@ public class Enemy extends Sprite implements GameObject{
      */
     @Override
     public void render(Graphics g) {
-        if (isVisible()) {
-            g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), null);
-        }  
+        g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), null);
+        g.drawRect((int) position.getX(), (int) position.getY(), width, height);
     }
 
     @Override

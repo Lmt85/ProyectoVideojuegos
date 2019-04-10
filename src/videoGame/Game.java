@@ -54,8 +54,8 @@ public class Game implements Runnable, Commons {
 
     //Game objects
     LevelManager levelManager;
-    Player player; // to store the player
-//    AlienManager alienManager; // to manage each alien
+    Player player;              // to store the player
+    EnemyManager enemyManager;  // to manage each enemy
 
     //Game state
     private boolean paused = false; // states whether or not the game is paused
@@ -257,7 +257,9 @@ public class Game implements Runnable, Commons {
             
             if(!getPlayer().getBullets().isEmpty()) 
                 for(Player.PlayerBullet p : getPlayer().getBullets()) p.render(g);
-
+            
+            enemyManager.render(g);
+            
             g2d.translate(camera.getX(), camera.getY());
             
             ////////////////////////////////////
@@ -301,6 +303,7 @@ public class Game implements Runnable, Commons {
         //Creates and initializes game objects
         setPlayer(new Player(new Vector2(Commons.START_X, Commons.START_Y), new Vector2(), true, Commons.PLAYER_WIDTH, Commons.PLAYER_HEIGHT, Assets.player));
         getPlayer().init();
+        enemyManager = new EnemyManager(this);
                    
         display.getJframe().addKeyListener(keyManager);
         display.getJframe().addMouseListener(mouseManager);
@@ -309,7 +312,7 @@ public class Game implements Runnable, Commons {
         display.getCanvas().addMouseMotionListener(mouseManager);
         
         // Level Manager
-        levelManager = new LevelManager();
+        levelManager = new LevelManager(this);
         levelManager.loadLevel(Assets.map);
     }
 
@@ -373,6 +376,10 @@ public class Game implements Runnable, Commons {
                     else getPlayer().getBullets().remove(i);
                 }
             }
+            
+            //Ticks the manager that controls the enemies
+            enemyManager.tick();
+            
             checkCollisions();
         }
 
@@ -537,6 +544,11 @@ public class Game implements Runnable, Commons {
     public void setLevelManager(LevelManager levelManager) {
         this.levelManager = levelManager;
     }
+
+    public EnemyManager getEnemyManager() {
+        return enemyManager;
+    }
+    
     
 
     private void checkCollisions() {
