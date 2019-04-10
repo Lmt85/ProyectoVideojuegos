@@ -7,7 +7,10 @@ package videoGame;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import static java.lang.Math.random;
+import static java.lang.StrictMath.random;
 import maths.Vector2;
+import java.util.Random;
 
 
 /**
@@ -19,7 +22,7 @@ import maths.Vector2;
 public abstract class Sprite implements GameObject {
     public enum Orientation {
         NORTH, EAST, SOUTH, WEST, NO_O;
-        
+     
         protected Vector2 speed(int value) {
             Vector2 vec = new Vector2();
             switch(this) {
@@ -36,6 +39,12 @@ public abstract class Sprite implements GameObject {
             
             return vec;
         }
+        
+       public static Orientation getRandomOrientation(){
+           Random random = new Random();
+           return values()[random.nextInt(values().length)];
+       }       
+                
     }
     protected boolean visible;      //to store the visibility
     protected BufferedImage image;  //to store the image
