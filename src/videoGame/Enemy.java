@@ -60,9 +60,8 @@ public class Enemy extends Sprite implements GameObject{
      */
     @Override
     public void render(Graphics g) {
-        if (isVisible()) {
-            g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), null);
-        }  
+        g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), null);
+        g.drawRect((int) position.getX(), (int) position.getY(), width, height);
     }
 
     @Override

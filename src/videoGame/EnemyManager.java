@@ -44,8 +44,10 @@ public class EnemyManager implements GameObject{
      */
     @Override
     public void tick() {
-        for (Enemy enemy: enemies) {
-            enemy.tick();
+        for(int i = 0; i < enemies.size(); i++) {
+            if(enemies.get(i).isVisible()) {
+                enemies.get(i).tick();
+            } else enemies.remove(enemies.get(i));
         }
     }
 
@@ -56,11 +58,11 @@ public class EnemyManager implements GameObject{
      */
     @Override
     public void render(Graphics g) {
-        for (Enemy enemy: enemies) {
-            enemy.render(g);
+        for(int i = 0; i < enemies.size(); i++) {
+            enemies.get(i).render(g);
         }
     }
-
+    
     public ArrayList<Enemy> getEnemies() {
         return enemies;
     }

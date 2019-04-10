@@ -377,6 +377,7 @@ public class Game implements Runnable, Commons {
                 }
             }
             
+            //Ticks the manager that controls the enemies
             enemyManager.tick();
             
             checkCollisions();
