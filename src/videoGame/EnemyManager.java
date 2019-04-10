@@ -45,9 +45,11 @@ public class EnemyManager implements GameObject{
     @Override
     public void tick() {
         for(int i = 0; i < enemies.size(); i++) {
-            if(enemies.get(i).isVisible()) {
+            if(enemies.get(i).isVisible() && game.getCamera().getBounds().contains(enemies.get(i).getBounds())) {
                 enemies.get(i).tick();
-            } else enemies.remove(enemies.get(i));
+                System.out.println("Hello");
+            } 
+//            else  enemies.remove(enemies.get(i));
         }
     }
 

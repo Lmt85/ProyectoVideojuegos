@@ -60,7 +60,7 @@ public class Enemy extends Sprite implements GameObject{
      */
     @Override
     public void render(Graphics g) {
-        g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), null);
+        g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), width, height, null);
         g.drawRect((int) position.getX(), (int) position.getY(), width, height);
     }
 
@@ -75,55 +75,5 @@ public class Enemy extends Sprite implements GameObject{
     @Override
     public String toString() {
         return String.valueOf(position.getX() + " " + position.getY() + " " + visible + "\n");    
-    }
-    
-    /**
-    * This class is stores all the methods and variables related to an alien's bomb
-    * @author Adrián Marcelo Suárez Ponce
-    * @date 9/03/2019
-    * @version 1.0
-    */
-    public class Bomb extends Sprite implements GameObject{
-            public Bomb(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image){ 
-            super(position,speed,visible,width,height,image);
-        }
-
-        @Override
-        public void init() {
-        }
-
-        /**
-         * This method ticks the Bomb, only if visible, which spawns it in it's alien's position and moves
-         * it straight down until it reaches the bottom
-         */
-        @Override
-        public void tick() {
-            if (isVisible()) {
-                position.setY(position.getY() + 1);
-                if (position.getY() >= Commons.GROUND - Commons.BOMB_HEIGHT) {
-                    setVisible(false);
-                }
-            }
-        }
-
-        /**
-         * Renders the bomb if visible
-         * @param g 
-         */
-        @Override
-        public void render(Graphics g) {
-            if (isVisible()) {
-                g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), null);
-            }
-        }
-        
-        /**
-         * Converts the object to a string with most important attributes.
-         * @return a string with most important attributes.
-         */
-        @Override
-        public String toString() {
-            return String.valueOf(position.getX() + " " + position.getY() + " " +  visible + "\n");
-        }
     }
 }

@@ -111,7 +111,7 @@ public class Player extends Sprite implements GameObject {
     @Override
     public void render(Graphics g) {
         if (isVisible()) { 
-            g.drawImage(getImage(), (int)position.getX(), (int) position.getY(), null);
+            g.drawImage(getImage(), (int)position.getX(), (int) position.getY(), width, height, null);
         }
     }
     
@@ -145,12 +145,12 @@ public class Player extends Sprite implements GameObject {
     }
 
     public void resetShotcd() {
-        this.shotcd = 30;
+        this.shotcd = 15;
     }
     
     public void shoots() {
         bullets.addFirst(new PlayerBullet(getPosition(),
-                        getOrientation().speed(3), true, Commons.BOMB_WIDTH,
+                        getOrientation().speed(6), true, Commons.BOMB_WIDTH,
                         Commons.BOMB_HEIGHT, Assets.bomb));
         System.out.println(bullets.size());
     }

@@ -18,7 +18,12 @@ import maths.Vector2;
  */
 public abstract class Sprite implements GameObject {
     public enum Orientation {
-        NORTH, EAST, SOUTH, WEST, NO_O;
+        NORTH(1), EAST(2), SOUTH(3), WEST(4), NO_O(0);
+        
+        private int dir;
+        private Orientation(final int dir) {
+            this.dir = dir;
+        }
         
         protected Vector2 speed(int value) {
             Vector2 vec = new Vector2();
@@ -33,7 +38,6 @@ public abstract class Sprite implements GameObject {
                 break;
                 case NO_O: vec.set(0,0);
             }
-            
             return vec;
         }
     }
