@@ -15,7 +15,7 @@ import java.util.Random;
  * @version 1.0
  */
 public class EnemyManager implements GameObject{
-    private ArrayList<Enemy> enemies; //array to store the aliens
+    private ArrayList<Wheel> enemies; //array to store the aliens
     private Game game;
     
     /**
@@ -46,7 +46,7 @@ public class EnemyManager implements GameObject{
     public void tick() {
         for(int i = 0; i < enemies.size(); i++) {
             if(enemies.get(i).isVisible() && game.getCamera().getBounds().contains(enemies.get(i).getBounds())) {
-                enemies.get(i).tick();
+                enemies.get(i).tick(game.getPlayer());
                 System.out.println("Hello");
             } 
 //            else  enemies.remove(enemies.get(i));
@@ -65,11 +65,11 @@ public class EnemyManager implements GameObject{
         }
     }
     
-    public ArrayList<Enemy> getEnemies() {
+    public ArrayList<Wheel> getEnemies() {
         return enemies;
     }
 
-    public void setEnemies(ArrayList<Enemy> enemies) {
+    public void setEnemies(ArrayList<Wheel> enemies) {
         this.enemies = enemies;
     }
     
