@@ -353,8 +353,8 @@ public class Game implements Runnable, Commons {
                 getPlayer().shoots();
                 getPlayer().setShoot(false);
                 getPlayer().resetShotcd();
-            }
-            
+           }
+             
             // Player movement
             if (getKeyManager().left) getPlayer().getSpeed().setX(-4);
             else if(!getKeyManager().right) getPlayer().getSpeed().setX(0);

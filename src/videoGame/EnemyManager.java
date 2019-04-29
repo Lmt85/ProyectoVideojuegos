@@ -16,6 +16,7 @@ import java.util.Random;
  */
 public class EnemyManager implements GameObject{
     private ArrayList<Wheel> enemies; //array to store the aliens
+    private ArrayList<Can> cans; 
     private Game game;
     
     /**
@@ -25,6 +26,7 @@ public class EnemyManager implements GameObject{
      */
     public EnemyManager(Game game) {
         enemies = new ArrayList<>();
+        cans = new ArrayList<>();
         this.game = game;
     }
     
@@ -47,6 +49,13 @@ public class EnemyManager implements GameObject{
         for(int i = 0; i < enemies.size(); i++) {
             if(enemies.get(i).isVisible() && game.getCamera().getBounds().contains(enemies.get(i).getBounds())) {
                 enemies.get(i).tick(game.getPlayer());
+                //System.out.println("Hello");
+            } 
+//            else  enemies.remove(enemies.get(i));
+        }
+        for(int i = 0; i < cans.size(); i++) {
+            if(cans.get(i).isVisible() && game.getCamera().getBounds().contains(cans.get(i).getBounds())) {
+                cans.get(i).tick(game.getPlayer().getSpeed());
                 System.out.println("Hello");
             } 
 //            else  enemies.remove(enemies.get(i));
@@ -63,14 +72,30 @@ public class EnemyManager implements GameObject{
         for(int i = 0; i < enemies.size(); i++) {
             enemies.get(i).render(g);
         }
+        for(int i = 0; i < cans.size(); i++) {
+            cans.get(i).render(g);
+            if(!cans.get(i).getBullets().isEmpty()){
+                for(int x = 0; x < cans.get(i).getBullets().size(); x++) {
+                    cans.get(i).getBullets().get(x).render(g);
+                }
+            }
+        }
     }
+
     
     public ArrayList<Wheel> getEnemies() {
         return enemies;
     }
+    public ArrayList<Can> getCans() {
+        return cans;
+    }
 
     public void setEnemies(ArrayList<Wheel> enemies) {
         this.enemies = enemies;
+    }
+    
+    public void setCans(ArrayList<Can> cans) {
+        this.cans = cans;
     }
     
 }
