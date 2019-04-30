@@ -297,7 +297,7 @@ public class Game implements Runnable, Commons {
         // Loads all the sound related assets
         music = new SoundClip("/sound/DarkIntentions.WAV");
         music.setLooping(true);
-
+        
         //Creates and initializes game objects
         setPlayer(new Player(new Vector2(Commons.START_X, Commons.START_Y), new Vector2(), true, Commons.PLAYER_WIDTH, Commons.PLAYER_HEIGHT, Assets.player));
         System.out.println(Commons.PLAYER_WIDTH);
@@ -310,9 +310,13 @@ public class Game implements Runnable, Commons {
         display.getCanvas().addMouseListener(mouseManager);
         display.getCanvas().addMouseMotionListener(mouseManager);
         
-        // Level Manager
+         // Level Manager
         levelManager = new LevelManager(this);
         levelManager.loadLevel(Assets.map);
+        enemyManager.init();
+
+        
+       
     }
 
     /**
@@ -549,6 +553,7 @@ public class Game implements Runnable, Commons {
     }
     
     
+
     private void checkCollisions() {
         for(Sprite s : getLevelManager().getLevel()) {
             if(s.getBounds().intersects(getPlayer().getBounds())) {

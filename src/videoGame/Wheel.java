@@ -90,5 +90,4 @@ public class Wheel extends Sprite implements GameObject{
     public String toString() {
         return String.valueOf(position.getX() + " " + position.getY() + " " + visible + "\n");    
     }
-
 }

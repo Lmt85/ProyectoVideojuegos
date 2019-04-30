@@ -36,7 +36,11 @@ public class EnemyManager implements GameObject{
      */
     @Override
     public void init() {
-        
+        for (int i = 0; i < enemies.size(); i++){
+            enemies.get(i).setOrientation(Sprite.Orientation.getRandomOrientation());
+            enemies.get(i).setSpeed(enemies.get(i).getOrientation().speed(3));
+            //enemies.get(i).setSpeed(n.randomEnum().speed(3));      
+        }
     }
     
     /**
