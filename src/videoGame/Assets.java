@@ -32,6 +32,10 @@ public class Assets {
     public static BufferedImage wheelSheet;
     public static BufferedImage bubble;
     
+    //Text
+    public static BufferedImage movement;
+    public static BufferedImage shooting;
+    
     //Sound
     public static SoundClip music;    // Stores looping music
     SoundClip laser;    // Stores the laser sound
@@ -43,7 +47,7 @@ public class Assets {
      */
     public static void init(){
         background = ImageLoader.loadImage("/images/background.png"); 
-        map = ImageLoader.loadImage("/images/Map.png");
+        map = ImageLoader.loadImage("/images/Map2.png");
         
         wall = ImageLoader.loadImage("/images/Wall.png");
         alien = ImageLoader.loadImage("/images/alien.png"); 
@@ -61,6 +65,8 @@ public class Assets {
         wheel = ImageLoader.loadImage("/images/wheel.png");
         bubble = ImageLoader.loadImage("/images/bubble.png");
         wheelSheet = ImageLoader.loadImage("/images/wheelSheet.png");
+        movement = ImageLoader.loadImage("/images/TutorialMovement.png");
+        shooting = ImageLoader.loadImage("/images/TutorialShooting.png");
         
         wheels = new BufferedImage[4];
         SpriteSheet spritesheet = new SpriteSheet(wheelSheet);

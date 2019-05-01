@@ -34,7 +34,7 @@ public class Wheel extends Enemy implements GameObject{
     public Wheel(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game, int hp){  
         super(position,speed,visible,width,height,image,game,hp);
         this.wheelAnim = new Animation(Assets.wheels, 100);        
-        this.maxHp = hp;
+        //this.maxHp = hp;
         
     }
     
@@ -60,10 +60,12 @@ public class Wheel extends Enemy implements GameObject{
     public void render(Graphics g) {
         g.drawImage(wheelAnim.getCurrentFrame(), (int)position.getX(), (int)position.getY(), width, height, null);
         //g.drawRect((int) position.getX(), (int) position.getY(), width, height);
+        /*
         if(maxHp != hp){
-            g.fillRect((int) (position.getX() + 5), (int)position.getY() - 10,  (int) (width - 10) * (hp / maxHp), 5);
+            g.fillRect((int) (position.getX() + 5), (int)position.getY() - 10,  (int) (width - 10) * (this.hp / maxHp), 5);
         }
-        g.fillRect((int) (position.getX() + 5), (int)position.getY() - 10,  (int) (width - 10) * (hp / maxHp), 5);
+        g.fillRect((int) (position.getX() + 5), (int)position.getY() - 10,  (int) ((width - 10) * (this.hp / maxHp)), 5);
+        */
         
     }
 

@@ -45,7 +45,10 @@ public class LevelManager {
                 if(red == 255) level.add(new Block(new Vector2(i * Commons.GRID_WIDTH, j * Commons.GRID_HEIGHT), new Vector2(0,0),true, Commons.BLOCK_WIDTH,Commons.BLOCK_HEIGHT,Assets.wall,game));
                 if(blue == 255) game.getEnemyManager().getEnemies().add(new Wheel(new Vector2(i * Commons.GRID_WIDTH, j * Commons.GRID_HEIGHT), new Vector2(0,0),true, Commons.ALIEN_WIDTH,Commons.ALIEN_HEIGHT,Assets.alien,game,5));
                 if(green == 255) game.getEnemyManager().getEnemies().add(new Can(new Vector2(i * Commons.GRID_WIDTH, j * Commons.GRID_HEIGHT), new Vector2(0,0),true, Commons.ALIEN_WIDTH,Commons.ALIEN_HEIGHT,Assets.can,game,10));
-
+                if(green == 100) game.setPlayer(new Player(new Vector2(i * Commons.GRID_WIDTH, j * Commons.GRID_HEIGHT), new Vector2(), true, Commons.PLAYER_WIDTH, Commons.PLAYER_HEIGHT, Assets.player,game));
+                if(red == 100) level.add(new Block(new Vector2(i * Commons.GRID_WIDTH, j * Commons.GRID_HEIGHT), new Vector2(0,0),true, Commons.BLOCK_WIDTH * 2,Commons.BLOCK_HEIGHT * 2,Assets.movement,game));
+                if(red == 101) level.add(new Block(new Vector2(i * Commons.GRID_WIDTH, j * Commons.GRID_HEIGHT), new Vector2(0,0),true, Commons.BLOCK_WIDTH * 2,Commons.BLOCK_HEIGHT * 2,Assets.shooting,game));
+                
                 
             }
         }

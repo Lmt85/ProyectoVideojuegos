@@ -550,6 +550,8 @@ public class Game implements Runnable, Commons {
                 for(int j = 0; j < getEnemyManager().getEnemies().size();j++) {
                     if(checkCollision((Sprite) getPlayer().getBullets().get(i), (Sprite) getEnemyManager().getEnemies().get(j))) {
                         getEnemyManager().getEnemies().get(j).setHp(getEnemyManager().getEnemies().get(j).getHp() - getPlayer().getBullets().get(i).getDamage());
+                        //System.out.println("Enemy health is now: " + getEnemyManager().getEnemies().get(j).getHp());
+                        
                         getPlayer().getBullets().remove(i);
                         break;
                     }

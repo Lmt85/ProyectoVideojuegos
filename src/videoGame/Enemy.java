@@ -47,6 +47,8 @@ public abstract class Enemy extends Sprite implements GameObject{
     public void render(Graphics g) {
         g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), width, height, null);
         g.drawRect((int) position.getX(), (int) position.getY(), width, height);
+        
+        //g.fillRect((int) (position.getX() + 5), (int)position.getY() - 10,  (int) ((width - 10)), 5);
     }
 
     @Override
