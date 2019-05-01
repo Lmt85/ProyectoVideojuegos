@@ -75,7 +75,7 @@ public abstract class Sprite implements GameObject {
      * Returns if the object is visible, if it exists
      * @return the visibility of the object
      */
-    public boolean isVisible() {
+    public boolean onScreen() {
         if(game.getCamera().getBounds().intersects(this.getBounds()) || game.getCamera().getBounds().contains(this.getBounds())){
             return true;
         } else return false;
@@ -179,4 +179,9 @@ public abstract class Sprite implements GameObject {
     public Rectangle getBounds() {
         return new Rectangle((int)this.getPosition().getX(),(int)this.getPosition().getY(),this.getWidth(),this.getHeight());
     }
+    
+    public boolean isVisible() {
+        return visible;
+    }
+    
 }

@@ -53,18 +53,6 @@ public class Player extends Sprite implements GameObject {
         public void tick() {
             setPosition(getPosition().add(getSpeed())); 
         }
-
-        /**
-         * Renders the bomb if visible
-         * @param g 
-         */
-//        @Override
-//        public void render(Graphics g) {
-//            if (isVisible()) {
-//                g.drawRect((int)position.getX(),(int) position.getY(), Commons.BOMB_WIDTH, Commons.BOMB_HEIGHT);
-//                g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), null);
-//            }
-//        }
         
         /**
          * Converts the object to a string with most important attributes.
@@ -110,9 +98,7 @@ public class Player extends Sprite implements GameObject {
      */
     @Override
     public void render(Graphics g) {
-        if (isVisible()) { 
-            g.drawImage(getImage(), (int)position.getX(), (int) position.getY(), width, height, null);
-        }
+        g.drawImage(getImage(), (int)position.getX(), (int) position.getY(), width, height, null);
     }
     
     /**

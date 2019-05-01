@@ -251,13 +251,16 @@ public class Game implements Runnable, Commons {
             g2d.translate(-camera.getX(), -camera.getY());
             
             
-            getLevelManager().render(g);
+            getLevelManager().render(g);    //renders the level
+            getEnemyManager().render(g);    //renders the enemies
             getPlayer().render(g);
             
-            if(!getPlayer().getBullets().isEmpty()) 
-                for(Player.PlayerBullet p : getPlayer().getBullets()) p.render(g);
+            for(int i = 0; i < getPlayer().getBullets().size(); i++) { //renders each bullet
+                if(getPlayer().getBullets().get(i).onScreen()) {
+                    getPlayer().getBullets().get(i).render(g);
+                }
+            }
             
-            enemyManager.render(g);
             
             g2d.translate(camera.getX(), camera.getY());
             
@@ -381,9 +384,7 @@ public class Game implements Runnable, Commons {
                 }
             }
             
-            //Ticks the manager that controls the enemies
-     
-           
+            //Ticks the manager that controls the enemies and their bullets
             enemyManager.tick();
             checkCollisions();
         }
@@ -524,23 +525,26 @@ public class Game implements Runnable, Commons {
             }
             for(Projectile p: getPlayer().getBullets()) {
                 if(checkCollision((Sprite) p, (Sprite) s)) {
-                    getPlayer().getBullets().remove(p);
+                    p.setVisible(false);
                 }
             }
-            if(s.isVisible()) {
+            
+            if(s.onScreen()) {
                 if(s.getBounds().intersects(getPlayer().getBounds())) getPlayer().setPosition(getPlayer().getPosition().add(getPlayer().getSpeed().scalar(-1)));
             }
         }
-//         Checks collision between each bullet and enemy
+        //Checks collision between each bullet and enemy
             for(int i = 0;i < getPlayer().getBullets().size();i++) {
                 for(int j = 0; j < getEnemyManager().getEnemies().size();j++) {
                     if(checkCollision((Sprite) getPlayer().getBullets().get(i), (Sprite) getEnemyManager().getEnemies().get(j))) {
                         getEnemyManager().getEnemies().get(j).setHp(getEnemyManager().getEnemies().get(j).getHp() - getPlayer().getBullets().get(i).getDamage());
-                        getPlayer().getBullets().remove(i);
+                        getPlayer().getBullets().get(i).setVisible(false);
                         break;
                     }
                 }
             }
+        // Checks collision between each enemy bullet and player
+         
     }
 
     public Camera getCamera() {

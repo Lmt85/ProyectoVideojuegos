@@ -35,6 +35,7 @@ public class EnemyManager implements GameObject{
     @Override
     public void init() {
         for (int i = 0; i < enemies.size(); i++){
+            enemies.get(i).init();
             enemies.get(i).setOrientation(Sprite.Orientation.getRandomOrientation());
             enemies.get(i).setSpeed(enemies.get(i).getOrientation().speed(3));
         }
@@ -48,9 +49,22 @@ public class EnemyManager implements GameObject{
     @Override
     public void tick() {
         for(int i = 0; i < enemies.size(); i++) {
-            if(enemies.get(i).getHp()>0){
-                enemies.get(i).tick();
-            } else enemies.remove(i);
+            if(!enemies.get(i).isVisible() && enemies.get(i).getBullets().size() == 0) { // Removes enemies completely from list if their bullets are empty and is destroyed
+                enemies.remove(i);
+            } else {
+                if(enemies.get(i).getHp()>0){
+                    enemies.get(i).tick();
+                } else {
+                    enemies.get(i).setVisible(false);
+                }
+                for(int j = 0; j < getEnemies().get(i).getBullets().size(); j++) {
+                    if(getEnemies().get(i).getBullets().get(j).isVisible()) {
+                        getEnemies().get(i).getBullets().get(j).tick();
+                    } else {
+                        getEnemies().get(i).getBullets().remove(j);
+                    }
+                }
+            }
         }
     }
 
@@ -62,8 +76,16 @@ public class EnemyManager implements GameObject{
     @Override
     public void render(Graphics g) {
         for(int i = 0; i < enemies.size(); i++) {
-            enemies.get(i).render(g);
+            if(enemies.get(i).onScreen()) {
+                enemies.get(i).render(g);
+            }
+            for(int j = 0; j < enemies.get(i).getBullets().size(); j++) {
+                if(enemies.get(i).getBullets().get(j).onScreen()) {
+                    enemies.get(i).getBullets().get(j).render(g);
+                }
+            }
         }
+        
     }
 
     

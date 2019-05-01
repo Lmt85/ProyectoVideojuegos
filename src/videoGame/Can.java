@@ -55,15 +55,13 @@ public class Can extends Enemy implements GameObject{
         @Override
         public void tick() {
             if(first){
-               
                 double angulo = (Math.atan2(getSpeed().getY()-getPosition().getY(),getSpeed().getX()-getPosition().getX()));
                 vector.set(cos(angulo), sin(angulo));
                 first=false;
 
            } 
-            vector.set(vector.scalar(1.025));
-            setPosition(getPosition().add(vector));
-        
+           vector.set(vector.scalar(1.025));
+           setPosition(getPosition().add(vector));
         }
         
         /**
@@ -89,7 +87,7 @@ public class Can extends Enemy implements GameObject{
     @Override
      public void tick(){
         if(canShoot()) {
-            if(isVisible()) {
+            if(onScreen()) {
                 shoots(game.getPlayer().getPosition());
                 setShoot(false);
                 resetShotcd();
@@ -100,10 +98,6 @@ public class Can extends Enemy implements GameObject{
                 setShoot(true);
              }
          }
-        
-        for(int i = 0; i < getBullets().size(); i++) {
-            getBullets().get(i).tick();
-        }
      }
     
     /**
@@ -112,7 +106,7 @@ public class Can extends Enemy implements GameObject{
      */
     @Override
     public void render(Graphics g) {
-        if(isVisible()) {
+        if(onScreen()) {
             g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), width, height, null);
             g.drawRect((int) position.getX(), (int) position.getY(), width, height);
         }
