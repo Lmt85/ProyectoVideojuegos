@@ -240,13 +240,11 @@ public class Game implements Runnable, Commons {
         } else {
             g = bs.getDrawGraphics(); // gets the graphics of the buffer strategy
             Graphics2D g2d = (Graphics2D) g;
-            g.setColor(Color.GREEN);   // sets the painting color to green
+            g.setColor(Color.GREEN);   // sets the painting color to greenda
             g.setFont(font);           // sets the font
             
             g.drawImage(Assets.background, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
-            for(int i = 0; i < player.getHp(); i++){
-                g.drawImage(Assets.heartFull, i * 25, 0, 20, 20, null);
-            }
+
             
             
             //////////////////////////////////// Rendering Block
@@ -282,6 +280,19 @@ public class Game implements Runnable, Commons {
 
             //displays the amount of aliens destroyed
 //            g.drawString("Destroyed: " + alienManager.destroyed + "/24", 10, Commons.BOARD_HEIGHT - 10);
+
+            g.drawImage(Assets.hud, 0 , 0, Commons.TAB_WIDTH, Commons.TAB_HEIGHT, null);
+            for(int o = 1; o < Commons.HEART_MAX; o += 2){
+                g.drawImage(Assets.heartEmpty, o * (Commons.HEART_SIZE /2) , Commons.HEART_SIZE / 2, Commons.HEART_SIZE, Commons.HEART_SIZE, null);
+            }
+            if(player.getHp() != 1)
+                for(int i = 1; i < player.getHp(); i+= 2){
+                    g.drawImage(Assets.heartFull, i * (Commons.HEART_SIZE /2) , Commons.HEART_SIZE / 2, Commons.HEART_SIZE, Commons.HEART_SIZE, null);   
+                }
+            if(!(player.getHp() % 2 == 0)){
+                g.drawImage(Assets.heartHalf, (player.getHp()) * (Commons.HEART_SIZE / 2), Commons.HEART_SIZE / 2, Commons.HEART_SIZE , Commons.HEART_SIZE, null);
+            }
+            
             bs.show();
             g.dispose();
         }

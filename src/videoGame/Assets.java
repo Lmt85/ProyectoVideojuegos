@@ -23,6 +23,7 @@ public class Assets {
     
     public static BufferedImage heartFull;
     public static BufferedImage heartHalf;
+    public static BufferedImage heartEmpty;
     public static BufferedImage hud;
 
     
@@ -42,6 +43,7 @@ public class Assets {
         
         heartFull = ImageLoader.loadImage("/images/heartFull.png");
         heartHalf = ImageLoader.loadImage("/images/HeartHalf.png");
+        heartEmpty = ImageLoader.loadImage("/images/HeartEmpty.png");
         hud = ImageLoader.loadImage("/images/hud.png");
     }    
 }
