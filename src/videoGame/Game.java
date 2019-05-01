@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.JLabel;
 import maths.Vector2;
@@ -522,8 +523,8 @@ public class Game implements Runnable, Commons {
                 
             }
             for(Projectile p: getPlayer().getBullets()) {
-                if(s.getBounds().intersects(p.getBounds())) {
-                    p.setVisible(false);
+                if(checkCollision((Sprite) p, (Sprite) s)) {
+                    getPlayer().getBullets().remove(p);
                 }
             }
             if(s.isVisible()) {
@@ -531,36 +532,15 @@ public class Game implements Runnable, Commons {
             }
         }
 //         Checks collision between each bullet and enemy
-//        for(Projectile p :  getPlayer().getBullets()) {
-//            for(Enemy e : getEnemyManager().getEnemies()) {
-//                if(checkCollision((Sprite) e, (Sprite) p)) {
-//                    getPlayer().getBullets().remove(p);
-//                    if(e.getHp() > 0){
-//                        e.setHp(e.getHp() - p.getDamage());
-//                        System.out.println(e.getHp());
-//                    } else {
-//                        getEnemyManager().getEnemies().remove(e);
-//                    }
-//                    
-//                }
-//            }
-//            for(int j = 0; j < getEnemyManager().getEnemies().size(); j++) {
-//                if(checkCollision((Sprite) p, (Sprite) getEnemyManager().getEnemies().get(j))) {
-//                    getPlayer().getBullets().remove(p);
-//                    if(getEnemyManager().getEnemies().get(j).getHp() > 0){
-//                        getEnemyManager().getEnemies().get(j).setHp(getEnemyManager().getEnemies().get(j).getHp() - p.getDamage());
-//                        System.out.println(getEnemyManager().getEnemies().get(j).getHp());
-//                    } else {
-//                        getEnemyManager().getEnemies().remove(j);
-//                    }
-//                    
-//                }
-//            }
-//            for(int i = 0;i < getPlayer().getBullets().size();i++) {
-//                for(int j = 0; j < get)
-//            }
-        
-        
+            for(int i = 0;i < getPlayer().getBullets().size();i++) {
+                for(int j = 0; j < getEnemyManager().getEnemies().size();j++) {
+                    if(checkCollision((Sprite) getPlayer().getBullets().get(i), (Sprite) getEnemyManager().getEnemies().get(j))) {
+                        getEnemyManager().getEnemies().get(j).setHp(getEnemyManager().getEnemies().get(j).getHp() - getPlayer().getBullets().get(i).getDamage());
+                        getPlayer().getBullets().remove(i);
+                        break;
+                    }
+                }
+            }
     }
 
     public Camera getCamera() {
