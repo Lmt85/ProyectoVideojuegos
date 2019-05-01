@@ -505,59 +505,6 @@ public class Game implements Runnable, Commons {
 //        }
     }
 
-    /**
-     * Method that checks the collision between the shot and an alien
-     */
-    public void checkShotCollision() {
-//        if(shot.isVisible()) {
-//            int shotX = (int)shot.position.getX();  //Stores the shot's current x position
-//            int shotY = (int)shot.position.getY();  //Stores the shot's current y position
-//            for(Alien a : alienManager.aliens) { //For each alien in the array
-//                if (a.isVisible() ) {            // If the alien is visible
-//                    int alienX = (int)a.position.getX();
-//                    int alienY = (int)a.position.getY();
-//                    //checks if the alien contains the shot
-//                    if (shotX >= (alienX) && shotX <= (alienX + ALIEN_WIDTH)
-//                            && shotY >= alienY && shotY <= (alienY + ALIEN_HEIGHT)) {
-//                        shot.setVisible(false); // makes shot invisible
-//                        a.setVisible(false);    // makes collisioned alien invisible
-//                        alienOof.stop();        // stops the current sound
-//                        alienOof.play();        // plays alien death sound
-//                        alienManager.destroyed++;// adds 1 to the destroyed alien count
-//                    }
-//                }
-//            }
-//        }
-    }
-
-    /**
-     * Method that checks the collision between the bomb and the player
-     */
-    public void checkBombCollision() {
-//        for(Alien a : alienManager.aliens) { // For each alien's bomb
-//            Alien.Bomb b = a.getBomb();
-//            int bombX = (int)b.position.getX();
-//            int bombY = (int)b.position.getY();
-//            int playerX = (int)player.position.getX();
-//            int playerY = (int)player.position.getY();
-//
-//            if (b.isVisible()) {    // if the bomb exists/isVisible
-//
-//                if (bombX >= (playerX)  //it checks if the bomb is contained within the player
-//                        && bombX <= (playerX + PLAYER_WIDTH)
-//                        && bombY >= (playerY)
-//                        && bombY <= (playerY + PLAYER_HEIGHT)) {
-//                    player.setVisible(false);   //Sets the player invisible
-//                    b.setVisible(false);        //Sets the bomb invisible
-//                    setGameState(-1);           //Sets the gamestate as lost
-//                    message = "Aliens got you!";//Sets losing message
-//                    music.stop();               //Stops the music
-//                    dead.play();                //Plays player death sound
-//                }
-//            }
-//        }
-    }
-
     public void setPositionRelativeToPlayer(Sprite p) {
         p.setPosition(new Vector2(getPlayer().position.getX() + H_SPACE, getPlayer().position.getY() - V_SPACE));
     }
@@ -577,27 +524,28 @@ public class Game implements Runnable, Commons {
     
 
     private void checkCollisions() {
-        for(Sprite s : getLevelManager().getLevel()) {
-            if(s.isVisible()) {
-                if(s.getBounds().intersects(getPlayer().getBounds())) getPlayer().setPosition(getPlayer().getPosition().add(getPlayer().getSpeed().scalar(-1)));
-                for(Wheel e : getEnemyManager().getEnemies()){
-                    if(e.isVisible() && s.getBounds().intersects(e.getBounds())) {
-                        e.setPosition(e.getPosition().add(e.getSpeed().scalar(-1)));
-                        e.setSpeed(e.getSpeed().scalar(-.5));
+        for(Sprite s : getLevelManager().getLevel()) { //Collisions that involve walls
+            for(Enemy e : getEnemyManager().getEnemies()){
+                if(e.getClass().equals(Wheel.class) && e.getBounds().intersects(s.getBounds())) {
+                    e.setPosition(e.getPosition().add(e.getSpeed().scalar(-1)));
+                    e.setSpeed(e.getSpeed().scalar(-.5));
+                } else if(e.getClass().equals(Can.class) && !e.getBullets().isEmpty()){
+                    for(int i = 0; i < e.getBullets().size(); i++) {
+                        if(e.getBullets().get(i).getBounds().intersects(s.getBounds())) {
+                            e.getBullets().remove(i);
+                        }
                     }
                 }
                 
             }
-                
-            
             for(Projectile p: getPlayer().getBullets()) {
                 if(s.getBounds().intersects(p.getBounds())) {
-                    
                     p.setVisible(false);
-                    
                 }
             }
-            
+            if(s.isVisible()) {
+                if(s.getBounds().intersects(getPlayer().getBounds())) getPlayer().setPosition(getPlayer().getPosition().add(getPlayer().getSpeed().scalar(-1)));
+            }
         }
     }
 

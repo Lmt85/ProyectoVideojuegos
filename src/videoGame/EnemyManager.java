@@ -15,8 +15,7 @@ import java.util.Random;
  * @version 1.0
  */
 public class EnemyManager implements GameObject{
-    private ArrayList<Wheel> enemies; //array to store the aliens
-    private ArrayList<Can> cans; 
+    private ArrayList<Enemy> enemies;
     private Game game;
     
     /**
@@ -26,7 +25,6 @@ public class EnemyManager implements GameObject{
      */
     public EnemyManager(Game game) {
         enemies = new ArrayList<>();
-        cans = new ArrayList<>();
         this.game = game;
     }
     
@@ -39,7 +37,6 @@ public class EnemyManager implements GameObject{
         for (int i = 0; i < enemies.size(); i++){
             enemies.get(i).setOrientation(Sprite.Orientation.getRandomOrientation());
             enemies.get(i).setSpeed(enemies.get(i).getOrientation().speed(3));
-            //enemies.get(i).setSpeed(n.randomEnum().speed(3));      
         }
     }
     
@@ -51,24 +48,7 @@ public class EnemyManager implements GameObject{
     @Override
     public void tick() {
         for(int i = 0; i < enemies.size(); i++) {
-            if(enemies.get(i).isVisible()) {
-                enemies.get(i).tick(game.getPlayer());
-                //System.out.println("Hello");
-            } 
-            else{
-                enemies.get(i).tick();
-                
-            }
-        }
-        for(int i = 0; i < cans.size(); i++) {
-            if(cans.get(i).isVisible()) {
-                System.out.println("hello");
-                cans.get(i).tick(game.getPlayer().getPosition(),game);
-            } else{
-                cans.get(i).tick();
-                
-            }
-            //else  cans.remove(cans.get(i));
+            enemies.get(i).tick();
         }
     }
 
@@ -82,30 +62,10 @@ public class EnemyManager implements GameObject{
         for(int i = 0; i < enemies.size(); i++) {
             enemies.get(i).render(g);
         }
-        for(int i = 0; i < cans.size(); i++) {
-            cans.get(i).render(g);
-            if(!cans.get(i).getBullets().isEmpty()){
-                for(int x = 0; x < cans.get(i).getBullets().size(); x++) {
-                    cans.get(i).getBullets().get(x).render(g);
-                }
-            }
-        }
     }
 
     
-    public ArrayList<Wheel> getEnemies() {
+    public ArrayList<Enemy> getEnemies() {
         return enemies;
     }
-    public ArrayList<Can> getCans() {
-        return cans;
-    }
-
-    public void setEnemies(ArrayList<Wheel> enemies) {
-        this.enemies = enemies;
-    }
-    
-    public void setCans(ArrayList<Can> cans) {
-        this.cans = cans;
-    }
-    
 }
