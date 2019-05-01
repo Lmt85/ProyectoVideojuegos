@@ -48,7 +48,9 @@ public class EnemyManager implements GameObject{
     @Override
     public void tick() {
         for(int i = 0; i < enemies.size(); i++) {
-            enemies.get(i).tick();
+            if(enemies.get(i).getHp()>0){
+                enemies.get(i).tick();
+            } else enemies.remove(i);
         }
     }
 

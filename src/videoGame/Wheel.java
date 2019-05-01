@@ -63,6 +63,7 @@ public class Wheel extends Enemy implements GameObject{
         if(maxHp != hp){
             g.fillRect((int) (position.getX() + 5), (int)position.getY() - 10,  (int) (width - 10) * (hp / maxHp), 5);
         }
+        g.fillRect((int) (position.getX() + 5), (int)position.getY() - 10,  (int) (width - 10) * (hp / maxHp), 5);
         
     }
 
