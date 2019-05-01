@@ -12,8 +12,8 @@ import java.awt.image.BufferedImage;
 public class Projectile extends Sprite implements GameObject, Commons {
     double damage;
     
-    public Projectile(maths.Vector2 position, maths.Vector2 speed,  boolean visible, int width, int height, BufferedImage image, double damage){ 
-        super(position, speed, visible,width,height,image);
+    public Projectile(maths.Vector2 position, maths.Vector2 speed,  boolean visible, int width, int height, BufferedImage image, double damage,Game game){ 
+        super(position, speed, visible,width,height,image, game);
         this.damage = damage;
     }
 

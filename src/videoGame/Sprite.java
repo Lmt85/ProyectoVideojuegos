@@ -59,14 +59,16 @@ public abstract class Sprite implements GameObject {
     protected int width;            //to store the object's width
     protected int height;           //to store the object's width
     protected Orientation o;        //to store the object's orientation
+    protected Game game;            //to store a reference to the game
     
-    public Sprite(Vector2 position, Vector2 speed, boolean visible, int width, int height, BufferedImage image) {
+    public Sprite(Vector2 position, Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game) {
         this.position = position;
         this.speed = speed;
         this.width = width;
         this.height = height;
         this.image = image;
         this.visible = visible;
+        this.game = game;
     }
     
     /**
@@ -74,7 +76,9 @@ public abstract class Sprite implements GameObject {
      * @return the visibility of the object
      */
     public boolean isVisible() {
-        return visible;
+        if(game.getCamera().getBounds().intersects(this.getBounds()) || game.getCamera().getBounds().contains(this.getBounds())){
+            return true;
+        } else return false;
     }
 
     /**

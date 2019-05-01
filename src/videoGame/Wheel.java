@@ -26,8 +26,8 @@ public class Wheel extends Sprite implements GameObject{
      * @param image 
      * @param player 
      */
-    public Wheel(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image){  
-        super(position,speed,visible,width,height,image);
+    public Wheel(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game){  
+        super(position,speed,visible,width,height,image,game);
 //        bomb = new Bomb(position,speed,false,width,height,Assets.bomb); //For each instance, it initializes a bomb, which isn't visible at first
         
     }
@@ -57,7 +57,8 @@ public class Wheel extends Sprite implements GameObject{
 //    }
    @Override
     public void tick() {
-
+        this.setSpeed(getSpeed().scalar(.9));
+        this.setPosition(this.getPosition().add(this.getSpeed()));
     }
     
     public void tick(Player gamer) {
