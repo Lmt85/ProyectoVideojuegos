@@ -21,6 +21,15 @@ public class Assets {
     public static BufferedImage map;
     public static BufferedImage wall;
     
+    public static BufferedImage heartFull;
+    public static BufferedImage heartHalf;
+    public static BufferedImage heartEmpty;
+    public static BufferedImage hud;
+    public static BufferedImage sand;
+    public static BufferedImage wheel;
+    public static BufferedImage can;
+
+    
     /**
      * loads all of the game assets as images
      */
@@ -34,5 +43,13 @@ public class Assets {
         bomb = ImageLoader.loadImage("/images/bomb.png"); 
         player = ImageLoader.loadImage("/images/player.png");
         explosion = ImageLoader.loadImage("/images/explosion.png");
+        
+        heartFull = ImageLoader.loadImage("/images/heartFull.png");
+        heartHalf = ImageLoader.loadImage("/images/HeartHalf.png");
+        heartEmpty = ImageLoader.loadImage("/images/HeartEmpty.png");
+        hud = ImageLoader.loadImage("/images/hud.png");
+        sand = ImageLoader.loadImage("/images/Sand.png");
+        can = ImageLoader.loadImage("/images/can.png");
+        wheel = ImageLoader.loadImage("/images/wheel.png");
     }    
 }
