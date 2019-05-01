@@ -68,6 +68,6 @@ public class Assets {
             wheels[i] = spritesheet.crop(i * 200, 0, 200, 200);
         }
         
-        music = new SoundClip("/sound/AquaTheme");
+        music = new SoundClip("/sound/DarkIntentions.WAV");
     }    
 }
