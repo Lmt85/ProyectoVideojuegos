@@ -31,8 +31,8 @@ public class Can extends Enemy implements GameObject{
      * @param image 
      * @param player 
      */
-    public Can(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game){  
-        super(position,speed,visible,width,height,image,game);
+    public Can(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game,int hp){  
+        super(position,speed,visible,width,height,image,game,hp);
         bullets = new LinkedList<>();
     }
     
@@ -61,7 +61,7 @@ public class Can extends Enemy implements GameObject{
                 first=false;
 
            } 
-            vector.scalar(1.025);
+            vector.set(vector.scalar(1.025));
             setPosition(getPosition().add(vector));
         
         }
@@ -143,7 +143,7 @@ public class Can extends Enemy implements GameObject{
     }
 
     public void resetShotcd() {
-        this.shotcd = 1;
+        this.shotcd = 10;
     }
     
     public void shoots(Vector2 player) {
