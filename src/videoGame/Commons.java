@@ -1,7 +1,7 @@
 package videoGame;
 
 public interface Commons {
-    public static int scale = 2;
+    public static int scale = 1;
     
     //Game constants
     public static final int BOARD_WIDTH = 358 * scale;
