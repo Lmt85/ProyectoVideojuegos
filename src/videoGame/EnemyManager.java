@@ -49,16 +49,22 @@ public class EnemyManager implements GameObject{
     @Override
     public void tick() {
         for(int i = 0; i < enemies.size(); i++) {
-            if(!enemies.get(i).isVisible() && enemies.get(i).getBullets().size() == 0) { // Removes enemies completely from list if their bullets are empty and is destroyed
+            if(!enemies.get(i).isVisible() && enemies.get(i).getBullets().size() == 0) { // Removes enemies completely from list if their bullets are empty and is destroyed 
+                if(enemies.get(i).getClass().equals(Wheel.class)) {
+                    game.setScore(game.getScore() + 100);
+                } else if(enemies.get(i).getClass().equals(Can.class)) {
+                    game.setScore(game.getScore() + 200);
+                }
                 enemies.remove(i);
+                System.out.println(game.getScore());
             } else {
-                if(enemies.get(i).getHp()>0){
+                if(enemies.get(i).getHp() > 0 && enemies.get(i).isVisible()){
                     enemies.get(i).tick();
-                } else {
+                } else{
                     enemies.get(i).setVisible(false);
                 }
-                for(int j = 0; j < getEnemies().get(i).getBullets().size(); j++) {
-                    if(getEnemies().get(i).getBullets().get(j).isVisible()) {
+                for(int j = 0; j < getEnemies().get(i).getBullets().size(); j++) {  //
+                    if(getEnemies().get(i).getBullets().get(j).isVisible()) {   //If the bullet exists and doesnt collision with wall or p
                         getEnemies().get(i).getBullets().get(j).tick();
                     } else {
                         getEnemies().get(i).getBullets().remove(j);
@@ -76,7 +82,7 @@ public class EnemyManager implements GameObject{
     @Override
     public void render(Graphics g) {
         for(int i = 0; i < enemies.size(); i++) {
-            if(enemies.get(i).onScreen()) {
+            if(enemies.get(i).onScreen() && enemies.get(i).isVisible()) {
                 enemies.get(i).render(g);
             }
             for(int j = 0; j < enemies.get(i).getBullets().size(); j++) {
@@ -88,7 +94,6 @@ public class EnemyManager implements GameObject{
         
     }
 
-    
     public ArrayList<Enemy> getEnemies() {
         return enemies;
     }

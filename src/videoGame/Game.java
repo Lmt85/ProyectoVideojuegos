@@ -69,6 +69,7 @@ public class Game implements Runnable, Commons {
 
     //Internal game atributes
     public String message;  // Stores endgame message
+    private int score;
 
     //Sound
     SoundClip music;    // Stores looping music
@@ -319,8 +320,8 @@ public class Game implements Runnable, Commons {
         levelManager.loadLevel(Assets.map);
         enemyManager.init();
 
-        
-       
+        // Sets the score
+        score = 0;
     }
 
     /**
@@ -356,8 +357,7 @@ public class Game implements Runnable, Commons {
             
             if ((getKeyManager().north || getKeyManager().east || 
                     getKeyManager().south || getKeyManager().west )
-                    && getPlayer().canShoot()) { // If space is pressed and shoot is not on cd
-                System.out.println("Shot");
+                    && getPlayer().canShoot()) { // If arrow keys are pressed and shot is not on cd
                 getPlayer().shoots();
                 getPlayer().setShoot(false);
                 getPlayer().resetShotcd();
@@ -502,49 +502,59 @@ public class Game implements Runnable, Commons {
         return enemyManager;
     }
     
-    private boolean checkCollision(Sprite s, Sprite s2) {
+    private boolean checkCollision(Sprite s, Sprite s2) { // Checks collisions between two objects
         if(s.getBounds().intersects(s2.getBounds())) {
             return true;
         } else return false;
     }
 
     private void checkCollisions() {
-        for(Sprite s : getLevelManager().getLevel()) { //Collisions that involve walls
-            for(Enemy e : getEnemyManager().getEnemies()){
-                if(e.getClass().equals(Wheel.class) && e.getBounds().intersects(s.getBounds())) {
+        for(Sprite s : getLevelManager().getLevel()) {      //Collisions that involve walls
+            for(Enemy e : getEnemyManager().getEnemies()) {  //Collisions between walls and enemies
+                if(e.getClass().equals(Wheel.class) && checkCollision((Sprite) s, (Sprite) e)) {    // Makes the wheels bounce when touching walls
                     e.setPosition(e.getPosition().add(e.getSpeed().scalar(-1)));
                     e.setSpeed(e.getSpeed().scalar(-.5));
-                } else if(e.getClass().equals(Can.class) && !e.getBullets().isEmpty()){
+                } else if(e.getClass().equals(Can.class)){ //Collisions between can bullets and walls
                     for(int i = 0; i < e.getBullets().size(); i++) {
-                        if(e.getBullets().get(i).getBounds().intersects(s.getBounds())) {
+                        if(checkCollision((Sprite) e.getBullets().get(i), (Sprite) s)) {
                             e.getBullets().remove(i);
                         }
                     }
                 }
-                
             }
-            for(Projectile p: getPlayer().getBullets()) {
+        
+            for(Projectile p: getPlayer().getBullets()) {   // Colllisions between walls and player projectiles
                 if(checkCollision((Sprite) p, (Sprite) s)) {
                     p.setVisible(false);
                 }
             }
             
-            if(s.onScreen()) {
-                if(s.getBounds().intersects(getPlayer().getBounds())) getPlayer().setPosition(getPlayer().getPosition().add(getPlayer().getSpeed().scalar(-1)));
+            if(s.onScreen()) {  //Collisions between walls that are on screen and player
+                if( checkCollision((Sprite) s, (Sprite) getPlayer())) { //Makes player bounce
+                    getPlayer().setPosition(getPlayer().getPosition().add(getPlayer().getSpeed().scalar(-1)));
+                }
             }
         }
-        //Checks collision between each bullet and enemy
+        //Checks collision between each player bullet and enemy
             for(int i = 0;i < getPlayer().getBullets().size();i++) {
                 for(int j = 0; j < getEnemyManager().getEnemies().size();j++) {
                     if(checkCollision((Sprite) getPlayer().getBullets().get(i), (Sprite) getEnemyManager().getEnemies().get(j))) {
                         getEnemyManager().getEnemies().get(j).setHp(getEnemyManager().getEnemies().get(j).getHp() - getPlayer().getBullets().get(i).getDamage());
                         getPlayer().getBullets().get(i).setVisible(false);
-                        break;
+                        System.out.println("ShotRegistered");
                     }
                 }
             }
+            
         // Checks collision between each enemy bullet and player
-         
+        for(int i = 0; i < getEnemyManager().getEnemies().size(); i++) {
+            for(int j = 0; j < getEnemyManager().getEnemies().get(i).getBullets().size(); j++) {
+                if(checkCollision((Sprite) getEnemyManager().getEnemies().get(i).getBullets().get(j) , (Sprite) getPlayer())) { //Sets the bullet that collides to not existing
+                    getEnemyManager().getEnemies().get(i).getBullets().get(j).setVisible(false);
+                    getPlayer().setHp(getPlayer().getHp() - getEnemyManager().getEnemies().get(i).getBullets().get(j).getDamage());
+                }
+            }
+        }
     }
 
     public Camera getCamera() {
@@ -553,6 +563,14 @@ public class Game implements Runnable, Commons {
 
     public void setCamera(Camera camera) {
         this.camera = camera;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
     
 }

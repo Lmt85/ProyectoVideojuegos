@@ -19,6 +19,7 @@ public class Player extends Sprite implements GameObject {
     private LinkedList<PlayerBullet> bullets;
     private boolean shoot;                      //stores whether or not the player can shoot;
     private int shotcd;
+    private int hp;
     
     
     /**
@@ -68,6 +69,7 @@ public class Player extends Sprite implements GameObject {
     public void init() {
         setShoot(true);
         setOrientation(Sprite.Orientation.NORTH);
+        hp = 50;
     }
 
     @Override
@@ -76,13 +78,7 @@ public class Player extends Sprite implements GameObject {
         // moves player
         setPosition(getPosition().add(getSpeed()));
         
-        // player boundaries
-//        if(getPosition().getX() >= Commons.BOARD_WIDTH - Commons.PLAYER_WIDTH) setPosition(Commons.BOARD_WIDTH - Commons.PLAYER_WIDTH,getPosition().getY());
-//        if(getPosition().getX() < 0) setPosition(0,getPosition().getY());    
-//        if(getPosition().getY() < 0) setPosition(getPosition().getX(),0);
-//        if(getPosition().getY() >= Commons.BOARD_HEIGHT - Commons.PLAYER_HEIGHT) setPosition(getPosition().getX(),Commons.BOARD_HEIGHT - Commons.PLAYER_HEIGHT);
-     
-    
+        // every tick it restores shoot cooldown
         if(!canShoot()) {
             shotcd--;
             if(shotcd < 0) {
@@ -148,8 +144,14 @@ public class Player extends Sprite implements GameObject {
     public void setShotcd(int shotcd) {
         this.shotcd = shotcd;
     }
-    
-    
+
+    public int getHp() {
+        return hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
     
 }
 
