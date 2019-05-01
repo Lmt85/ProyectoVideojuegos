@@ -2,15 +2,11 @@ package videoGame;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import static java.lang.Math.abs;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
-import static java.lang.Math.tan;
 import java.util.LinkedList;
 import maths.Vector2;
 import videoGame.GameObject;
-import videoGame.Player;
-import videoGame.Sprite;
 
 /**
  * This class is stores all the methods and variables related to the alien
@@ -18,10 +14,8 @@ import videoGame.Sprite;
  * @date 28/01/2019
  * @version 1.0
  */
-public class Can extends Sprite implements GameObject{
-    private CanBullet b;
-    private LinkedList<CanBullet> bullets;
-    private boolean shoot =false;                      //stores whether or not the player can shoot;
+public class Can extends Enemy implements GameObject{
+    private boolean shoot = true;
     private int shotcd;
     
     
@@ -38,26 +32,20 @@ public class Can extends Sprite implements GameObject{
      * @param player 
      */
     public Can(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game){  
-
         super(position,speed,visible,width,height,image,game);
-            bullets = new LinkedList<>();
-
-
-        
+        bullets = new LinkedList<>();
     }
-    public class CanBullet extends Projectile implements GameObject{
+    
+        public class CanBullet extends Projectile implements GameObject{
             boolean first=true;
             Vector2 vector = new Vector2(0,0);
-    
+            
             public CanBullet(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image,Game game){ 
-            super(position,speed,visible,width,height,image,50,game);
-           
-        }
-
+                super(position,speed,visible,width,height,image,50,game);
+            }
+        
         @Override
         public void init() {
-
-
         }
 
         /**
@@ -69,38 +57,24 @@ public class Can extends Sprite implements GameObject{
             if(first){
                
                 double angulo = (Math.atan2(getSpeed().getY()-getPosition().getY(),getSpeed().getX()-getPosition().getX()));
-
-                /*
-                double angulo = (1/ tan(abs((getSpeed().getY() - getPosition().getY())/(getSpeed().getX() - getPosition().getX()))));
-               System.out.println(angulo);
-*/
-                vector.setX(cos(angulo));
-                vector.setY(sin(angulo));
+                vector.set(cos(angulo), sin(angulo));
                 first=false;
 
-           }
-            
-            vector.setX(vector.getX()*1.025);
-            vector.setY(vector.getY()*1.025);
-          //  System.out.println(vector.getX());
-          //  System.out.println(vector.getY());
-
-
+           } 
+            vector.set(vector.scalar(1.075));
             setPosition(getPosition().add(vector));
         
         }
-
+        
         /**
-         * Renders the bomb if visible
-         * @param g 
+         * This method ticks the Bomb, only if visible, which spawns it in it's alien's position and moves
+         * it straight down until it reaches the bottom
          */
-//        @Override
-//        public void render(Graphics g) {
-//            if (isVisible()) {
-//                g.drawRect((int)position.getX(),(int) position.getY(), Commons.BOMB_WIDTH, Commons.BOMB_HEIGHT);
-//                g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), null);
-//            }
-//        }
+        @Override
+        public void render(Graphics g) {
+            g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), width, height, null);
+            g.drawRect((int) position.getX(), (int) position.getY(), width, height);
+        }
         
         /**
          * Converts the object to a string with most important attributes.
@@ -111,60 +85,25 @@ public class Can extends Sprite implements GameObject{
             return String.valueOf(position.getX() + " " + position.getY() + " " +  visible + "\n");
         }
     }
-    /**
-     * This method sets a bomb as the instance's bomb
-     * @param bomb 
-     */
- //    public void setBomb(Bomb bomb) {
- ////        this.bomb = bomb;
- //    }
-
-    /**
-     * This method returns the bomb
-     * @return instance's bomb.
-     */
- //    public Bomb getBomb() {
- ////        return bomb; return null
- //    }
+        
     @Override
      public void tick(){
-         
-         if(!getBullets().isEmpty()) {
-                for (int i = 0; i < getBullets().size(); i++) {
-                    if(getBullets().get(i).isVisible()) {
-                        getBullets().get(i).tick();
-                    }
-                    else getBullets().remove(i);
-                }
-                System.out.println(getBullets().size());
-
-        }
-         
-     }
-    
-    public void tick(Vector2 position, Game game) {
-        if (canShoot()) { 
-                shoots(position);
+        if(canShoot()) {
+            if(isVisible()) {
+                shoots(game.getPlayer().getPosition());
                 setShoot(false);
                 resetShotcd();
-        }else {
-            shotcd--;
-            if(shotcd < 0) {
-                setShoot(true);
             }
+         } else {
+             shotcd--;
+             if(shotcd < 0) {
+                setShoot(true);
+             }
+         }
+        for(int i = 0; i < getBullets().size(); i++) {
+            getBullets().get(i).tick();
         }
-        
-        if(!getBullets().isEmpty()) {
-                for (int i = 0; i < getBullets().size(); i++) {
-                    if(getBullets().get(i).isVisible()) {
-                        getBullets().get(i).tick();
-                    }
-                    else getBullets().remove(i);
-                }
-                System.out.println(getBullets().size());
-
-        }
-    }
+     }
     
     /**
      * Renders alien if visible(not hit by laser)
@@ -172,8 +111,13 @@ public class Can extends Sprite implements GameObject{
      */
     @Override
     public void render(Graphics g) {
-        g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), width, height, null);
-        g.drawRect((int) position.getX(), (int) position.getY(), width, height);
+        if(isVisible()) {
+            g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), width, height, null);
+            g.drawRect((int) position.getX(), (int) position.getY(), width, height);
+        }
+        for(int i = 0; i < getBullets().size(); i++) {
+            getBullets().get(i).render(g);
+        }
     }
 
     @Override
@@ -188,10 +132,6 @@ public class Can extends Sprite implements GameObject{
     public String toString() {
         return String.valueOf(position.getX() + " " + position.getY() + " " + visible + "\n");    
     }
-
-    public LinkedList<CanBullet> getBullets() {
-        return bullets;
-    }
     
     public boolean canShoot() {
         return shoot;
@@ -202,16 +142,13 @@ public class Can extends Sprite implements GameObject{
     }
 
     public void resetShotcd() {
-        this.shotcd = 15;
+        this.shotcd = 10;
     }
     
     public void shoots(Vector2 player) {
         Vector2 vector = new Vector2(getPosition().getX()+Commons.ALIEN_WIDTH/2,getPosition().getY()+Commons.ALIEN_HEIGHT/2);
-        bullets.addFirst(new CanBullet(vector,
-                        player, true, Commons.BOMB_WIDTH,
-
+        bullets.addFirst(new CanBullet(vector, player, true, Commons.BOMB_WIDTH,
                         Commons.BOMB_HEIGHT, Assets.bomb,game));
-        System.out.println(bullets.size());
     }
 
     public int getShotcd() {
@@ -221,5 +158,4 @@ public class Can extends Sprite implements GameObject{
     public void setShotcd(int shotcd) {
         this.shotcd = shotcd;
     }
-
 }

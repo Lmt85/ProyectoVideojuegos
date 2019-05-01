@@ -16,7 +16,7 @@ import maths.Vector2;
  *
  * @author luismariotrujillo
  */
-public class Boss extends Sprite implements GameObject{
+public class Boss extends Enemy implements GameObject{
         private Boss.BossBullet b;
         private LinkedList<Boss.BossBullet> bullets;
         private boolean shoot =false;                      //stores whether or not the player can shoot;
@@ -148,10 +148,6 @@ public class Boss extends Sprite implements GameObject{
         return String.valueOf(position.getX() + " " + position.getY() + " " + visible + "\n");    
     }
 
-    public LinkedList<BossBullet> getBullets() {
-        return bullets;
-    }
-    
     public boolean canShoot() {
         return shoot;
     }

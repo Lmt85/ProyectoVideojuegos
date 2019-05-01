@@ -12,7 +12,7 @@ import videoGame.Sprite;
  * @date 28/01/2019
  * @version 1.0
  */
-public class Wheel extends Sprite implements GameObject{
+public class Wheel extends Enemy implements GameObject{
     
     /**
      * Constructor with parameters, these parameters are passed directly to the Sprite class
@@ -28,45 +28,19 @@ public class Wheel extends Sprite implements GameObject{
      */
     public Wheel(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game){  
         super(position,speed,visible,width,height,image,game);
-//        bomb = new Bomb(position,speed,false,width,height,Assets.bomb); //For each instance, it initializes a bomb, which isn't visible at first
-        
-    }
-
-    /**
-     * This method ticks the Alien, according to alienManager's current direction.
-     * @param direction 
-     */
-    public void act(int direction) {
-        position.setX(position.getX() + direction);
-    }
-
-    /**
-     * This method sets a bomb as the instance's bomb
-     * @param bomb 
-     */
-//    public void setBomb(Bomb bomb) {
-////        this.bomb = bomb;
-//    }
-
-    /**
-     * This method returns the bomb
-     * @return instance's bomb.
-     */
-//    public Bomb getBomb() {
-////        return bomb; return null
-//    }
-   @Override
-    public void tick() {
-        this.setSpeed(getSpeed().scalar(.9));
-        this.setPosition(this.getPosition().add(this.getSpeed()));
     }
     
-    public void tick(Player gamer) {
-       if(gamer.getPosition().getX() > this.getPosition().getX()) this.setSpeed(this.getSpeed().getX() + .2, this.getSpeed().getY());
-       if(gamer.getPosition().getX() < this.getPosition().getX()) this.setSpeed(this.getSpeed().getX() - .2, this.getSpeed().getY());
-       if(gamer.getPosition().getY() > this.getPosition().getY()) this.setSpeed(this.getSpeed().getX(), this.getSpeed().getY() + .2);
-       if(gamer.getPosition().getY() < this.getPosition().getY()) this.setSpeed(this.getSpeed().getX(), this.getSpeed().getY() - .2);
-       this.setPosition(this.getPosition().getX() + this.getSpeed().getX(), this.getPosition().getY() + this.getSpeed().getY());
+    @Override
+    public void tick() {
+        if(isVisible()){
+            if(game.getPlayer().getPosition().getX() > this.getPosition().getX()) this.setSpeed(this.getSpeed().getX() + .2, this.getSpeed().getY());
+            if(game.getPlayer().getPosition().getX() < this.getPosition().getX()) this.setSpeed(this.getSpeed().getX() - .2, this.getSpeed().getY());
+            if(game.getPlayer().getPosition().getY() > this.getPosition().getY()) this.setSpeed(this.getSpeed().getX(), this.getSpeed().getY() + .2);
+            if(game.getPlayer().getPosition().getY() < this.getPosition().getY()) this.setSpeed(this.getSpeed().getX(), this.getSpeed().getY() - .2);
+        } else {
+            this.setSpeed(getSpeed().scalar(.9));
+        }
+        this.setPosition(this.getPosition().getX() + this.getSpeed().getX(), this.getPosition().getY() + this.getSpeed().getY());
     }
     
     /**
