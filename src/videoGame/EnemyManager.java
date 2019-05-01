@@ -2,8 +2,6 @@ package videoGame;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
 
 /**
  * This class manages the aliens as a whole, moving them in the same direction, encapsulating them

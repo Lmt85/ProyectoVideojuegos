@@ -5,18 +5,8 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import javax.swing.JLabel;
 import maths.Vector2;
-import videoGame.Player.PlayerBullet;
+import java.sql.*;
 
 /**
  * Here lies all objects that belong to a particular instance of a Game,
@@ -69,8 +59,10 @@ public class Game implements Runnable, Commons {
 
     //Internal game atributes
     public String message;  // Stores endgame message
-    private int score;
-
+    private int score;      // Stores game score
+    Connection c;           // Database connection
+    Statement stmt;         // Sql statement to execute
+    
     //Sound
     SoundClip music;    // Stores looping music
     SoundClip laser;    // Stores the laser sound
@@ -322,16 +314,28 @@ public class Game implements Runnable, Commons {
 
         // Sets the score
         score = 0;
+        
+        // Database
+        c = null;
+        try {
+           Class.forName("org.sqlite.JDBC");
+           c = DriverManager.getConnection("jdbc:sqlite:test.db");
+           c.setAutoCommit(false);
+        } catch ( Exception e ) {
+           System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+           System.exit(0);
+        }
+        System.out.println("Opened database successfully");
     }
 
     /**
      * Code to be executed every game tick before render()
      */
     private void tick() {
-        camera.tick(player);          //ticks the camera relative to the player
         getKeyManager().tick(); //key manager must precede all user ralated actions
         
-        if (!paused && gameState == 0) { //game playing and not paused
+        if (!paused && gameState == 0) { //game playing and not paused 
+            camera.tick(player);          //ticks the camera relative to the player
             
             // Sets orientation depending on key pressed
             // north,east,south,west = arrow keys
@@ -390,7 +394,7 @@ public class Game implements Runnable, Commons {
         }
 
         // Saves game and loads game
-        if (keyManager.save && gameState == 0) saveGame("save.txt");
+        if (keyManager.save && gameState == 0) dbTest();
         if (keyManager.load && gameState == 0) loadGame("save.txt");
 
         // When restart key pressed, music is restarted, gameState is set as playing, and game is loaded
@@ -571,6 +575,23 @@ public class Game implements Runnable, Commons {
 
     public void setScore(int score) {
         this.score = score;
+    }
+    
+    public void dbTest() {
+        try {
+            stmt = c.createStatement();
+            String sql = "INSERT INTO Highscore (Name,Score,Time) VALUES('Marcelo'," + score + ",50);";
+            stmt.executeUpdate(sql);
+            
+            stmt.close();
+            c.commit();
+            c.close();
+
+        } catch ( Exception e ) {
+           System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+           System.exit(0);
+        }
+        
     }
     
 }
