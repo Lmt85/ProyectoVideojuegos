@@ -33,8 +33,8 @@ public class Can extends Sprite implements GameObject{
      * @param image 
      * @param player 
      */
-    public Can(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image){  
-        super(position,speed,visible,width,height,image);
+    public Can(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game){  
+        super(position,speed,visible,width,height,image,game);
             bullets = new LinkedList<>();
 
         
@@ -43,8 +43,8 @@ public class Can extends Sprite implements GameObject{
             boolean first=true;
             Vector2 vector = new Vector2(0,0);
     
-            public CanBullet(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image){ 
-            super(position,speed,visible,width,height,image,50);
+            public CanBullet(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image,Game game){ 
+            super(position,speed,visible,width,height,image,50,game);
            
         }
 
@@ -200,7 +200,7 @@ public class Can extends Sprite implements GameObject{
     public void shoots(Vector2 player) {
         bullets.addFirst(new CanBullet(getPosition(),
                         player, true, Commons.BOMB_WIDTH,
-                        Commons.BOMB_HEIGHT, Assets.bomb));
+                        Commons.BOMB_HEIGHT, Assets.bomb,game));
         System.out.println(bullets.size());
     }
 

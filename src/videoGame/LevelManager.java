@@ -25,7 +25,7 @@ public class LevelManager {
     
     public void render(Graphics g) {
         for(int i = 0; i < level.size(); i++) {
-            level.get(i).render(g);
+            if(game.getCamera().getBounds().contains(level.get(i).getBounds())||game.getCamera().getBounds().intersects(level.get(i).getBounds()) ) level.get(i).render(g);
         }
     }
     
@@ -42,9 +42,9 @@ public class LevelManager {
                 int green = (pixel >> 8) & 0xff;
                 int blue = (pixel) & 0xff;
                        
-                if(red == 255) level.add(new Block(new Vector2(i * Commons.GRID_WIDTH, j * Commons.GRID_HEIGHT), new Vector2(0,0),true, Commons.BLOCK_WIDTH,Commons.BLOCK_HEIGHT,Assets.wall));
-                if(blue == 255) game.getEnemyManager().getEnemies().add(new Wheel(new Vector2(i * Commons.GRID_WIDTH, j * Commons.GRID_HEIGHT), new Vector2(0,0),true, Commons.ALIEN_WIDTH,Commons.ALIEN_HEIGHT,Assets.alien));
-                if(green == 255) game.getEnemyManager().getCans().add(new Can(new Vector2(i * Commons.GRID_WIDTH, j * Commons.GRID_HEIGHT), new Vector2(0,0),true, Commons.ALIEN_WIDTH,Commons.ALIEN_HEIGHT,Assets.alien));
+                if(red == 255) level.add(new Block(new Vector2(i * Commons.GRID_WIDTH, j * Commons.GRID_HEIGHT), new Vector2(0,0),true, Commons.BLOCK_WIDTH,Commons.BLOCK_HEIGHT,Assets.wall,game));
+                if(blue == 255) game.getEnemyManager().getEnemies().add(new Wheel(new Vector2(i * Commons.GRID_WIDTH, j * Commons.GRID_HEIGHT), new Vector2(0,0),true, Commons.ALIEN_WIDTH,Commons.ALIEN_HEIGHT,Assets.alien,game));
+                if(green == 255) game.getEnemyManager().getCans().add(new Can(new Vector2(i * Commons.GRID_WIDTH, j * Commons.GRID_HEIGHT), new Vector2(0,0),true, Commons.ALIEN_WIDTH,Commons.ALIEN_HEIGHT,Assets.alien,game));
                 
             }
         }
