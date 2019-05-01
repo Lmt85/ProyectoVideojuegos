@@ -32,6 +32,12 @@ public class Assets {
     public static BufferedImage wheelSheet;
     public static BufferedImage bubble;
     
+    //Sound
+    public static SoundClip music;    // Stores looping music
+    SoundClip laser;    // Stores the laser sound
+    SoundClip alienOof; // Stores alien death sound
+    SoundClip dead;     // Stores player death sound
+    
     /**
      * loads all of the game assets as images
      */
@@ -61,5 +67,7 @@ public class Assets {
         for(int i = 0; i < 4; i++){
             wheels[i] = spritesheet.crop(i * 200, 0, 200, 200);
         }
+        
+        music = new SoundClip("/sound/AquaTheme");
     }    
 }

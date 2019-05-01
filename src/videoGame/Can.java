@@ -31,9 +31,11 @@ public class Can extends Enemy implements GameObject{
      * @param image 
      * @param player 
      */
-    public Can(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game){  
-        super(position,speed,visible,width,height,image,game);
+    public Can(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game,int hp){  
+        super(position,speed,visible,width,height,image,game,hp);
         bullets = new LinkedList<>();
+        this.hp = hp;
+        this.maxHp = hp;
     }
     
         public class CanBullet extends Projectile implements GameObject{
@@ -61,7 +63,8 @@ public class Can extends Enemy implements GameObject{
                 first=false;
 
            } 
-            vector.set(vector.scalar(1.075));
+
+            vector.set(vector.scalar(1.025));
             setPosition(getPosition().add(vector));
         
         }
@@ -73,7 +76,7 @@ public class Can extends Enemy implements GameObject{
         @Override
         public void render(Graphics g) {
             g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), width, height, null);
-            g.drawRect((int) position.getX(), (int) position.getY(), width, height);
+            //g.drawRect((int) position.getX(), (int) position.getY(), width, height);
         }
         
         /**
@@ -88,6 +91,7 @@ public class Can extends Enemy implements GameObject{
         
     @Override
      public void tick(){
+         
         if(canShoot()) {
             if(isVisible()) {
                 shoots(game.getPlayer().getPosition());
@@ -113,7 +117,10 @@ public class Can extends Enemy implements GameObject{
     public void render(Graphics g) {
         if(isVisible()) {
             g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), width, height, null);
-            g.drawRect((int) position.getX(), (int) position.getY(), width, height);
+            //g.drawRect((int) position.getX(), (int) position.getY(), width, height);
+         if(maxHp != hp){
+            g.fillRect((int) (position.getX() + 5), (int)position.getY() - 10,  (int) (width - 10) * (hp / maxHp), 5);
+        }
         }
         for(int i = 0; i < getBullets().size(); i++) {
             getBullets().get(i).render(g);

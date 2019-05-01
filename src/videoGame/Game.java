@@ -70,11 +70,7 @@ public class Game implements Runnable, Commons {
     //Internal game atributes
     public String message;  // Stores endgame message
 
-    //Sound
-    SoundClip music;    // Stores looping music
-    SoundClip laser;    // Stores the laser sound
-    SoundClip alienOof; // Stores alien death sound
-    SoundClip dead;     // Stores player death sound
+
 
     /**
      * to create title, width and height and set the game is still not running
@@ -314,8 +310,7 @@ public class Game implements Runnable, Commons {
         camera = new Camera(0,0,this);
         
         // Loads all the sound related assets
-        music = new SoundClip("/sound/DarkIntentions.WAV");
-        music.setLooping(true);
+        Assets.music.setLooping(true);
         
         //Creates and initializes game objects
         setPlayer(new Player(new Vector2(Commons.START_X, Commons.START_Y), new Vector2(), true, Commons.PLAYER_WIDTH, Commons.PLAYER_HEIGHT, Assets.player,this));
@@ -377,17 +372,15 @@ public class Game implements Runnable, Commons {
                 getPlayer().setShoot(false);
                 getPlayer().resetShotcd();
            }
-             
-            checkCollisions();
             
             // Player movement
-            if (getKeyManager().left) getPlayer().getSpeed().setX(-4);
+            if (getKeyManager().left) getPlayer().getSpeed().setX(-5);
             else if(!getKeyManager().right) getPlayer().getSpeed().setX(0);
-            if (getKeyManager().right) getPlayer().getSpeed().setX(4);
+            if (getKeyManager().right) getPlayer().getSpeed().setX(5);
             else if(!getKeyManager().left) getPlayer().getSpeed().setX(0);
-            if (getKeyManager().up) getPlayer().getSpeed().setY(-4);
+            if (getKeyManager().up) getPlayer().getSpeed().setY(-5);
             else if(!getKeyManager().down) getPlayer().getSpeed().setY(0);
-            if (getKeyManager().down) getPlayer().getSpeed().setY(4);
+            if (getKeyManager().down) getPlayer().getSpeed().setY(5);
             else if(!getKeyManager().up) getPlayer().getSpeed().setY(0);
 
             // Ticks game objects
@@ -405,7 +398,7 @@ public class Game implements Runnable, Commons {
      
            
             enemyManager.tick();
-            
+            checkCollisions();
         }
 
         // Saves game and loads game
@@ -414,7 +407,7 @@ public class Game implements Runnable, Commons {
 
         // When restart key pressed, music is restarted, gameState is set as playing, and game is loaded
         if (keyManager.restart) {
-            music.play();
+            Assets.music.play();
             setGameState(0);
             loadGame("restartGame.txt");
         }
@@ -521,7 +514,11 @@ public class Game implements Runnable, Commons {
         return enemyManager;
     }
     
-    
+    private boolean checkCollision(Sprite s, Sprite s2) {
+        if(s.getBounds().intersects(s2.getBounds())) {
+            return true;
+        } else return false;
+    }
 
     private void checkCollisions() {
         for(Sprite s : getLevelManager().getLevel()) { //Collisions that involve walls
@@ -547,6 +544,37 @@ public class Game implements Runnable, Commons {
                 if(s.getBounds().intersects(getPlayer().getBounds())) getPlayer().setPosition(getPlayer().getPosition().add(getPlayer().getSpeed().scalar(-1)));
             }
         }
+//         Checks collision between each bullet and enemy
+//        for(Projectile p :  getPlayer().getBullets()) {
+//            for(Enemy e : getEnemyManager().getEnemies()) {
+//                if(checkCollision((Sprite) e, (Sprite) p)) {
+//                    getPlayer().getBullets().remove(p);
+//                    if(e.getHp() > 0){
+//                        e.setHp(e.getHp() - p.getDamage());
+//                        System.out.println(e.getHp());
+//                    } else {
+//                        getEnemyManager().getEnemies().remove(e);
+//                    }
+//                    
+//                }
+//            }
+//            for(int j = 0; j < getEnemyManager().getEnemies().size(); j++) {
+//                if(checkCollision((Sprite) p, (Sprite) getEnemyManager().getEnemies().get(j))) {
+//                    getPlayer().getBullets().remove(p);
+//                    if(getEnemyManager().getEnemies().get(j).getHp() > 0){
+//                        getEnemyManager().getEnemies().get(j).setHp(getEnemyManager().getEnemies().get(j).getHp() - p.getDamage());
+//                        System.out.println(getEnemyManager().getEnemies().get(j).getHp());
+//                    } else {
+//                        getEnemyManager().getEnemies().remove(j);
+//                    }
+//                    
+//                }
+//            }
+//            for(int i = 0;i < getPlayer().getBullets().size();i++) {
+//                for(int j = 0; j < get)
+//            }
+        
+        
     }
 
     public Camera getCamera() {
@@ -556,6 +584,4 @@ public class Game implements Runnable, Commons {
     public void setCamera(Camera camera) {
         this.camera = camera;
     }
-    
-
 }

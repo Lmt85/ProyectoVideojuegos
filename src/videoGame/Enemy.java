@@ -14,6 +14,8 @@ import videoGame.Sprite;
  */
 public abstract class Enemy extends Sprite implements GameObject{
     protected LinkedList<Projectile> bullets;
+    protected int hp;
+    protected int maxHp;
     /**
      * Constructor with parameters, these parameters are passed directly to the Sprite class
      * @param position
@@ -26,8 +28,10 @@ public abstract class Enemy extends Sprite implements GameObject{
      * @param image 
      * @param player 
      */
-    public Enemy(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game){  
+    public Enemy(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game, int hp){  
         super(position,speed,visible,width,height,image,game);
+        this.hp = hp;
+        this.maxHp = hp;
     }
 
     @Override
@@ -65,6 +69,13 @@ public abstract class Enemy extends Sprite implements GameObject{
     public void setBullets(LinkedList<Projectile> bullets) {
         this.bullets = bullets;
     }
-    
+
+    public int getHp() {
+        return hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
     
 }
