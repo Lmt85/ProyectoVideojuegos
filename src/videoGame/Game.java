@@ -242,8 +242,12 @@ public class Game implements Runnable, Commons {
             Graphics2D g2d = (Graphics2D) g;
             g.setColor(Color.GREEN);   // sets the painting color to green
             g.setFont(font);           // sets the font
-
+            
             g.drawImage(Assets.background, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
+            for(int i = 0; i < player.getHp(); i++){
+                g.drawImage(Assets.heartFull, i * 25, 0, 20, 20, null);
+            }
+            
             
             //////////////////////////////////// Rendering Block
             
@@ -252,6 +256,7 @@ public class Game implements Runnable, Commons {
             
             getLevelManager().render(g);
             getPlayer().render(g);
+            
             
             if(!getPlayer().getBullets().isEmpty()) 
                 for(Player.PlayerBullet p : getPlayer().getBullets()) p.render(g);
