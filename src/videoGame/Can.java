@@ -147,8 +147,8 @@ public class Can extends Enemy implements GameObject{
     
     public void shoots(Vector2 player) {
         Vector2 vector = new Vector2(getPosition().getX()+Commons.ALIEN_WIDTH/2,getPosition().getY()+Commons.ALIEN_HEIGHT/2);
-        bullets.addFirst(new CanBullet(vector, player, true, Commons.BOMB_WIDTH,
-                        Commons.BOMB_HEIGHT, Assets.bomb,game));
+        bullets.addFirst(new CanBullet(vector, player, true, Commons.BOMB_WIDTH * 2,
+                        Commons.BOMB_HEIGHT * 2, Assets.bubble,game));
     }
 
     public int getShotcd() {

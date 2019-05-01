@@ -26,8 +26,11 @@ public class Wheel extends Enemy implements GameObject{
      * @param image 
      * @param player 
      */
+    private Animation wheelAnim;
+    
     public Wheel(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game){  
         super(position,speed,visible,width,height,image,game);
+        this.wheelAnim = new Animation(Assets.wheels, 100);
     }
     
     @Override
@@ -37,6 +40,7 @@ public class Wheel extends Enemy implements GameObject{
             if(game.getPlayer().getPosition().getX() < this.getPosition().getX()) this.setSpeed(this.getSpeed().getX() - .2, this.getSpeed().getY());
             if(game.getPlayer().getPosition().getY() > this.getPosition().getY()) this.setSpeed(this.getSpeed().getX(), this.getSpeed().getY() + .2);
             if(game.getPlayer().getPosition().getY() < this.getPosition().getY()) this.setSpeed(this.getSpeed().getX(), this.getSpeed().getY() - .2);
+            wheelAnim.tick();
         } else {
             this.setSpeed(getSpeed().scalar(.9));
         }
@@ -49,7 +53,7 @@ public class Wheel extends Enemy implements GameObject{
      */
     @Override
     public void render(Graphics g) {
-        g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), width, height, null);
+        g.drawImage(wheelAnim.getCurrentFrame(), (int)position.getX(), (int)position.getY(), width, height, null);
         g.drawRect((int) position.getX(), (int) position.getY(), width, height);
     }
 

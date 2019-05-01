@@ -28,7 +28,9 @@ public class Assets {
     public static BufferedImage sand;
     public static BufferedImage wheel;
     public static BufferedImage can;
-
+    public static BufferedImage wheels[];
+    public static BufferedImage wheelSheet;
+    public static BufferedImage bubble;
     
     /**
      * loads all of the game assets as images
@@ -51,5 +53,13 @@ public class Assets {
         sand = ImageLoader.loadImage("/images/Sand.png");
         can = ImageLoader.loadImage("/images/can.png");
         wheel = ImageLoader.loadImage("/images/wheel.png");
+        bubble = ImageLoader.loadImage("/images/bubble.png");
+        wheelSheet = ImageLoader.loadImage("/images/wheelSheet.png");
+        
+        wheels = new BufferedImage[4];
+        SpriteSheet spritesheet = new SpriteSheet(wheelSheet);
+        for(int i = 0; i < 4; i++){
+            wheels[i] = spritesheet.crop(i * 200, 0, 200, 200);
+        }
     }    
 }
