@@ -2,6 +2,10 @@ package videoGame;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import static java.lang.Math.abs;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.Math.tan;
 import java.util.LinkedList;
 import maths.Vector2;
 import videoGame.GameObject;
@@ -33,9 +37,10 @@ public class Can extends Sprite implements GameObject{
      * @param image 
      * @param player 
      */
-    public Can(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image){  
+    public Can(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game){  
         super(position,speed,visible,width,height,image);
             bullets = new LinkedList<>();
+
 
         
     }
@@ -61,12 +66,24 @@ public class Can extends Sprite implements GameObject{
         @Override
         public void tick() {
             if(first){
-                vector=getSpeed();
-                first=false;
-                System.out.println("Entra");
+               
+                double angulo = (Math.atan2(getSpeed().getY()-getPosition().getY(),getSpeed().getX()-getPosition().getX()));
 
-            }
-                System.out.println(vector.getX());
+                /*
+                double angulo = (1/ tan(abs((getSpeed().getY() - getPosition().getY())/(getSpeed().getX() - getPosition().getX()))));
+               System.out.println(angulo);
+*/
+                vector.setX(cos(angulo));
+                vector.setY(sin(angulo));
+                first=false;
+
+           }
+            
+            vector.setX(vector.getX()*1.025);
+            vector.setY(vector.getY()*1.025);
+          //  System.out.println(vector.getX());
+          //  System.out.println(vector.getY());
+
 
             setPosition(getPosition().add(vector));
         
@@ -120,12 +137,22 @@ public class Can extends Sprite implements GameObject{
     @Override
      public void tick(){
          
+         if(!getBullets().isEmpty()) {
+                for (int i = 0; i < getBullets().size(); i++) {
+                    if(getBullets().get(i).isVisible()) {
+                        getBullets().get(i).tick();
+                    }
+                    else getBullets().remove(i);
+                }
+                System.out.println(getBullets().size());
+
+        }
+         
      }
     
-    public void tick(Vector2 speed) {
+    public void tick(Vector2 position, Game game) {
         if (canShoot()) { 
-                System.out.println("Shot");
-                shoots(speed);
+                shoots(position);
                 setShoot(false);
                 resetShotcd();
         }else {
@@ -137,11 +164,13 @@ public class Can extends Sprite implements GameObject{
         
         if(!getBullets().isEmpty()) {
                 for (int i = 0; i < getBullets().size(); i++) {
-                    if(getBullets().get(i).isVisible()) {
+                    if(getBullets().get(i).isVisible()&& game.getCamera().getBounds().contains(getBullets().get(i).getBounds())) {
                         getBullets().get(i).tick();
                     }
                     else getBullets().remove(i);
                 }
+                System.out.println(getBullets().size());
+
         }
             
         
@@ -198,10 +227,10 @@ public class Can extends Sprite implements GameObject{
     }
     
     public void shoots(Vector2 player) {
-        bullets.addFirst(new CanBullet(getPosition(),
+        Vector2 vector = new Vector2(getPosition().getX()+Commons.ALIEN_WIDTH/2,getPosition().getY()+Commons.ALIEN_HEIGHT/2);
+        bullets.addFirst(new CanBullet(vector,
                         player, true, Commons.BOMB_WIDTH,
                         Commons.BOMB_HEIGHT, Assets.bomb));
-        System.out.println(bullets.size());
     }
 
     public int getShotcd() {
