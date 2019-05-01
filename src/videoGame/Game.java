@@ -6,6 +6,7 @@ import java.awt.image.BufferStrategy;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -106,6 +107,8 @@ public class Game implements Runnable, Commons {
     public int getWidth() {
         return width;
     }
+    
+    
 
     /**
      * returns the height of the display
@@ -243,7 +246,7 @@ public class Game implements Runnable, Commons {
             g.setColor(Color.GREEN);   // sets the painting color to greenda
             g.setFont(font);           // sets the font
             
-            g.drawImage(Assets.background, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
+            g.drawImage(Assets.sand, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
 
             
             
@@ -606,5 +609,5 @@ public class Game implements Runnable, Commons {
         this.camera = camera;
     }
     
-    
+
 }
