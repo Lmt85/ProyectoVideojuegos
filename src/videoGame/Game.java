@@ -91,8 +91,6 @@ public class Game implements Runnable, Commons {
         // Sets game dimensions
         this.width = Commons.BOARD_WIDTH;
         this.height = Commons.BOARD_HEIGHT;
-        System.out.println(Commons.BOARD_WIDTH);
-        System.out.println(width);
         // Initializes game functions
         running = false;
         keyManager = new KeyManager();
@@ -291,7 +289,7 @@ public class Game implements Runnable, Commons {
     private void init() {
         // Initializes the display with the given dimensions
         display = new Display(title, width, height);
-
+        
         // initializes all the assets of the game
         Assets.init();
         camera = new Camera(0,0,this);
@@ -301,7 +299,8 @@ public class Game implements Runnable, Commons {
         music.setLooping(true);
         
         //Creates and initializes game objects
-        setPlayer(new Player(new Vector2(Commons.START_X, Commons.START_Y), new Vector2(), true, Commons.PLAYER_WIDTH, Commons.PLAYER_HEIGHT, Assets.player));
+        setPlayer(new Player(new Vector2(Commons.START_X, Commons.START_Y), new Vector2(), true, Commons.PLAYER_WIDTH, Commons.PLAYER_HEIGHT, Assets.player,this));
+        System.out.println(Commons.PLAYER_WIDTH);
         getPlayer().init();
         enemyManager = new EnemyManager(this);
                    
@@ -358,16 +357,18 @@ public class Game implements Runnable, Commons {
                 getPlayer().shoots();
                 getPlayer().setShoot(false);
                 getPlayer().resetShotcd();
-            }
+           }
+             
+            checkCollisions();
             
             // Player movement
-            if (getKeyManager().left) getPlayer().getSpeed().setX(-2);
+            if (getKeyManager().left) getPlayer().getSpeed().setX(-4);
             else if(!getKeyManager().right) getPlayer().getSpeed().setX(0);
-            if (getKeyManager().right) getPlayer().getSpeed().setX(2);
+            if (getKeyManager().right) getPlayer().getSpeed().setX(4);
             else if(!getKeyManager().left) getPlayer().getSpeed().setX(0);
-            if (getKeyManager().up) getPlayer().getSpeed().setY(-2);
+            if (getKeyManager().up) getPlayer().getSpeed().setY(-4);
             else if(!getKeyManager().down) getPlayer().getSpeed().setY(0);
-            if (getKeyManager().down) getPlayer().getSpeed().setY(2);
+            if (getKeyManager().down) getPlayer().getSpeed().setY(4);
             else if(!getKeyManager().up) getPlayer().getSpeed().setY(0);
 
             // Ticks game objects
@@ -382,9 +383,10 @@ public class Game implements Runnable, Commons {
             }
             
             //Ticks the manager that controls the enemies
+     
+           
             enemyManager.tick();
             
-            checkCollisions();
         }
 
         // Saves game and loads game
@@ -557,9 +559,18 @@ public class Game implements Runnable, Commons {
 
     private void checkCollisions() {
         for(Sprite s : getLevelManager().getLevel()) {
-            if(s.getBounds().intersects(getPlayer().getBounds())) {
-                getPlayer().setPosition(getPlayer().getPosition().add(getPlayer().getSpeed().scalar(-1)));
+            if(s.isVisible()) {
+                if(s.getBounds().intersects(getPlayer().getBounds())) getPlayer().setPosition(getPlayer().getPosition().add(getPlayer().getSpeed().scalar(-1)));
+                for(Wheel e : getEnemyManager().getEnemies()){
+                    if(e.isVisible() && s.getBounds().intersects(e.getBounds())) {
+                        e.setPosition(e.getPosition().add(e.getSpeed().scalar(-1)));
+                        e.setSpeed(e.getSpeed().scalar(-.5));
+                    }
+                }
+                
             }
+                
+            
             for(Projectile p: getPlayer().getBullets()) {
                 if(s.getBounds().intersects(p.getBounds())) {
                     
@@ -567,7 +578,17 @@ public class Game implements Runnable, Commons {
                     
                 }
             }
+            
         }
     }
+
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+    }
+    
     
 }

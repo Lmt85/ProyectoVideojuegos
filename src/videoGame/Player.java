@@ -31,14 +31,14 @@ public class Player extends Sprite implements GameObject {
      * @param image
      * @param game 
      */
-    public Player(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image) {
-        super(position, speed, visible, width, height, image);
+    public Player(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game) {
+        super(position, speed, visible, width, height, image, game);
         bullets = new LinkedList<>();
     }
     
     public class PlayerBullet extends Projectile implements GameObject{
-            public PlayerBullet(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image){ 
-            super(position,speed,visible,width,height,image,50);
+            public PlayerBullet(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game){ 
+            super(position,speed,visible,width,height,image,50,game);
         }
 
         @Override
@@ -111,7 +111,7 @@ public class Player extends Sprite implements GameObject {
     @Override
     public void render(Graphics g) {
         if (isVisible()) { 
-            g.drawImage(getImage(), (int)position.getX(), (int) position.getY(), null);
+            g.drawImage(getImage(), (int)position.getX(), (int) position.getY(), width, height, null);
         }
     }
     
@@ -145,13 +145,13 @@ public class Player extends Sprite implements GameObject {
     }
 
     public void resetShotcd() {
-        this.shotcd = 30;
+        this.shotcd = 15;
     }
     
     public void shoots() {
         bullets.addFirst(new PlayerBullet(getPosition(),
-                        getOrientation().speed(3), true, Commons.BOMB_WIDTH,
-                        Commons.BOMB_HEIGHT, Assets.bomb));
+                        getOrientation().speed(6), true, Commons.BOMB_WIDTH,
+                        Commons.BOMB_HEIGHT, Assets.bomb,game));
         System.out.println(bullets.size());
     }
 

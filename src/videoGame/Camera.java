@@ -5,6 +5,8 @@
  */
 package videoGame;
 
+import java.awt.Rectangle;
+
 /**
  * Class that manages the game camera
  * @author Adrián Marcelo Suárez Ponce
@@ -47,5 +49,7 @@ public class Camera {
         this.y = y;
     }
     
-    
+    public Rectangle getBounds() {
+        return new Rectangle((int) x, (int) y, game.getWidth(), game.getHeight());
+    }
 }
