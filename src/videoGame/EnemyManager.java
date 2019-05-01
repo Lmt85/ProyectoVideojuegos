@@ -16,7 +16,9 @@ import java.util.Random;
  */
 public class EnemyManager implements GameObject{
     private ArrayList<Wheel> enemies; //array to store the aliens
-    private ArrayList<Can> cans; 
+    private ArrayList<Can> cans;   
+    private ArrayList<Boss> bosses; 
+
     private Game game;
     
     /**
@@ -27,6 +29,7 @@ public class EnemyManager implements GameObject{
     public EnemyManager(Game game) {
         enemies = new ArrayList<>();
         cans = new ArrayList<>();
+        bosses = new ArrayList<>();
         this.game = game;
     }
     
@@ -70,6 +73,16 @@ public class EnemyManager implements GameObject{
             }
             //else  cans.remove(cans.get(i));
         }
+        for(int i = 0; i < bosses.size(); i++) {
+            if(bosses.get(i).isVisible()) {
+                System.out.println("hello");
+                bosses.get(i).tick(game.getPlayer().getPosition(),game);
+            } else{
+                bosses.get(i).tick();
+                
+            }
+            //else  cans.remove(cans.get(i));
+        }
     }
 
     /**
@@ -90,6 +103,14 @@ public class EnemyManager implements GameObject{
                 }
             }
         }
+        for(int i = 0; i < bosses.size(); i++) {
+            bosses.get(i).render(g);
+            if(!bosses.get(i).getBullets().isEmpty()){
+                for(int x = 0; x < bosses.get(i).getBullets().size(); x++) {
+                    bosses.get(i).getBullets().get(x).render(g);
+                }
+            }
+        }
     }
 
     
@@ -99,6 +120,9 @@ public class EnemyManager implements GameObject{
     public ArrayList<Can> getCans() {
         return cans;
     }
+    public ArrayList<Boss> getBosses() {
+        return bosses;
+    }
 
     public void setEnemies(ArrayList<Wheel> enemies) {
         this.enemies = enemies;
@@ -106,6 +130,9 @@ public class EnemyManager implements GameObject{
     
     public void setCans(ArrayList<Can> cans) {
         this.cans = cans;
+    }
+    public void setBosses(ArrayList<Boss> bosses) {
+        this.bosses = bosses;
     }
     
 }
