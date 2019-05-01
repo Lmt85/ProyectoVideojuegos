@@ -19,7 +19,8 @@ public class Player extends Sprite implements GameObject {
     private LinkedList<PlayerBullet> bullets;
     private boolean shoot;                      //stores whether or not the player can shoot;
     private int shotcd;
-    
+    private int hp;
+    private int lives;
     
     /**
      * Constructor with parameters, these parameters are passed directly to the Sprite class
@@ -34,6 +35,8 @@ public class Player extends Sprite implements GameObject {
     public Player(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game) {
         super(position, speed, visible, width, height, image, game);
         bullets = new LinkedList<>();
+        hp = 6;
+        lives = 3;
     }
     
     public class PlayerBullet extends Projectile implements GameObject{
@@ -145,7 +148,7 @@ public class Player extends Sprite implements GameObject {
     }
 
     public void resetShotcd() {
-        this.shotcd = 15;
+        this.shotcd = 5;
     }
     
     public void shoots() {
@@ -161,6 +164,22 @@ public class Player extends Sprite implements GameObject {
 
     public void setShotcd(int shotcd) {
         this.shotcd = shotcd;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public void setLives(int lives) {
+        this.lives = lives;
     }
     
     

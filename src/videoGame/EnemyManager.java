@@ -61,7 +61,8 @@ public class EnemyManager implements GameObject{
             }
         }
         for(int i = 0; i < cans.size(); i++) {
-            if(cans.get(i).isVisible() && game.getCamera().getBounds().contains(cans.get(i).getBounds())) {
+            if(cans.get(i).isVisible()) {
+                System.out.println("hello");
                 cans.get(i).tick(game.getPlayer().getPosition(),game);
             } else{
                 cans.get(i).tick();

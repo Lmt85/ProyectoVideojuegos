@@ -111,15 +111,6 @@ public class Can extends Sprite implements GameObject{
             return String.valueOf(position.getX() + " " + position.getY() + " " +  visible + "\n");
         }
     }
-
-    /**
-     * This method ticks the Alien, according to alienManager's current direction.
-     * @param direction 
-     */
-    public void act(int direction) {
-        position.setX(position.getX() + direction);
-    }
-
     /**
      * This method sets a bomb as the instance's bomb
      * @param bomb 
@@ -165,7 +156,7 @@ public class Can extends Sprite implements GameObject{
         
         if(!getBullets().isEmpty()) {
                 for (int i = 0; i < getBullets().size(); i++) {
-                    if(getBullets().get(i).isVisible()&& game.getCamera().getBounds().contains(getBullets().get(i).getBounds())) {
+                    if(getBullets().get(i).isVisible()) {
                         getBullets().get(i).tick();
                     }
                     else getBullets().remove(i);
@@ -173,12 +164,6 @@ public class Can extends Sprite implements GameObject{
                 System.out.println(getBullets().size());
 
         }
-            
-        
-            
-        
-            
-        
     }
     
     /**
@@ -202,13 +187,6 @@ public class Can extends Sprite implements GameObject{
     @Override
     public String toString() {
         return String.valueOf(position.getX() + " " + position.getY() + " " + visible + "\n");    
-    }
-     public CanBullet getP() {
-        return b;
-    }
-
-    public void setP(CanBullet p) {
-        this.b = b;
     }
 
     public LinkedList<CanBullet> getBullets() {
