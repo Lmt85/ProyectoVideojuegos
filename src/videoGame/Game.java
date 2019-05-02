@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.JLabel;
 import maths.Vector2;
@@ -255,14 +256,18 @@ public class Game implements Runnable, Commons {
             g2d.translate(-camera.getX(), -camera.getY());
             
             
-            getLevelManager().render(g);
+            getLevelManager().render(g);    //renders the level
+            getEnemyManager().render(g);    //renders the enemies
             getPlayer().render(g);
             
+
+            for(int i = 0; i < getPlayer().getBullets().size(); i++) { //renders each bullet
+                if(getPlayer().getBullets().get(i).onScreen()) {
+                    getPlayer().getBullets().get(i).render(g);
+                }
+            }
+
             
-            if(!getPlayer().getBullets().isEmpty()) 
-                for(Player.PlayerBullet p : getPlayer().getBullets()) p.render(g);
-            
-            enemyManager.render(g);
             
             g2d.translate(camera.getX(), camera.getY());
             
@@ -377,17 +382,15 @@ public class Game implements Runnable, Commons {
                 getPlayer().setShoot(false);
                 getPlayer().resetShotcd();
            }
-             
-            checkCollisions();
             
             // Player movement
-            if (getKeyManager().left) getPlayer().getSpeed().setX(-4);
+            if (getKeyManager().left) getPlayer().getSpeed().setX(-5);
             else if(!getKeyManager().right) getPlayer().getSpeed().setX(0);
-            if (getKeyManager().right) getPlayer().getSpeed().setX(4);
+            if (getKeyManager().right) getPlayer().getSpeed().setX(5);
             else if(!getKeyManager().left) getPlayer().getSpeed().setX(0);
-            if (getKeyManager().up) getPlayer().getSpeed().setY(-4);
+            if (getKeyManager().up) getPlayer().getSpeed().setY(-5);
             else if(!getKeyManager().down) getPlayer().getSpeed().setY(0);
-            if (getKeyManager().down) getPlayer().getSpeed().setY(4);
+            if (getKeyManager().down) getPlayer().getSpeed().setY(5);
             else if(!getKeyManager().up) getPlayer().getSpeed().setY(0);
 
             // Ticks game objects
@@ -401,11 +404,9 @@ public class Game implements Runnable, Commons {
                 }
             }
             
-            //Ticks the manager that controls the enemies
-     
-           
+            //Ticks the manager that controls the enemies and their bullets
             enemyManager.tick();
-            
+            checkCollisions();
         }
 
         // Saves game and loads game
@@ -521,7 +522,11 @@ public class Game implements Runnable, Commons {
         return enemyManager;
     }
     
-    
+    private boolean checkCollision(Sprite s, Sprite s2) {
+        if(s.getBounds().intersects(s2.getBounds())) {
+            return true;
+        } else return false;
+    }
 
     private void checkCollisions() {
         for(Sprite s : getLevelManager().getLevel()) { //Collisions that involve walls
@@ -529,7 +534,7 @@ public class Game implements Runnable, Commons {
                 if(e.getClass().equals(Wheel.class) && e.getBounds().intersects(s.getBounds())) {
                     e.setPosition(e.getPosition().add(e.getSpeed().scalar(-1)));
                     e.setSpeed(e.getSpeed().scalar(-.5));
-                } else if(e.getClass().equals(Can.class) && !e.getBullets().isEmpty()){
+                } else if(e.getClass().equals(Can.class)|| e.getClass().equals(Boss.class)){
                     for(int i = 0; i < e.getBullets().size(); i++) {
                         if(e.getBullets().get(i).getBounds().intersects(s.getBounds())) {
                             e.getBullets().remove(i);
@@ -539,14 +544,27 @@ public class Game implements Runnable, Commons {
                 
             }
             for(Projectile p: getPlayer().getBullets()) {
-                if(s.getBounds().intersects(p.getBounds())) {
+                if(checkCollision((Sprite) p, (Sprite) s)) {
                     p.setVisible(false);
                 }
             }
-            if(s.isVisible()) {
+            
+            if(s.onScreen()) {
                 if(s.getBounds().intersects(getPlayer().getBounds())) getPlayer().setPosition(getPlayer().getPosition().add(getPlayer().getSpeed().scalar(-1)));
             }
         }
+        //Checks collision between each bullet and enemy
+            for(int i = 0;i < getPlayer().getBullets().size();i++) {
+                for(int j = 0; j < getEnemyManager().getEnemies().size();j++) {
+                    if(checkCollision((Sprite) getPlayer().getBullets().get(i), (Sprite) getEnemyManager().getEnemies().get(j))) {
+                        getEnemyManager().getEnemies().get(j).setHp(getEnemyManager().getEnemies().get(j).getHp() - getPlayer().getBullets().get(i).getDamage());
+                        getPlayer().getBullets().get(i).setVisible(false);
+                        break;
+                    }
+                }
+            }
+        // Checks collision between each enemy bullet and player
+         
     }
 
     public Camera getCamera() {
@@ -556,6 +574,4 @@ public class Game implements Runnable, Commons {
     public void setCamera(Camera camera) {
         this.camera = camera;
     }
-    
-
 }

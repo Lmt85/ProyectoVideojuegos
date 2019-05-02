@@ -41,7 +41,7 @@ public class Player extends Sprite implements GameObject {
     
     public class PlayerBullet extends Projectile implements GameObject{
             public PlayerBullet(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game){ 
-            super(position,speed,visible,width,height,image,50,game);
+            super(position,speed,visible,width,height,image,1,game);
         }
 
         @Override
@@ -54,20 +54,11 @@ public class Player extends Sprite implements GameObject {
          */
         @Override
         public void tick() {
-            setPosition(getPosition().add(getSpeed())); 
+            Vector2 vector = new Vector2(0,0);
+            vector.set(getSpeed());
+            vector.set(vector.scalar(1.75));
+            setPosition(getPosition().add(vector));
         }
-
-        /**
-         * Renders the bomb if visible
-         * @param g 
-         */
-//        @Override
-//        public void render(Graphics g) {
-//            if (isVisible()) {
-//                g.drawRect((int)position.getX(),(int) position.getY(), Commons.BOMB_WIDTH, Commons.BOMB_HEIGHT);
-//                g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), null);
-//            }
-//        }
         
         /**
          * Converts the object to a string with most important attributes.
@@ -113,9 +104,7 @@ public class Player extends Sprite implements GameObject {
      */
     @Override
     public void render(Graphics g) {
-        if (isVisible()) { 
-            g.drawImage(getImage(), (int)position.getX(), (int) position.getY(), width, height, null);
-        }
+        g.drawImage(getImage(), (int)position.getX(), (int) position.getY(), width, height, null);
     }
     
     /**
