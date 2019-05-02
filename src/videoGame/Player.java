@@ -54,7 +54,10 @@ public class Player extends Sprite implements GameObject {
          */
         @Override
         public void tick() {
-            setPosition(getPosition().add(getSpeed())); 
+            Vector2 vector = new Vector2(0,0);
+            vector.set(getSpeed());
+            vector.set(vector.scalar(1.75));
+            setPosition(getPosition().add(vector));
         }
         
         /**

@@ -537,7 +537,7 @@ public class Game implements Runnable, Commons {
                 if(e.getClass().equals(Wheel.class) && checkCollision((Sprite) s, (Sprite) e)) {    // Makes the wheels bounce when touching walls
                     e.setPosition(e.getPosition().add(e.getSpeed().scalar(-1)));
                     e.setSpeed(e.getSpeed().scalar(-.5));
-                } else if(e.getClass().equals(Can.class)){ //Collisions between can bullets and walls
+                } else if(e.getClass().equals(Can.class)|| e.getClass().equals(Boss.class)){
                     for(int i = 0; i < e.getBullets().size(); i++) {
                         if(checkCollision((Sprite) e.getBullets().get(i), (Sprite) s)) {
                             e.getBullets().remove(i);

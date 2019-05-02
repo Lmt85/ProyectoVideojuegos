@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * and ticking them in a single method, initializes each alien, which consequently initializes each
  * alien's bomb
  * 
- * @author Carlos Adrian Guerra Vazquez A00823198
+ * @author Luis Mario Trujillo Aguilar
  * @date 28/01/2019
  * @version 1.0
  */
@@ -23,6 +23,7 @@ public class EnemyManager implements GameObject{
      */
     public EnemyManager(Game game) {
         enemies = new ArrayList<>();
+      
         this.game = game;
     }
     
@@ -81,6 +82,7 @@ public class EnemyManager implements GameObject{
     public void render(Graphics g) {
         for(int i = 0; i < enemies.size(); i++) {
             if(enemies.get(i).onScreen() && enemies.get(i).isVisible()) {
+
                 enemies.get(i).render(g);
             }
             for(int j = 0; j < enemies.get(i).getBullets().size(); j++) {

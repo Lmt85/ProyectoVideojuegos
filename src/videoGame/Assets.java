@@ -30,6 +30,7 @@ public class Assets {
     public static BufferedImage wheels[];
     public static BufferedImage wheelSheet;
     public static BufferedImage bubble;
+    public static BufferedImage pirate;
     
     //Text
     public static BufferedImage movement;
@@ -62,6 +63,7 @@ public class Assets {
         heartEmpty = ImageLoader.loadImage("/images/HeartEmpty.png");
         sand = ImageLoader.loadImage("/images/Sand.png");
         can = ImageLoader.loadImage("/images/can.png");
+        pirate = ImageLoader.loadImage("/images/Pirate.png");
         wheel = ImageLoader.loadImage("/images/wheel.png");
         bubble = ImageLoader.loadImage("/images/bubble.png");
         wheelSheet = ImageLoader.loadImage("/images/wheelSheet.png");
