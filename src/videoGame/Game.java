@@ -530,8 +530,10 @@ public class Game implements Runnable, Commons {
     }
 
     private void checkCollisions() {
-        for(Sprite s : getLevelManager().getLevel()) {      //Collisions that involve walls
-            for(Enemy e : getEnemyManager().getEnemies()) {  //Collisions between walls and enemies
+        getLevelManager().getLevel().stream().map((s) -> {
+            //Collisions that involve walls
+            getEnemyManager().getEnemies().forEach((e) -> {
+                //Collisions between walls and enemies
                 if(e.getClass().equals(Wheel.class) && checkCollision((Sprite) s, (Sprite) e)) {    // Makes the wheels bounce when touching walls
                     e.setPosition(e.getPosition().add(e.getSpeed().scalar(-1)));
                     e.setSpeed(e.getSpeed().scalar(-.5));
@@ -542,20 +544,21 @@ public class Game implements Runnable, Commons {
                         }
                     }
                 }
-            }
-        
-            for(Projectile p: getPlayer().getBullets()) {   // Colllisions between walls and player projectiles
+            });
+            return s;
+        }).map((s) -> {
+            //Collisions between walls that are on screen and player
+            for (Projectile p : getPlayer().getBullets()) {
+                // Colllisions between walls and player projectiles
                 if(checkCollision((Sprite) p, (Sprite) s)) {
                     p.setVisible(false);
                 }
             }
-            
-            if(s.onScreen()) {  //Collisions between walls that are on screen and player
-                if( checkCollision((Sprite) s, (Sprite) getPlayer())) { //Makes player bounce
-                    getPlayer().setPosition(getPlayer().getPosition().add(getPlayer().getSpeed().scalar(-1)));
-                }
-            }
-        }
+            return s;
+        }).filter((s) -> (s.onScreen())).filter((s) -> ( checkCollision((Sprite) s, (Sprite) getPlayer()))).forEachOrdered((_item) -> {
+            //Makes player bounce
+            getPlayer().setPosition(getPlayer().getPosition().add(getPlayer().getSpeed().scalar(-1)));
+        });
         //Checks collision between each player bullet and enemy
             for(int i = 0;i < getPlayer().getBullets().size();i++) {
                 for(int j = 0; j < getEnemyManager().getEnemies().size();j++) {
