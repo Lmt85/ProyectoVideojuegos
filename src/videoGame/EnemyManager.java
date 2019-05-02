@@ -2,8 +2,6 @@ package videoGame;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
 
 /**
  * This class manages the aliens as a whole, moving them in the same direction, encapsulating them
@@ -35,6 +33,7 @@ public class EnemyManager implements GameObject{
     @Override
     public void init() {
         for (int i = 0; i < enemies.size(); i++){
+            enemies.get(i).init();
             enemies.get(i).setOrientation(Sprite.Orientation.getRandomOrientation());
             enemies.get(i).setSpeed(enemies.get(i).getOrientation().speed(3));
         }
@@ -48,9 +47,28 @@ public class EnemyManager implements GameObject{
     @Override
     public void tick() {
         for(int i = 0; i < enemies.size(); i++) {
-            if(enemies.get(i).getHp()>0){
-                enemies.get(i).tick();
-            } else enemies.remove(i);
+            if(!enemies.get(i).isVisible() && enemies.get(i).getBullets().size() == 0) { // Removes enemies completely from list if their bullets are empty and is destroyed 
+                if(enemies.get(i).getClass().equals(Wheel.class)) {
+                    game.setScore(game.getScore() + 100);
+                } else if(enemies.get(i).getClass().equals(Can.class)) {
+                    game.setScore(game.getScore() + 200);
+                }
+                enemies.remove(i);
+                System.out.println(game.getScore());
+            } else {
+                if(enemies.get(i).getHp() > 0 && enemies.get(i).isVisible()){
+                    enemies.get(i).tick();
+                } else{
+                    enemies.get(i).setVisible(false);
+                }
+                for(int j = 0; j < getEnemies().get(i).getBullets().size(); j++) {  //
+                    if(getEnemies().get(i).getBullets().get(j).isVisible()) {   //If the bullet exists and doesnt collision with wall or p
+                        getEnemies().get(i).getBullets().get(j).tick();
+                    } else {
+                        getEnemies().get(i).getBullets().remove(j);
+                    }
+                }
+            }
         }
     }
 
@@ -62,11 +80,18 @@ public class EnemyManager implements GameObject{
     @Override
     public void render(Graphics g) {
         for(int i = 0; i < enemies.size(); i++) {
-            enemies.get(i).render(g);
+            if(enemies.get(i).onScreen() && enemies.get(i).isVisible()) {
+                enemies.get(i).render(g);
+            }
+            for(int j = 0; j < enemies.get(i).getBullets().size(); j++) {
+                if(enemies.get(i).getBullets().get(j).onScreen()) {
+                    enemies.get(i).getBullets().get(j).render(g);
+                }
+            }
         }
+        
     }
 
-    
     public ArrayList<Enemy> getEnemies() {
         return enemies;
     }

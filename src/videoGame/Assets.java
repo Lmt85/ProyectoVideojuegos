@@ -24,7 +24,6 @@ public class Assets {
     public static BufferedImage heartFull;
     public static BufferedImage heartHalf;
     public static BufferedImage heartEmpty;
-    public static BufferedImage hud;
     public static BufferedImage sand;
     public static BufferedImage wheel;
     public static BufferedImage can;
@@ -35,6 +34,8 @@ public class Assets {
     //Text
     public static BufferedImage movement;
     public static BufferedImage shooting;
+    public static BufferedImage hud;
+    public static BufferedImage hud2;
     
     //Sound
     public static SoundClip music;    // Stores looping music
@@ -59,7 +60,6 @@ public class Assets {
         heartFull = ImageLoader.loadImage("/images/heartFull.png");
         heartHalf = ImageLoader.loadImage("/images/HeartHalf.png");
         heartEmpty = ImageLoader.loadImage("/images/HeartEmpty.png");
-        hud = ImageLoader.loadImage("/images/hud.png");
         sand = ImageLoader.loadImage("/images/Sand.png");
         can = ImageLoader.loadImage("/images/can.png");
         wheel = ImageLoader.loadImage("/images/wheel.png");
@@ -67,6 +67,8 @@ public class Assets {
         wheelSheet = ImageLoader.loadImage("/images/wheelSheet.png");
         movement = ImageLoader.loadImage("/images/TutorialMovement.png");
         shooting = ImageLoader.loadImage("/images/TutorialShooting.png");
+        hud = ImageLoader.loadImage("/images/hud.png");
+        hud2 = ImageLoader.loadImage("/images/hud2.png");        
         
         wheels = new BufferedImage[4];
         SpriteSheet spritesheet = new SpriteSheet(wheelSheet);

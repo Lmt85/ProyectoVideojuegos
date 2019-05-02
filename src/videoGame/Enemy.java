@@ -30,6 +30,7 @@ public abstract class Enemy extends Sprite implements GameObject{
      */
     public Enemy(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game, int hp){  
         super(position,speed,visible,width,height,image,game);
+        bullets = new LinkedList<>();
         this.hp = hp;
         this.maxHp = hp;
     }

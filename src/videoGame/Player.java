@@ -56,18 +56,6 @@ public class Player extends Sprite implements GameObject {
         public void tick() {
             setPosition(getPosition().add(getSpeed())); 
         }
-
-        /**
-         * Renders the bomb if visible
-         * @param g 
-         */
-//        @Override
-//        public void render(Graphics g) {
-//            if (isVisible()) {
-//                g.drawRect((int)position.getX(),(int) position.getY(), Commons.BOMB_WIDTH, Commons.BOMB_HEIGHT);
-//                g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), null);
-//            }
-//        }
         
         /**
          * Converts the object to a string with most important attributes.
@@ -83,6 +71,7 @@ public class Player extends Sprite implements GameObject {
     public void init() {
         setShoot(true);
         setOrientation(Sprite.Orientation.NORTH);
+        hp = 50;
     }
 
     @Override
@@ -91,13 +80,7 @@ public class Player extends Sprite implements GameObject {
         // moves player
         setPosition(getPosition().add(getSpeed()));
         
-        // player boundaries
-//        if(getPosition().getX() >= Commons.BOARD_WIDTH - Commons.PLAYER_WIDTH) setPosition(Commons.BOARD_WIDTH - Commons.PLAYER_WIDTH,getPosition().getY());
-//        if(getPosition().getX() < 0) setPosition(0,getPosition().getY());    
-//        if(getPosition().getY() < 0) setPosition(getPosition().getX(),0);
-//        if(getPosition().getY() >= Commons.BOARD_HEIGHT - Commons.PLAYER_HEIGHT) setPosition(getPosition().getX(),Commons.BOARD_HEIGHT - Commons.PLAYER_HEIGHT);
-     
-    
+        // every tick it restores shoot cooldown
         if(!canShoot()) {
             shotcd--;
             if(shotcd < 0) {
@@ -113,9 +96,7 @@ public class Player extends Sprite implements GameObject {
      */
     @Override
     public void render(Graphics g) {
-        if (isVisible()) { 
-            g.drawImage(getImage(), (int)position.getX(), (int) position.getY(), width, height, null);
-        }
+        g.drawImage(getImage(), (int)position.getX(), (int) position.getY(), width, height, null);
     }
     
     /**
@@ -181,7 +162,6 @@ public class Player extends Sprite implements GameObject {
     public void setLives(int lives) {
         this.lives = lives;
     }
-    
     
     
 }

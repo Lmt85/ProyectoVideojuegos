@@ -34,10 +34,6 @@ public class Block extends Sprite implements GameObject{
 
     @Override
     public void render(Graphics g) {
-       
-//        g.setColor(Color.red);
-//        g.fillRect((int)getPosition().getX(),(int)getPosition().getY(),32,32);
-//        g.drawImage(getImage(), (int)position.getX(), (int) position.getY(), null);
         g.drawImage(getImage(),(int)getPosition().getX(),(int)getPosition().getY(),width,height, null);
         
     }
