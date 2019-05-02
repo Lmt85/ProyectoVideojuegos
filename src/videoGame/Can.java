@@ -59,7 +59,7 @@ public class Can extends Enemy implements GameObject{
                 vector.set(cos(angulo), sin(angulo));
                 first=false;
 
-           } 
+           }
            vector.set(vector.scalar(1.025));
            setPosition(getPosition().add(vector));
         }
@@ -83,7 +83,7 @@ public class Can extends Enemy implements GameObject{
             return String.valueOf(position.getX() + " " + position.getY() + " " +  visible + "\n");
         }
     }
-
+        
     @Override
      public void tick(){
         if(canShoot()) {

@@ -100,6 +100,8 @@ public class Game implements Runnable, Commons {
     public int getWidth() {
         return width;
     }
+    
+    
 
     /**
      * returns the height of the display
@@ -234,10 +236,12 @@ public class Game implements Runnable, Commons {
         } else {
             g = bs.getDrawGraphics(); // gets the graphics of the buffer strategy
             Graphics2D g2d = (Graphics2D) g;
-            g.setColor(Color.GREEN);   // sets the painting color to green
+            g.setColor(Color.GREEN);   // sets the painting color to greenda
             g.setFont(font);           // sets the font
+            
+            g.drawImage(Assets.sand, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
 
-            g.drawImage(Assets.background, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
+            
             
             //////////////////////////////////// Rendering Block
             
@@ -274,6 +278,19 @@ public class Game implements Runnable, Commons {
 
             //displays the amount of aliens destroyed
 //            g.drawString("Destroyed: " + alienManager.destroyed + "/24", 10, Commons.BOARD_HEIGHT - 10);
+
+            g.drawImage(Assets.hud, 0 , 0, Commons.TAB_WIDTH, Commons.TAB_HEIGHT, null);
+            for(int o = 1; o < Commons.HEART_MAX; o += 2){
+                g.drawImage(Assets.heartEmpty, o * (Commons.HEART_SIZE /2) , Commons.HEART_SIZE / 2, Commons.HEART_SIZE, Commons.HEART_SIZE, null);
+            }
+            if(player.getHp() != 1)
+                for(int i = 1; i < player.getHp(); i+= 2){
+                    g.drawImage(Assets.heartFull, i * (Commons.HEART_SIZE /2) , Commons.HEART_SIZE / 2, Commons.HEART_SIZE, Commons.HEART_SIZE, null);   
+                }
+            if(!(player.getHp() % 2 == 0)){
+                g.drawImage(Assets.heartHalf, (player.getHp()) * (Commons.HEART_SIZE / 2), Commons.HEART_SIZE / 2, Commons.HEART_SIZE , Commons.HEART_SIZE, null);
+            }
+            
             bs.show();
             g.dispose();
         }
@@ -513,8 +530,10 @@ public class Game implements Runnable, Commons {
     }
 
     private void checkCollisions() {
-        for(Sprite s : getLevelManager().getLevel()) {      //Collisions that involve walls
-            for(Enemy e : getEnemyManager().getEnemies()) {  //Collisions between walls and enemies
+        getLevelManager().getLevel().stream().map((s) -> {
+            //Collisions that involve walls
+            getEnemyManager().getEnemies().forEach((e) -> {
+                //Collisions between walls and enemies
                 if(e.getClass().equals(Wheel.class) && checkCollision((Sprite) s, (Sprite) e)) {    // Makes the wheels bounce when touching walls
                     e.setPosition(e.getPosition().add(e.getSpeed().scalar(-1)));
                     e.setSpeed(e.getSpeed().scalar(-.5));
@@ -525,20 +544,21 @@ public class Game implements Runnable, Commons {
                         }
                     }
                 }
-            }
-        
-            for(Projectile p: getPlayer().getBullets()) {   // Colllisions between walls and player projectiles
+            });
+            return s;
+        }).map((s) -> {
+            //Collisions between walls that are on screen and player
+            for (Projectile p : getPlayer().getBullets()) {
+                // Colllisions between walls and player projectiles
                 if(checkCollision((Sprite) p, (Sprite) s)) {
                     p.setVisible(false);
                 }
             }
-            
-            if(s.onScreen()) {  //Collisions between walls that are on screen and player
-                if( checkCollision((Sprite) s, (Sprite) getPlayer())) { //Makes player bounce
-                    getPlayer().setPosition(getPlayer().getPosition().add(getPlayer().getSpeed().scalar(-1)));
-                }
-            }
-        }
+            return s;
+        }).filter((s) -> (s.onScreen())).filter((s) -> ( checkCollision((Sprite) s, (Sprite) getPlayer()))).forEachOrdered((_item) -> {
+            //Makes player bounce
+            getPlayer().setPosition(getPlayer().getPosition().add(getPlayer().getSpeed().scalar(-1)));
+        });
         //Checks collision between each player bullet and enemy
             for(int i = 0;i < getPlayer().getBullets().size();i++) {
                 for(int j = 0; j < getEnemyManager().getEnemies().size();j++) {
@@ -593,5 +613,4 @@ public class Game implements Runnable, Commons {
         }
         
     }
-    
 }

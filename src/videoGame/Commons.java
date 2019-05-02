@@ -1,7 +1,7 @@
 package videoGame;
 
 public interface Commons {
-    public static int scale = 1;
+    public static int scale = 2;
     
     //Game constants
     public static final int BOARD_WIDTH = 358 * scale;
@@ -36,4 +36,10 @@ public interface Commons {
     public static final int ALIEN_WIDTH = 30* scale;
     public static final int ALIEN_INIT_X = 150* scale;
     public static final int ALIEN_INIT_Y = 5* scale;    
+    
+    //Hud Constants
+    public static final int HEART_SIZE = 10 * scale;
+    public static final int TAB_WIDTH = 60 * scale;
+    public static final int TAB_HEIGHT = 20 * scale;
+    public static final int HEART_MAX = 10;
 }
