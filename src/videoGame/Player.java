@@ -150,6 +150,7 @@ public class Player extends Sprite implements GameObject {
     public int getHp() {
         return hp;
     }
+    
     public int getLives() {
         return lives;
     }

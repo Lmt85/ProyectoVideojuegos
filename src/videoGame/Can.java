@@ -58,10 +58,9 @@ public class Can extends Enemy implements GameObject{
                 double angulo = (Math.atan2(getSpeed().getY()-getPosition().getY(),getSpeed().getX()-getPosition().getX()));
                 vector.set(cos(angulo), sin(angulo));
                 first=false;
-
-           }
-           vector.set(vector.scalar(1.025));
-           setPosition(getPosition().add(vector));
+           } 
+            vector.set(vector.scalar(1.075));
+            setPosition(getPosition().add(vector));
         }
         
         /**
