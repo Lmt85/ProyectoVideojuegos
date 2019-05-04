@@ -572,10 +572,18 @@ public class Game implements Runnable, Commons {
             
         // Checks collision between each enemy bullet and player
         for(int i = 0; i < getEnemyManager().getEnemies().size(); i++) {
-            for(int j = 0; j < getEnemyManager().getEnemies().get(i).getBullets().size(); j++) {
-                if(checkCollision((Sprite) getEnemyManager().getEnemies().get(i).getBullets().get(j) , (Sprite) getPlayer())) { //Sets the bullet that collides to not existing
-                    getEnemyManager().getEnemies().get(i).getBullets().get(j).setVisible(false);
-                    getPlayer().setHp(getPlayer().getHp() - getEnemyManager().getEnemies().get(i).getBullets().get(j).getDamage());
+            if(getEnemyManager().getEnemies().get(i).getClass().equals(Wheel.class)) {
+                if(checkCollision((Sprite) getEnemyManager().getEnemies().get(i), (Sprite) getPlayer())) { //Sets the bullet that collides to not existing
+                        getPlayer().setHp(getPlayer().getHp() - 1);
+                        System.out.println("hit");
+                }
+            } else {
+                for(int j = 0; j < getEnemyManager().getEnemies().get(i).getBullets().size(); j++) {
+                    if(checkCollision((Sprite) getEnemyManager().getEnemies().get(i).getBullets().get(j) , (Sprite) getPlayer())) { //Sets the bullet that collides to not existing
+                        getEnemyManager().getEnemies().get(i).getBullets().get(j).setVisible(false);
+                        getPlayer().setHp(getPlayer().getHp() - getEnemyManager().getEnemies().get(i).getBullets().get(j).getDamage());
+                        System.out.println("hit");
+                    }
                 }
             }
         }

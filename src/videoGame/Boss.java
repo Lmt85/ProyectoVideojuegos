@@ -128,7 +128,6 @@ public class Boss extends Enemy implements GameObject{
      public void tick(){
          
         if(canShoot()) {
-            if(onScreen()) {
                 if(firstattack>1){
                     shoots(game.getPlayer().getPosition());
                     angle=angle-.2;
@@ -157,8 +156,7 @@ public class Boss extends Enemy implements GameObject{
                         resetShotcd();
                    //     System.out.println(bullets.size());
                     }
-                }              
-            }
+                }
         } else {
              shotcd--;
              if(shotcd < 0) {

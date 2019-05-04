@@ -43,7 +43,7 @@ public class Can extends Enemy implements GameObject{
             Vector2 vector = new Vector2(0,0);
             
             public CanBullet(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image,Game game){ 
-                super(position,speed,visible,width,height,image,50,game);
+                super(position,speed,visible,width,height,image,1,game);
             }
         
         @Override
