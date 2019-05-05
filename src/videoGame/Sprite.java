@@ -7,8 +7,6 @@ package videoGame;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import static java.lang.Math.random;
-import static java.lang.StrictMath.random;
 import maths.Vector2;
 import java.util.Random;
 
@@ -54,8 +52,9 @@ public abstract class Sprite implements GameObject {
     }
     protected boolean visible;      //to store the visibility
     protected BufferedImage image;  //to store the image
-    protected Vector2 position;     //to store the position
+    protected Vector2 position;
     protected Vector2 speed;        //to store the speed vector
+    protected Vector2 acceleration;
     protected int width;            //to store the object's width
     protected int height;           //to store the object's width
     protected Orientation o;        //to store the object's orientation
@@ -69,6 +68,7 @@ public abstract class Sprite implements GameObject {
         this.image = image;
         this.visible = visible;
         this.game = game;
+        this.acceleration = new Vector2(0,0);
     }
     
     /**
@@ -182,6 +182,14 @@ public abstract class Sprite implements GameObject {
     
     public boolean isVisible() {
         return visible;
+    }
+
+    public Vector2 getAcceleration() {
+        return acceleration;
+    }
+
+    public void setAcceleration(Vector2 acceleration) {
+        this.acceleration = acceleration;
     }
     
 }

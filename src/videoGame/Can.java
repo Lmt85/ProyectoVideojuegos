@@ -40,7 +40,6 @@ public class Can extends Enemy implements GameObject{
     
         public class CanBullet extends Projectile implements GameObject{
             boolean first=true;
-            Vector2 vector = new Vector2(0,0);
             
             public CanBullet(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image,Game game){ 
                 super(position,speed,visible,width,height,image,1,game);
@@ -56,15 +55,8 @@ public class Can extends Enemy implements GameObject{
          */
         @Override
         public void tick() {
-            if(first){
-                double angulo = (Math.atan2(getSpeed().getY()-getPosition().getY(),getSpeed().getX()-getPosition().getX()));
-                vector.set(cos(angulo), sin(angulo));
-                first=false;
-           } 
-
-            vector.set(vector.scalar(1.025));
-            setPosition(getPosition().add(vector));
-
+            setPosition(getPosition().add(getSpeed()));
+            setSpeed(getSpeed().scalar(1.05));
         }
         
         /**
@@ -150,9 +142,9 @@ public class Can extends Enemy implements GameObject{
         this.shotcd = 10;
     }
     
-    public void shoots(Vector2 player) {
-        Vector2 vector = new Vector2(getPosition().getX()+Commons.ALIEN_WIDTH/2,getPosition().getY()+Commons.ALIEN_HEIGHT/2);
-        bullets.addFirst(new CanBullet(vector, player, true, Commons.BOMB_WIDTH * 2,
+    public void shoots(Vector2 playerPos) {
+        Vector2 shotSpd = getPosition().sub(playerPos).norm();
+        bullets.addFirst(new CanBullet(getPosition(), shotSpd, true, Commons.BOMB_WIDTH * 2,
                         Commons.BOMB_HEIGHT * 2, Assets.bubble,game));
     }
 

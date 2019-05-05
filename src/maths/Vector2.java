@@ -161,4 +161,10 @@ public class Vector2 {
     public IntVector2 toIntVector2(){
         return new IntVector2((int)x,(int)y);
     }
+    
+    public void limit(double mag) {
+        if(this.mag() > mag) {
+            this.set(this.norm().scalar(mag));
+        }
+    }
 }

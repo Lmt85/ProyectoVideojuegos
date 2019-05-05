@@ -3,6 +3,7 @@ package videoGame;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import videoGame.GameObject;
+import maths.Vector2;
 import videoGame.Player;
 import videoGame.Sprite;
 
@@ -28,28 +29,35 @@ public class Wheel extends Enemy implements GameObject{
      */
 
     private Animation wheelAnim;
+    private double topSpeed;
 
 
 
     public Wheel(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game, int hp){  
         super(position,speed,visible,width,height,image,game,hp);
-        this.wheelAnim = new Animation(Assets.wheels, 100);        
+        this.wheelAnim = new Animation(Assets.wheels, 100);
+        topSpeed = 1;
         //this.maxHp = hp;
         
     }
     
     @Override
     public void tick() {
-        if(onScreen()){
-            if(game.getPlayer().getPosition().getX() > this.getPosition().getX()) this.setSpeed(this.getSpeed().getX() + .2, this.getSpeed().getY());
-            if(game.getPlayer().getPosition().getX() < this.getPosition().getX()) this.setSpeed(this.getSpeed().getX() - .2, this.getSpeed().getY());
-            if(game.getPlayer().getPosition().getY() > this.getPosition().getY()) this.setSpeed(this.getSpeed().getX(), this.getSpeed().getY() + .2);
-            if(game.getPlayer().getPosition().getY() < this.getPosition().getY()) this.setSpeed(this.getSpeed().getX(), this.getSpeed().getY() - .2);
+//        if(onScreen()){
+            Vector2 dir = getPosition().sub(game.getPlayer().getPosition());
+            dir.set(dir.norm().scalar(0.5));
+            setAcceleration(dir);
+            
+            setSpeed(getSpeed().add(getAcceleration()));
+            getSpeed().limit(topSpeed);
+//            if(game.getPlayer().getPosition().getX() > this.getPosition().getX()) this.setSpeed(this.getSpeed().getX() + .2, this.getSpeed().getY());
+//            if(game.getPlayer().getPosition().getX() < this.getPosition().getX()) this.setSpeed(this.getSpeed().getX() - .2, this.getSpeed().getY());
+//            if(game.getPlayer().getPosition().getY() > this.getPosition().getY()) this.setSpeed(this.getSpeed().getX(), this.getSpeed().getY() + .2);
+//            if(game.getPlayer().getPosition().getY() < this.getPosition().getY()) this.setSpeed(this.getSpeed().getX(), this.getSpeed().getY() - .2);
+//            setPosition(getPosition().add(getSpeed()));
+            
             wheelAnim.tick();
-        } else {
-            this.setSpeed(getSpeed().scalar(.9));
-        }
-        this.setPosition(this.getPosition().getX() + this.getSpeed().getX(), this.getPosition().getY() + this.getSpeed().getY());
+//        }
     }
     
     /**
