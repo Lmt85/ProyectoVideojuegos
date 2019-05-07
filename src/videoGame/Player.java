@@ -35,8 +35,6 @@ public class Player extends Sprite implements GameObject {
     public Player(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game) {
         super(position, speed, visible, width, height, image, game);
         bullets = new LinkedList<>();
-        hp = 10;
-        lives = 3;
     }
     
     public class PlayerBullet extends Projectile implements GameObject{

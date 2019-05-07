@@ -42,6 +42,8 @@ public class Game implements Runnable, Commons {
     private double tps;                    //ticks per second
     private final boolean showTPS = false; //controls if the tps will be show on the console
     int fps = 60;                          //max frames per second the game will run at
+    int frameData;
+    boolean keyPressed;
 
     //Game objects
     LevelManager levelManager;
@@ -60,7 +62,7 @@ public class Game implements Runnable, Commons {
     //Internal game atributes
     public String message;  // Stores endgame message
 
-
+    private int menu;
 
     private int score;      // Stores game score
     Connection c;           // Database connection
@@ -78,7 +80,7 @@ public class Game implements Runnable, Commons {
      */
     public Game() {
         // Name of the game
-        this.title = "OxiLife";
+        this.title = "Trashedy";
 
         // Sets game dimensions
         this.width = Commons.BOARD_WIDTH;
@@ -169,15 +171,30 @@ public class Game implements Runnable, Commons {
         long now; //current frame time
         long lastTime = System.nanoTime(); //the previos frame time
         double initTickTime = lastTime;
+        menu = 0;
+        frameData = 1;
+        keyPressed = true;
         while (running) {
             now = System.nanoTime();
             delta += (now - lastTime) / timeTick;
             lastTime = now;
             //delta acumulates enogh tick fractions until a tick is completed and we can now advance in the tick
             if (delta >= 1) {
-
-                tick();
-                render();
+                
+                //Lets try something
+                if(menu != 3){
+                    render2();
+                    tick2();
+                }
+                else{
+                    tick();
+                    render();
+                }
+                
+                frameData++;
+                if (frameData > 60){
+                    frameData = 1;
+                }
                 delta--;
 
                 tps = 1000000000 / (now - initTickTime);
@@ -613,5 +630,64 @@ public class Game implements Runnable, Commons {
         }
         
     }
+    
+        private void render2() {
+        bs = display.getCanvas().getBufferStrategy();
+
+        /* if it is null, we define one with 3 buffers to display images of
+         * the game, if not null, then we display
+         * every image of the game but
+         * after clearing the Rectanlge, getting the graphic object from the
+         * buffer strategy element.
+         * show the graphic and dispose it to the trash system
+         */
+        if (bs == null) { //if we dont have a buffer strategy we make our Display's canvas crate one for itself.
+            display.getCanvas().createBufferStrategy(3);
+        } else {
+            g = bs.getDrawGraphics(); // gets the graphics of the buffer strategy
+            Graphics2D g2d = (Graphics2D) g;
+            g.setColor(Color.GREEN);   // sets the painting color to greenda
+            g.setFont(font);           // sets the font
+            switch(menu){
+                case 0:
+                    g.drawImage(Assets.title, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
+                    break;
+                case 1:
+                    g.drawImage(Assets.prologue, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
+                    break;
+                case 2:
+                    g.drawImage(Assets.objetivo, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
+                    break;
+                case 4:
+                    g.drawImage(Assets.gameover, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
+                    break;
+            }
+            
+            if(frameData > 25){
+                g.drawString("Press SPACE to continue . . .", Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2 + 150);
+            }
+            //g.drawString("Press SPACE to continue . . .", Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2 + 100);
+            
+            bs.show();
+            g.dispose();
+        }
+    }
+        private void tick2(){
+            getKeyManager().tick(); //key manager must precede all user ralated actions
+            if(getKeyManager().space && keyPressed){
+                menuSwitch();
+                keyPressed = false;
+            }
+            else if (!getKeyManager().space){
+                keyPressed = true;
+            }
+        }
+        
+        private void menuSwitch(){
+            this.menu++;
+            if(this.menu > 5){
+                this.menu = 0;
+            }
+        }
     
 }

@@ -37,6 +37,10 @@ public class Assets {
     public static BufferedImage shooting;
     public static BufferedImage hud;
     public static BufferedImage hud2;
+    public static BufferedImage title;
+    public static BufferedImage prologue;
+    public static BufferedImage objetivo;
+    public static BufferedImage gameover;
     
     //Sound
     public static SoundClip music;    // Stores looping music
@@ -55,7 +59,7 @@ public class Assets {
         alien = ImageLoader.loadImage("/images/alien.png"); 
         shot = ImageLoader.loadImage("/images/shot.png"); 
         bomb = ImageLoader.loadImage("/images/bomb.png"); 
-        player = ImageLoader.loadImage("/images/player.png");
+        player = ImageLoader.loadImage("/images/turtle.png");
         explosion = ImageLoader.loadImage("/images/explosion.png");
         
         heartFull = ImageLoader.loadImage("/images/heartFull.png");
@@ -71,6 +75,10 @@ public class Assets {
         shooting = ImageLoader.loadImage("/images/TutorialShooting.png");
         hud = ImageLoader.loadImage("/images/hud.png");
         hud2 = ImageLoader.loadImage("/images/hud2.png");        
+        title = ImageLoader.loadImage("/images/StartMenu.png");      
+        prologue = ImageLoader.loadImage("/images/introscreen.png");   
+        objetivo = ImageLoader.loadImage("/images/Objective.png"); 
+        gameover = ImageLoader.loadImage("/images/gameover.png"); 
         
         wheels = new BufferedImage[4];
         SpriteSheet spritesheet = new SpriteSheet(wheelSheet);
