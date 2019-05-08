@@ -115,7 +115,6 @@ public class Player extends Sprite implements GameObject {
                 case WEST:
                     current = leftAnim;
                     leftAnim.tick();
-              
             }
             // every tick it restores shoot cooldown
             if(!canShoot()) {
