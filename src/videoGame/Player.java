@@ -81,6 +81,14 @@ public class Player extends Sprite implements GameObject {
         }
         
         /**
+         * This method ticks the Bomb, only if visible, which spawns it in it's alien's position and moves
+         * it straight down until it reaches the bottom
+         */
+        public void render(Graphics g) {
+            g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), Commons.PLAYER_BULLET_WIDTH, Commons.PLAYER_BULLET_HEIGHT, null);
+        }
+        
+        /**
          * Converts the object to a string with most important attributes.
          * @return a string with most important attributes.
          */
@@ -143,9 +151,7 @@ public class Player extends Sprite implements GameObject {
      */
     @Override
     public void render(Graphics g) {
-        if(this != null) {
             g.drawImage(current.getCurrentFrame(), (int)position.getX(), (int) position.getY(), width, height, null);
-        }
     }
     
     /**
@@ -186,9 +192,9 @@ public class Player extends Sprite implements GameObject {
     }
     
     public void shoots() {
-        bullets.addFirst(new PlayerBullet(getPosition(),
-                        getOrientation().speed(6), true, Commons.BOMB_WIDTH,
-                        Commons.BOMB_HEIGHT, Assets.bomb,game));
+        bullets.addFirst(new PlayerBullet(new Vector2(getPosition().getX() + Commons.PLAYER_WIDTH/2, getPosition().getY() + Commons.PLAYER_HEIGHT/2),
+                        getOrientation().speed(6), true, Commons.PLAYER_BULLET_WIDTH,
+                        Commons.PLAYER_BULLET_HEIGHT, Assets.bubble, game));
     }
 
     public int getShotcd() {

@@ -26,6 +26,7 @@ public class Boss extends Enemy implements GameObject{
         double angle3 = 1.57;
         double angle4 = 4.71;
         int cambiar = 0;
+        private boolean seen = false;
 
 
     public Boss(Vector2 position, Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game, int hp) {
@@ -126,50 +127,44 @@ public class Boss extends Enemy implements GameObject{
         
      @Override
      public void tick(){
-         
-         
-         
-//        if(canShoot()) {
-//            if(onScreen()) {
-//                if(firstattack>1){
-//                    shoots(game.getPlayer().getPosition());
-//                    angle=angle-.2;
-//                    angle2=angle2-.2;
-//                    setShoot(false);
-//                    resetShotcd();
-//                    //System.out.println(bullets.size());
-//                    setFirstAttack(getFirstAttack()-1);
-//                }else{
-//                    if(getShotAttack()>1){
-//                        setShotcd(0);
-//                        shoots(game.getPlayer().getPosition());
-//                        angle=angle+.2;
-//                        angle2=angle2+.2;
-//                        angle3=angle3+.2;
-//                        angle4=angle4+.2;
-//                        setShoot(false);
-//                     //   System.out.println(bullets.size());
-//                       // System.out.println(getShotcd());
-//                        setShotAttack(getShotAttack()-1);
-//                    }else{   
-//                        shoots(game.getPlayer().getPosition());
-//                        angle=angle+.2;
-//                        angle2=angle2+.2;
-//                        setShoot(false);
-//                        resetShotcd();
-//                   //     System.out.println(bullets.size());
-//                    }
-//                }              
-//            }
-//        } else {
-//             shotcd--;
-//             if(shotcd < 0) {
-//                setShoot(true);
-//             }
-//        }
-        
-        
-       
+         if(onScreen() && !seen) {
+             seen = true;
+         }
+        if(canShoot() && seen) {
+                if(firstattack>1){
+                    shoots(game.getPlayer().getPosition());
+                    angle=angle-.2;
+                    angle2=angle2-.2;
+                    setShoot(false);
+                    resetShotcd();
+                    //System.out.println(bullets.size());
+                    setFirstAttack(getFirstAttack()-1);
+                }else{
+                    if(getShotAttack()>1){
+                        setShotcd(0);
+                        shoots(game.getPlayer().getPosition());
+                        angle=angle+.2;
+                        angle2=angle2+.2;
+                        angle3=angle3+.2;
+                        angle4=angle4+.2;
+                        setShoot(false);
+                     //   System.out.println(bullets.size());
+                       // System.out.println(getShotcd());
+                        setShotAttack(getShotAttack()-1);
+                    }else{   
+                        shoots(game.getPlayer().getPosition());
+                        angle=angle+.2;
+                        angle2=angle2+.2;
+                        setShoot(false);
+                        resetShotcd();
+                    }
+                }
+        } else {
+             shotcd--;
+             if(shotcd < 0) {
+                setShoot(true);
+             }
+        }
      }
      
     @Override
@@ -205,9 +200,9 @@ public class Boss extends Enemy implements GameObject{
     }
     
     public void shoots(Vector2 player) {
-        Vector2 vector = new Vector2(getPosition().getX()+Commons.ALIEN_WIDTH/2,getPosition().getY()+Commons.ALIEN_HEIGHT/2);
-        bullets.addFirst(new Boss.BossBullet(vector, player, true, Commons.BOMB_WIDTH,
-                        Commons.BOMB_HEIGHT, Assets.bomb,game));
+        Vector2 vector = new Vector2(getPosition().getX() + Commons.BOSS_WIDTH/2, getPosition().getY()+Commons.BOSS_HEIGHT/2);
+        bullets.addFirst(new Boss.BossBullet(vector, player, true, Commons.BOSS_BULLET_WIDTH,
+                        Commons.BOSS_BULLET_HEIGHT, Assets.bomb,game));
     }
 
     public int getShotcd() {

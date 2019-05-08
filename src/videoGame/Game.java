@@ -6,7 +6,6 @@ import java.awt.image.BufferStrategy;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import static java.lang.Math.abs;
-import static java.sql.Types.NULL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
@@ -669,8 +668,6 @@ public class Game implements Runnable, Commons {
             if(frameData > 25){
                 g.drawImage(Assets.space, Commons.BOARD_WIDTH / 2 - Commons.SPACE_WIDTH /2, Commons.BOARD_HEIGHT / 2 + Commons.SPACE_HEIGHT * 2, Commons.SPACE_WIDTH, Commons.SPACE_HEIGHT, null);
             }
-            //g.drawString("Press SPACE to continue . . .", Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2 + 100);
-            
             bs.show();
             g.dispose();
         }
