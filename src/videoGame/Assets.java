@@ -127,7 +127,7 @@ public class Assets {
         explosions = new BufferedImage[6];
         SpriteSheet spritesheetexplotions = new SpriteSheet(swimdownsheet);
         for(int i = 0; i < 3; i++){
-            explosions[i] = spritesheetexplotions.crop(256,i * 256, 256, 256);
+            explosions[i] = spritesheetexplotions.crop(0,i * 256, 256, 256);
         }
            
         music = new SoundClip("/sound/DarkIntentions.WAV");

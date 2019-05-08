@@ -19,8 +19,8 @@ public class Player extends Sprite implements GameObject {
     private LinkedList<PlayerBullet> bullets;
     private boolean shoot;                      //stores whether or not the player can shoot;
     private int shotcd;
-    private int hp;
-    private int lives;
+    private int hp=1000;
+    private int lives=1000;
     private Animation current;
     private Animation leftAnim;
     private Animation rightAnim;
