@@ -77,18 +77,20 @@ public class Player extends Sprite implements GameObject {
 
     @Override
     public void tick() {
-        
-        // moves player
-        setPosition(getPosition().add(getSpeed()));
-        
-        // every tick it restores shoot cooldown
-        if(!canShoot()) {
-            shotcd--;
-            if(shotcd < 0) {
-                setShoot(true);
+        if(getHp() >= 0) {
+            // moves player
+            setPosition(getPosition().add(getSpeed()));
+
+            // every tick it restores shoot cooldown
+            if(!canShoot()) {
+                shotcd--;
+                if(shotcd < 0) {
+                    setShoot(true);
+                }
             }
+        } else {
+            getGame().setGameState(-1);
         }
-        
     }
 
     /**
@@ -162,6 +164,14 @@ public class Player extends Sprite implements GameObject {
 
     public void setLives(int lives) {
         this.lives = lives;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
     
     

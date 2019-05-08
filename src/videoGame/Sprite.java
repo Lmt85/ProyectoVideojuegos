@@ -5,12 +5,12 @@
  */
 package videoGame;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import static java.lang.Math.random;
-import static java.lang.StrictMath.random;
 import maths.Vector2;
 import java.util.Random;
+import static jdk.nashorn.internal.objects.NativeMath.random;
 
 
 /**
@@ -54,14 +54,20 @@ public abstract class Sprite implements GameObject {
     }
     protected boolean visible;      //to store the visibility
     protected BufferedImage image;  //to store the image
-    protected Vector2 position;     //to store the position
+    protected Vector2 position;
     protected Vector2 speed;        //to store the speed vector
+    protected Vector2 acceleration;
     protected int width;            //to store the object's width
     protected int height;           //to store the object's width
     protected Orientation o;        //to store the object's orientation
     protected Game game;            //to store a reference to the game
+    protected Random gen;
+    protected double mass;
+    protected Vector2 center;
+    protected double topSpeed;
     
     public Sprite(Vector2 position, Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game) {
+        mass = 1;
         this.position = position;
         this.speed = speed;
         this.width = width;
@@ -69,6 +75,7 @@ public abstract class Sprite implements GameObject {
         this.image = image;
         this.visible = visible;
         this.game = game;
+        this.acceleration = new Vector2(0,0);
     }
     
     /**
@@ -182,6 +189,18 @@ public abstract class Sprite implements GameObject {
     
     public boolean isVisible() {
         return visible;
+    }
+
+    public Vector2 getAcceleration() {
+        return acceleration;
+    }
+
+    public void setAcceleration(Vector2 acceleration) {
+        this.acceleration = acceleration;
+    }
+    
+    public void applyForce(Vector2 force) {
+        setAcceleration(getAcceleration().add(force.div(mass)));
     }
     
 }

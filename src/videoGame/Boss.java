@@ -127,44 +127,46 @@ public class Boss extends Enemy implements GameObject{
      @Override
      public void tick(){
          
-        if(canShoot()) {
-            if(onScreen()) {
-                if(firstattack>1){
-                    shoots(game.getPlayer().getPosition());
-                    angle=angle-.2;
-                    angle2=angle2-.2;
-                    setShoot(false);
-                    resetShotcd();
-                    //System.out.println(bullets.size());
-                    setFirstAttack(getFirstAttack()-1);
-                }else{
-                    if(getShotAttack()>1){
-                        setShotcd(0);
-                        shoots(game.getPlayer().getPosition());
-                        angle=angle+.2;
-                        angle2=angle2+.2;
-                        angle3=angle3+.2;
-                        angle4=angle4+.2;
-                        setShoot(false);
-                     //   System.out.println(bullets.size());
-                       // System.out.println(getShotcd());
-                        setShotAttack(getShotAttack()-1);
-                    }else{   
-                        shoots(game.getPlayer().getPosition());
-                        angle=angle+.2;
-                        angle2=angle2+.2;
-                        setShoot(false);
-                        resetShotcd();
-                   //     System.out.println(bullets.size());
-                    }
-                }              
-            }
-        } else {
-             shotcd--;
-             if(shotcd < 0) {
-                setShoot(true);
-             }
-        }
+         
+         
+//        if(canShoot()) {
+//            if(onScreen()) {
+//                if(firstattack>1){
+//                    shoots(game.getPlayer().getPosition());
+//                    angle=angle-.2;
+//                    angle2=angle2-.2;
+//                    setShoot(false);
+//                    resetShotcd();
+//                    //System.out.println(bullets.size());
+//                    setFirstAttack(getFirstAttack()-1);
+//                }else{
+//                    if(getShotAttack()>1){
+//                        setShotcd(0);
+//                        shoots(game.getPlayer().getPosition());
+//                        angle=angle+.2;
+//                        angle2=angle2+.2;
+//                        angle3=angle3+.2;
+//                        angle4=angle4+.2;
+//                        setShoot(false);
+//                     //   System.out.println(bullets.size());
+//                       // System.out.println(getShotcd());
+//                        setShotAttack(getShotAttack()-1);
+//                    }else{   
+//                        shoots(game.getPlayer().getPosition());
+//                        angle=angle+.2;
+//                        angle2=angle2+.2;
+//                        setShoot(false);
+//                        resetShotcd();
+//                   //     System.out.println(bullets.size());
+//                    }
+//                }              
+//            }
+//        } else {
+//             shotcd--;
+//             if(shotcd < 0) {
+//                setShoot(true);
+//             }
+//        }
         
         
        

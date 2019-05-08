@@ -5,15 +5,19 @@
  */
 package videoGame;
 
-import java.awt.Color;
+import maths.Vector2;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+
 
 /**
  *
  * @author marcelosuarez
  */
 public class Block extends Sprite implements GameObject{
+    
+    private Vector2 normal;
+    
     public Block(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image,Game game) {
             super(position,speed,visible,width,height,image,game);
     }

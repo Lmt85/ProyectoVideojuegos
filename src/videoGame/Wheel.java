@@ -2,13 +2,15 @@ package videoGame;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 import videoGame.GameObject;
+import maths.Vector2;
 import videoGame.Player;
 import videoGame.Sprite;
 
 /**
  * This class is stores all the methods and variables related to the alien
- * @author Carlos Adrian Guerra Vazquez A00823198
+ * @author Adrián Marcelo Suárez Ponce A01197108
  * @date 28/01/2019
  * @version 1.0
  */
@@ -28,28 +30,38 @@ public class Wheel extends Enemy implements GameObject{
      */
 
     private Animation wheelAnim;
+    private Random gen;
 
 
 
     public Wheel(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game, int hp){  
         super(position,speed,visible,width,height,image,game,hp);
-        this.wheelAnim = new Animation(Assets.wheels, 100);        
+        
+        gen = new Random();
+        mass = gen.nextGaussian();
+        mass *= 0.25;
+        mass += 1;
+        this.width = (int)(mass*width);
+        this.height = (int)(mass*height);
+        this.wheelAnim = new Animation(Assets.wheels, 100);
+        topSpeed = 4;
         //this.maxHp = hp;
         
     }
     
     @Override
     public void tick() {
-        if(onScreen()){
-            if(game.getPlayer().getPosition().getX() > this.getPosition().getX()) this.setSpeed(this.getSpeed().getX() + .2, this.getSpeed().getY());
-            if(game.getPlayer().getPosition().getX() < this.getPosition().getX()) this.setSpeed(this.getSpeed().getX() - .2, this.getSpeed().getY());
-            if(game.getPlayer().getPosition().getY() > this.getPosition().getY()) this.setSpeed(this.getSpeed().getX(), this.getSpeed().getY() + .2);
-            if(game.getPlayer().getPosition().getY() < this.getPosition().getY()) this.setSpeed(this.getSpeed().getX(), this.getSpeed().getY() - .2);
+            Vector2 force = getPosition().sub(game.getPlayer().getPosition());
+            force.set(force.norm().scalar(0.5));
+            this.applyForce(force);
+            
+            setSpeed(getSpeed().add(getAcceleration()));
+            getSpeed().limit(topSpeed);
+            setPosition(getPosition().add(getSpeed()));
+            setAcceleration(getAcceleration().scalar(0));
+            
             wheelAnim.tick();
-        } else {
-            this.setSpeed(getSpeed().scalar(.9));
-        }
-        this.setPosition(this.getPosition().getX() + this.getSpeed().getX(), this.getPosition().getY() + this.getSpeed().getY());
+//        }
     }
     
     /**
@@ -59,14 +71,6 @@ public class Wheel extends Enemy implements GameObject{
     @Override
     public void render(Graphics g) {
         g.drawImage(wheelAnim.getCurrentFrame(), (int)position.getX(), (int)position.getY(), width, height, null);
-        //g.drawRect((int) position.getX(), (int) position.getY(), width, height);
-        /*
-        if(maxHp != hp){
-            g.fillRect((int) (position.getX() + 5), (int)position.getY() - 10,  (int) (width - 10) * (this.hp / maxHp), 5);
-        }
-        g.fillRect((int) (position.getX() + 5), (int)position.getY() - 10,  (int) ((width - 10) * (this.hp / maxHp)), 5);
-        */
-        
     }
 
     @Override

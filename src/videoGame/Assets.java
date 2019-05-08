@@ -53,7 +53,9 @@ public class Assets {
      */
     public static void init(){
         background = ImageLoader.loadImage("/images/background.png"); 
+
         map = ImageLoader.loadImage("/images/Level2.png");
+
         
         wall = ImageLoader.loadImage("/images/Wall.png");
         alien = ImageLoader.loadImage("/images/alien.png"); 
