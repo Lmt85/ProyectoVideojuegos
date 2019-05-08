@@ -363,7 +363,8 @@ public class Game implements Runnable, Commons {
         camera = new Camera(0,0,this);
         
         // Loads all the sound related assets
-        Assets.music.setLooping(true);
+        Assets.music1.setLooping(true);
+        Assets.music2.setLooping(true);
         
         //Creates and initializes game objects
         setPlayer(new Player(new Vector2(Commons.START_X, Commons.START_Y), new Vector2(), true, Commons.PLAYER_WIDTH, Commons.PLAYER_HEIGHT, Assets.player,this));
@@ -476,7 +477,7 @@ public class Game implements Runnable, Commons {
 
         // When restart key pressed, music is restarted, gameState is set as playing, and game is loaded
         if (keyManager.restart) {   
-            Assets.music.play();
+            
             setGameState(Commons.PLAYING_GAMESTATE);
             loadGame("restartGame.txt");
         }
@@ -757,6 +758,14 @@ public class Game implements Runnable, Commons {
             this.menu++;
             if(this.menu > 5){
                 this.menu = 0;
+            }
+            if(this.menu == 1){
+                Assets.music1.play();
+                Assets.music2.stop();
+            }
+            if(this.menu == 3){
+                Assets.music2.play();
+                Assets.music1.stop();
             }
         }
     

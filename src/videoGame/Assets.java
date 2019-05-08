@@ -44,7 +44,8 @@ public class Assets {
     public static BufferedImage space;
     
     //Sound
-    public static SoundClip music;    // Stores looping music
+    public static SoundClip music1;    // Stores looping music
+    public static SoundClip music2;    // Stores looping music
     SoundClip laser;    // Stores the laser sound
     SoundClip alienOof; // Stores alien death sound
     SoundClip dead;     // Stores player death sound
@@ -90,6 +91,7 @@ public class Assets {
             wheels[i] = spritesheet.crop(i * 200, 0, 200, 200);
         }
         
-        music = new SoundClip("/sound/DarkIntentions.WAV");
+        music1 = new SoundClip("/sound/aquatic.wav");
+        music2 = new SoundClip("/sound/cave.wav");
     }    
 }
