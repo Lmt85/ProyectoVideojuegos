@@ -41,6 +41,7 @@ public class Assets {
     public static BufferedImage prologue;
     public static BufferedImage objetivo;
     public static BufferedImage gameover;
+    public static BufferedImage space;
     
     //Sound
     public static SoundClip music;    // Stores looping music
@@ -81,6 +82,7 @@ public class Assets {
         prologue = ImageLoader.loadImage("/images/introscreen.png");   
         objetivo = ImageLoader.loadImage("/images/Objective.png"); 
         gameover = ImageLoader.loadImage("/images/gameover.png"); 
+        space = ImageLoader.loadImage("/images/space.png"); 
         
         wheels = new BufferedImage[4];
         SpriteSheet spritesheet = new SpriteSheet(wheelSheet);

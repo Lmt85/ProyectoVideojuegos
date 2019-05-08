@@ -4,6 +4,7 @@ public interface Commons {
     public static int scale = 2;
     
     //Game constants
+    public static final String GAME_NAME = "trashedy";
     public static final int BOARD_WIDTH = 358 * scale;
     public static final int BOARD_HEIGHT = 350 * scale;
     public static final int GRID_WIDTH = 32 * scale;
@@ -37,14 +38,24 @@ public interface Commons {
     public static final int ALIEN_INIT_X = 150* scale;
     public static final int ALIEN_INIT_Y = 5* scale;    
     
-    //Hud Constants
+    //HUD Constants
     public static final int HEART_SIZE = 10 * scale;
     public static final int TAB_WIDTH = 60 * scale;
     public static final int TAB_HEIGHT = 20 * scale;
     public static final int HEART_MAX = 10;
+    public static final int SPACE_WIDTH = 160 * scale;
+    public static final int SPACE_HEIGHT = 60 * scale;
     
-    //String Constants
-    public static final String END_GAME_LOSE = "You lost!!!";
-    public static final String END_GAME_WIN = "You win!!!";
-    public static final String SCREEN_TITLE = "Trashedy";
+
+    public static final int FONT_WIDTH = 10 * scale;
+    
+    //GameState Constants
+    public static final int PLAYING_GAMESTATE = 0;
+    public static final int LOST_GAMESTATE = -1;
+    public static final int WON_GAMESTATE = 1;
+    
+    //Game Messages
+    public static final String LOST_GAME_MESSAGE = "You Lost";
+    public static final String WON_GAME_MESSAGE = "You Won";
+
 }

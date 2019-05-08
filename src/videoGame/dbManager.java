@@ -4,7 +4,9 @@
  * and open the template in the editor.
  */
 package videoGame;
+import java.awt.Graphics;
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  *
@@ -66,20 +68,73 @@ public class dbManager {
     public void registerGame(long timeElapsed) {
         try {
             stmt = c.createStatement();
-            String sql = "INSERT INTO game (playerid, time) VALUES('" + getGame().getPlayerid() + "'," + timeElapsed + ");";
+            String sql = "INSERT INTO game (playerid, time) VALUES('" + getGame().getPlayerid() + "'," + timeElapsed/1000 + ");";
             stmt.executeUpdate(sql);
-            sql = "INSERT INTO scores (playerid, scores) VALUES(" + getGame().getPlayerid() + ");";
+            sql = "INSERT INTO scores (playerid, score) VALUES('" + getGame().getPlayerid() + "'," + getGame().getScore() + ");";
             stmt.executeUpdate(sql);
             
             stmt.close();
             c.commit();
-
+            c.close();
         } catch ( Exception e ) {
            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
            System.exit(0);
         }
     }
     
+     public ArrayList<String> searchUserScores() {
+        ArrayList<String> res = new ArrayList<>();
+        try {
+            stmt = c.createStatement();
+            String sql = "Select * FROM player Where playerid = '" + getGame().getPlayerid() + "';";
+            ResultSet rs  = stmt.executeQuery(sql);
+            if(rs.next()) {
+                getGame().setPlayerName(rs.getString("playername"));
+                res.add(getGame().getPlayerName().toUpperCase() + " SCORES:");
+                res.add("==========");
+            }
+            
+            sql = "Select * From Scores Where playerid = '" + getGame().getPlayerid() + "' ORDER BY SCORE DESC LIMIT 5;";
+            rs = stmt.executeQuery(sql);
+            while(rs.next()) {
+                res.add(rs.getString("score"));
+            }
+            
+            stmt.close();
+            c.commit();
+ 
+        } catch ( Exception e ) {
+           System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+           System.exit(0);
+        }
+        
+        return res;
+    }
+    
+     
+    public ArrayList<String> searchGlobalScores() {
+        ArrayList<String> res = new ArrayList<>();
+        try {
+            stmt = c.createStatement();
+            String sql = "SELECT * FROM SCORES GROUP BY playerid ORDER BY SCORE DESC LIMIT 5;";
+            ResultSet rs  = stmt.executeQuery(sql);
+            res.add("GLOBAL RANKING");
+            res.add("==========");
+            while(rs.next()) {
+                res.add(rs.getString("playerid") + ": " + rs.getInt("score"));
+            }
+            
+            stmt.close();
+            c.commit();
+ 
+        } catch ( Exception e ) {
+           System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+           System.exit(0);
+        }
+        
+        return res;
+    }
+     
     public Connection getC() {
         return c;
     }
