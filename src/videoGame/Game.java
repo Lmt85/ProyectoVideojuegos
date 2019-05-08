@@ -282,9 +282,9 @@ public class Game implements Runnable, Commons {
             //game state renders
             if (gameState != 0) {
                 if (gameState == -1) {//lost screen
-                    g.drawString(Commons.LOST_GAME_MESSAGE, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
+                    g.drawString(Commons.LOST_GAME_MESSAGE, Commons.BOARD_WIDTH / 2 - (Commons.WON_GAME_MESSAGE.length()/2 * Commons.FONT_WIDTH), Commons.BOARD_HEIGHT / 2);
                 } else if (gameState == 1) {//won screen
-                    g.drawString(Commons.WON_GAME_MESSAGE, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
+                    g.drawString(Commons.WON_GAME_MESSAGE, Commons.BOARD_WIDTH / 2 - (Commons.WON_GAME_MESSAGE.length()/2 * Commons.FONT_WIDTH) , Commons.BOARD_HEIGHT / 2);
                 }
             } else if (paused) { //triggers if paused and playing, displays paused message
                 g.setColor(Color.BLACK);
