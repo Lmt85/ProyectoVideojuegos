@@ -6,6 +6,8 @@ import java.awt.image.BufferStrategy;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import static java.lang.Math.abs;
+import static java.sql.Types.NULL;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import maths.Vector2;
 
@@ -37,6 +39,7 @@ public class Game implements Runnable, Commons {
     private int width;          // width of the window
     private long startTime;         // for time elapsed
     private long endTime;           // for time elapsed
+    private boolean registered;
     private KeyManager keyManager;  // key manager asociated with the display
     private MouseManager mouseManager; // mouse manager asociated with the display
     private Font font; // font used to display the score and game over message
@@ -60,16 +63,11 @@ public class Game implements Runnable, Commons {
     private boolean pauseTrig = false;
     private int gameState = 0; // 0 -> game playing, -1 -> game lost, 1 -> game won
 
-    //Save state
-    private String fileName;    // Save filename
-    private String[] arr;       // To load the game objects
-
     //Internal game atributes
-    public String message;  // Stores endgame message
-
-
-
     private int score;      // Stores game score
+    private ArrayList<String> playerRankings;
+    private ArrayList<String> globalRankings;
+    
     
 
     /**
@@ -83,7 +81,7 @@ public class Game implements Runnable, Commons {
      */
     public Game() {
         // Name of the game
-        this.title = "Trashedy";
+        this.title = Commons.GAME_NAME;
 
         // Sets game dimensions
         this.width = Commons.BOARD_WIDTH;
@@ -92,7 +90,7 @@ public class Game implements Runnable, Commons {
         running = false;
         keyManager = new KeyManager();
         mouseManager = new MouseManager();
-        //font = new Font("consolas", Font.BOLD, 10);
+        font = new Font("consolas", Font.BOLD, Commons.FONT_WIDTH);
     }
 
     /**
@@ -265,22 +263,6 @@ public class Game implements Runnable, Commons {
             g2d.translate(camera.getX(), camera.getY());
             
             ////////////////////////////////////
-            //game state renders
-            if (gameState != 0) {
-                if (gameState == -1) {//lost screen
-                    g.drawString(message, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
-                } else if (gameState == 1) {//won screen
-                    g.drawString(message, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
-                }
-            } else if (paused) { //triggers if paused and playing, displays paused message
-                g.drawString("<PAUSED>", 10, 10);
-            }
-            if (keyManager.save) { //displays saved message if saved
-                g.drawString("<SAVED>", Commons.BOARD_WIDTH - 100, 10);
-            }
-
-            //displays the amount of aliens destroyed
-//            g.drawString("Destroyed: " + alienManager.destroyed + "/24", 10, Commons.BOARD_HEIGHT - 10);
 
             g.drawImage(Assets.hud, 0 , 0, Commons.TAB_WIDTH, Commons.TAB_HEIGHT, null);
             for(int o = 1; o < Commons.HEART_MAX; o += 2){
@@ -296,6 +278,31 @@ public class Game implements Runnable, Commons {
             
             g.drawImage(Assets.hud2, Commons.BOARD_WIDTH - Commons.TAB_WIDTH , 0, Commons.TAB_WIDTH, Commons.TAB_HEIGHT, null);
             g.drawString("Score: ", 0, 0);
+            
+            //game state renders
+            if (gameState != 0) {
+                if (gameState == -1) {//lost screen
+                    g.drawString(Commons.LOST_GAME_MESSAGE, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
+                } else if (gameState == 1) {//won screen
+                    g.drawString(Commons.WON_GAME_MESSAGE, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
+                }
+            } else if (paused) { //triggers if paused and playing, displays paused message
+                g.setColor(Color.BLACK);
+                g.fillRect(0,0,Commons.BOARD_WIDTH/2,Commons.BOARD_HEIGHT/2); // HIGHSCORE HUD
+                g.setColor(Color.GRAY);
+                g.fillRect(Commons.BOARD_WIDTH/2,0,Commons.BOARD_WIDTH/2,Commons.BOARD_HEIGHT/2); // HIGHSCORE HUD
+                g.setColor(Color.WHITE);
+                for(int i = 0; i < playerRankings.size(); i++) {
+                    g.drawString(playerRankings.get(i), 0 , (Commons.FONT_WIDTH * 2) + (i * Commons.FONT_WIDTH));
+                }
+                for(int i = 0; i < globalRankings.size(); i++) {
+                    g.drawString(globalRankings.get(i), Commons.BOARD_WIDTH/2 , (Commons.FONT_WIDTH * 2) + (i * Commons.FONT_WIDTH));
+                }
+                g.setColor(Color.GREEN);
+            }
+            if (keyManager.save) { //displays saved message if saved
+                g.drawString("<SAVED>", Commons.BOARD_WIDTH - 100, 10);
+            }
             
             bs.show();
             g.dispose();
@@ -360,7 +367,7 @@ public class Game implements Runnable, Commons {
     private void tick() {
         getKeyManager().tick(); //key manager must precede all user ralated actions
         
-        if (!paused && gameState == 0) { //game playing and not paused 
+        if (!paused && gameState == Commons.PLAYING_GAMESTATE) { //game playing and not paused 
             camera.tick(player);          //ticks the camera relative to the player
             
             // Sets orientation depending on key pressed
@@ -416,28 +423,36 @@ public class Game implements Runnable, Commons {
             //Ticks the manager that controls the enemies and their bullets
             enemyManager.tick();
             checkCollisions();
-        } else if(gameState == -1) {
-            db.registerGame(startTime - endTime);
+        } else if(gameState == Commons.LOST_GAMESTATE && !registered) {
+            registered = true;
+            endTime = System.currentTimeMillis();
+            db.registerGame(endTime-startTime);
         }
 
         // Saves game and loads game
-        if (keyManager.save && gameState == 0) 
-        if (keyManager.load && gameState == 0) loadGame("save.txt");
+        if (keyManager.save && gameState == Commons.PLAYING_GAMESTATE) 
+        if (keyManager.load && gameState == Commons.PLAYING_GAMESTATE) loadGame("save.txt");
 
         // When restart key pressed, music is restarted, gameState is set as playing, and game is loaded
         if (keyManager.restart) {   
             Assets.music.play();
-            setGameState(0);
+            setGameState(Commons.PLAYING_GAMESTATE);
             loadGame("restartGame.txt");
         }
 
         //Triggers the pause of the game when 'P' is pressed
-        if (!paused && keyManager.paused && !pauseTrig) paused = true;
-        else if (paused && keyManager.paused && !pauseTrig) paused = false;
+        if (!paused && keyManager.paused && !pauseTrig) {
+            paused = true ;
+            playerRankings = db.searchUserScores();
+            globalRankings = db.searchGlobalScores();
+        }
+        else if (paused && keyManager.paused && !pauseTrig) {
+            paused = false;
+        }
         
         if (keyManager.paused) pauseTrig = true;
         else pauseTrig = false;
-
+        
     }
 
     /**
