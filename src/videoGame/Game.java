@@ -195,7 +195,10 @@ public class Game implements Runnable, Commons {
                 //Lets try something
                 if(menu != 3){
                     render2();
-                    tick2();
+                    if(menu < 3){
+                        tick2();
+                    }
+                    
                 }
                 else{
                     tick();
@@ -672,7 +675,7 @@ public class Game implements Runnable, Commons {
                     break;
             }
             
-            if(frameData > 25){
+            if(frameData > 25 && menu < 3){
                 g.drawImage(Assets.space, Commons.BOARD_WIDTH / 2 - Commons.SPACE_WIDTH /2, Commons.BOARD_HEIGHT / 2 + Commons.SPACE_HEIGHT * 2, Commons.SPACE_WIDTH, Commons.SPACE_HEIGHT, null);
             }
             //g.drawString("Press SPACE to continue . . .", Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2 + 100);
