@@ -55,6 +55,7 @@ public class Assets {
     public static BufferedImage prologue;
     public static BufferedImage objetivo;
     public static BufferedImage gameover;
+    public static BufferedImage gamewon;
     public static BufferedImage space;
     public static BufferedImage won;
     
@@ -74,12 +75,12 @@ public class Assets {
         alien = ImageLoader.loadImage("/images/alien.png"); 
         shot = ImageLoader.loadImage("/images/shot.png"); 
         bomb = ImageLoader.loadImage("/images/bomb.png"); 
-        player = ImageLoader.loadImage("/images/turtle.png");
+        player = ImageLoader.loadImage("/images/Turtle.png");
         explosion = ImageLoader.loadImage("/images/explosion.png");
         
         heartFull = ImageLoader.loadImage("/images/heartFull.png");
-        heartHalf = ImageLoader.loadImage("/images/HeartHalf.png");
-        heartEmpty = ImageLoader.loadImage("/images/HeartEmpty.png");
+        heartHalf = ImageLoader.loadImage("/images/heartHalf.png");
+        heartEmpty = ImageLoader.loadImage("/images/heartEmpty.png");
         sand = ImageLoader.loadImage("/images/Sand.png");
         can = ImageLoader.loadImage("/images/can.png");
         pirate = ImageLoader.loadImage("/images/Pirate.png");
@@ -94,11 +95,11 @@ public class Assets {
         prologue = ImageLoader.loadImage("/images/introscreen.png");   
         objetivo = ImageLoader.loadImage("/images/Objective.png"); 
 
-        gameover = ImageLoader.loadImage("/images/gameover.png"); 
-        won = ImageLoader.loadImage("/images/win_screen.png"); 
-        space = ImageLoader.loadImage("/images/space.png"); 
 
         gameover = ImageLoader.loadImage("/images/gameover.png");
+        gamewon = ImageLoader.loadImage("/images/win_screen.png");
+        space = ImageLoader.loadImage("/images/space.png"); 
+
         seabackground = ImageLoader.loadImage("/images/sea-background.png");
         swimtoleftsheet = ImageLoader.loadImage("/images/swim_to_left_sheet.png");
         swimtorightsheet = ImageLoader.loadImage("/images/swim_to_right_sheet.png");

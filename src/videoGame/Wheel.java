@@ -34,7 +34,6 @@ public class Wheel extends Enemy implements GameObject{
     private int maxForce;
 
 
-
     public Wheel(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game, int hp){  
         super(position,speed,visible,width,height,image,game,hp);
         
@@ -45,16 +44,13 @@ public class Wheel extends Enemy implements GameObject{
         this.width = (int)(mass*width);
         this.height = (int)(mass*height);
         this.wheelAnim = new Animation(Assets.wheels, 100);
-        topSpeed = 4;
         maxForce = 2;
+        topSpeed = 4;
         
     }
     
     @Override
     public void tick() {
-//            Vector2 force = getPosition().sub(game.getPlayer().getPosition());
-//            force.set(force.norm().scalar(0.5));
-//            this.applyForce(force);
             Vector2 desired = game.getPlayer().getPosition().sub(getPosition());
             desired = desired.norm().scalar(topSpeed);
             
@@ -67,8 +63,8 @@ public class Wheel extends Enemy implements GameObject{
             setPosition(getPosition().add(getSpeed()));
             setAcceleration(getAcceleration().scalar(0));
             
+            
             wheelAnim.tick();
-//        }
     }
     
     /**
