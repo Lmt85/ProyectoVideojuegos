@@ -21,6 +21,8 @@ public class Player extends Sprite implements GameObject {
     private int shotcd;
     private int hp;
     private int lives;
+    private boolean canTakeDmg;
+    private int invencibilityFrames;
     
     /**
      * Constructor with parameters, these parameters are passed directly to the Sprite class
@@ -35,13 +37,13 @@ public class Player extends Sprite implements GameObject {
     public Player(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game) {
         super(position, speed, visible, width, height, image, game);
         bullets = new LinkedList<>();
-        hp = 10;
+        hp = Commons.PLAYER_HP;
         lives = 3;
     }
     
     public class PlayerBullet extends Projectile implements GameObject{
             public PlayerBullet(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game){ 
-            super(position,speed,visible,width,height,image,1,game);
+            super(position,speed,visible,width,height,image,Commons.PLAYER_BULLET_DAMAGE,game);
         }
 
         @Override
@@ -74,7 +76,6 @@ public class Player extends Sprite implements GameObject {
     public void init() {
         setShoot(true);
         setOrientation(Sprite.Orientation.NORTH);
-        hp = 50;
     }
 
     @Override
@@ -90,6 +91,15 @@ public class Player extends Sprite implements GameObject {
                     setShoot(true);
                 }
             }
+            if(!canTakeDmg()) {
+                invencibilityFrames--;
+                if(invencibilityFrames <= 0) {
+                    setCanTakeDmg(true);
+                    resetInvencibility();
+                }
+            }
+                    
+                    
         } else {
             getGame().setGameState(-1);
         }
@@ -134,14 +144,17 @@ public class Player extends Sprite implements GameObject {
     }
 
     public void resetShotcd() {
-        this.shotcd = 5;
+        this.shotcd = Commons.PLAYER_SHOT_COOLDOWN;
+    }
+    
+    public void resetInvencibility() {
+        this.invencibilityFrames = Commons.INVENCIBILITY_FRAMES;
     }
     
     public void shoots() {
         bullets.addFirst(new PlayerBullet(getPosition(),
                         getOrientation().speed(6), true, Commons.BOMB_WIDTH,
                         Commons.BOMB_HEIGHT, Assets.bomb,game));
-        System.out.println(bullets.size());
     }
 
     public int getShotcd() {
@@ -175,6 +188,22 @@ public class Player extends Sprite implements GameObject {
     public void setGame(Game game) {
         this.game = game;
     }
+    
+    public void takeDamage(int dmg) {
+        if(canTakeDmg()) {
+            setHp(getHp() - dmg);
+            setCanTakeDmg(false);
+        }
+    }
+
+    public boolean canTakeDmg() {
+        return canTakeDmg;
+    }
+
+    public void setCanTakeDmg(boolean canTakeDmg) {
+        this.canTakeDmg = canTakeDmg;
+    }
+    
     
     
 }

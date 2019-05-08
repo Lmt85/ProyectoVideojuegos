@@ -429,17 +429,6 @@ public class Game implements Runnable, Commons {
             db.registerGame(endTime-startTime);
         }
 
-        // Saves game and loads game
-        if (keyManager.save && gameState == Commons.PLAYING_GAMESTATE) 
-        if (keyManager.load && gameState == Commons.PLAYING_GAMESTATE) loadGame("save.txt");
-
-        // When restart key pressed, music is restarted, gameState is set as playing, and game is loaded
-        if (keyManager.restart) {   
-            Assets.music.play();
-            setGameState(Commons.PLAYING_GAMESTATE);
-            loadGame("restartGame.txt");
-        }
-
         //Triggers the pause of the game when 'P' is pressed
         if (!paused && keyManager.paused && !pauseTrig) {
             paused = true ;
@@ -453,87 +442,6 @@ public class Game implements Runnable, Commons {
         if (keyManager.paused) pauseTrig = true;
         else pauseTrig = false;
         
-    }
-
-    /**
-     * Method that saves the current game, including each of the object's
-     * important attributes
-     *
-     * @param fileName
-     */
-    private void saveGame(String fileName) {
-//        try {
-//            FileWriter fw = new FileWriter(fileName); //FileWriter to write each line in fileName path
-//            fw.write(player.toString());   //Inserts the player object
-//            fw.write(shot.toString());      //Inserts the shot object
-//            fw.write(alienManager.toString());//Inserts the alienManager direction and destroyd qty
-//            for(Alien a : alienManager.aliens){
-//                fw.write(a.toString()); //Inserts each alien in the alienManager
-//                fw.write(a.getBomb().toString()); //Inserts each alien's bomb
-//            }
-//            fw.close(); //Finishes writing in the file and closes it
-//        } catch(IOException e) {
-//            e.printStackTrace();
-//        }
-    }
-
-    /**
-     * Method that loads a game with the param's path
-     *
-     * @param fileName
-     */
-    private void loadGame(String fileName) {
-//        try {
-//            //clears the aliens list
-//            alienManager.aliens = new ArrayList<>();    //Empties the alien array
-//            BufferedReader br = new BufferedReader(new FileReader(fileName));   //To Read each line
-//
-//            //Reads player data
-//            String data = br.readLine();
-//            arr = data.split(" ");
-//            player.position.setX(Double.parseDouble(arr[0]));   //stores the x coordinate
-//            player.position.setY(Double.parseDouble(arr[1]));   //stores the y coordinate
-//            player.setVisible(Boolean.parseBoolean(arr[2]));    //stores the visibility
-//            player.setDx(Integer.parseInt(arr[3]));             //stores the dx
-//
-//            //Reads shot data
-//            data = br.readLine();
-//            arr = data.split(" ");
-//            shot.position.setX(Double.parseDouble(arr[0]));     //stores the x coordinate
-//            shot.position.setY(Double.parseDouble(arr[1]));     //stores the y coordinate
-//            shot.setVisible(Boolean.parseBoolean(arr[2]));      //stores the visibility
-//
-//            //Reads direction and destroyed
-//            data = br.readLine();
-//            arr = data.split(" ");
-//            alienManager.setDirection(Integer.parseInt(arr[0]));
-//            alienManager.setDestroyed(Integer.parseInt(arr[1]));
-//
-//            //Reads alien and bomb data
-//            data = br.readLine();
-//            Alien a;
-//            while(data != null) {
-//                arr = data.split(" ");
-//                // creates an alien instance with the read values x, y and visibility
-//                a = new Alien(Double.parseDouble(arr[0]),Double.parseDouble(arr[1]), Boolean.parseBoolean(arr[2]), Commons.ALIEN_WIDTH,Commons.ALIEN_HEIGHT,Assets.alien);
-//
-//                data = br.readLine();
-//                arr = data.split(" ");
-//                a.getBomb().position.setX(Double.parseDouble(arr[0]));  //stores the x coordinate
-//                a.getBomb().position.setY(Double.parseDouble(arr[1]));  //stores the y coordinate
-//                a.getBomb().setVisible(Boolean.parseBoolean(arr[2]));   //stores the visibility
-//
-//                alienManager.aliens.add(a); //adds the created alien to the alienManager's array
-//                data = br.readLine();
-//            }
-//
-//        } catch(IOException e) {
-//            e.printStackTrace();
-//        }
-    }
-
-    public void setPositionRelativeToPlayer(Sprite p) {
-        p.setPosition(new Vector2(getPlayer().position.getX() + H_SPACE, getPlayer().position.getY() - V_SPACE));
     }
 
     public LevelManager getLevelManager() {
@@ -613,14 +521,14 @@ public class Game implements Runnable, Commons {
         for(int i = 0; i < getEnemyManager().getEnemies().size(); i++) {
             if(getEnemyManager().getEnemies().get(i).getClass().equals(Wheel.class)) {
                 if(checkCollision((Sprite) getEnemyManager().getEnemies().get(i), (Sprite) getPlayer())) { //Sets the bullet that collides to not existing
-                        getPlayer().setHp(getPlayer().getHp() - 1);
+                        getPlayer().takeDamage(Commons.WHEEL_DAMAGE);
                         System.out.println("hit");
                 }
             } else {
                 for(int j = 0; j < getEnemyManager().getEnemies().get(i).getBullets().size(); j++) {
                     if(checkCollision((Sprite) getEnemyManager().getEnemies().get(i).getBullets().get(j) , (Sprite) getPlayer())) { //Sets the bullet that collides to not existing
                         getEnemyManager().getEnemies().get(i).getBullets().get(j).setVisible(false);
-                        getPlayer().setHp(getPlayer().getHp() - getEnemyManager().getEnemies().get(i).getBullets().get(j).getDamage());
+                        getPlayer().takeDamage(Commons.CAN_BULLET_DAMAGE);
                         System.out.println("hit");
                     }
                 }

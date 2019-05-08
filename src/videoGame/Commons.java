@@ -15,12 +15,6 @@ public interface Commons {
     public static final int BLOCK_HEIGHT = 32 * scale;
     public static final int BORDER_RIGHT = 30 * scale;
     public static final int BORDER_LEFT = 5 * scale;
-    public static final int GO_DOWN = 15;
-    public static final int NUMBER_OF_ALIENS_TO_DESTROY = 24;
-    public static final int CHANCE = 5;
-    public static final int DELAY = 17;
-    public static final int H_SPACE = 6* scale;
-    public static final int V_SPACE = 1* scale;
 
     //Bomb constants
     public static final int BOMB_HEIGHT = 6* scale;
@@ -31,8 +25,11 @@ public interface Commons {
     public static final int PLAYER_HEIGHT = 10 * scale;
     public static final int START_Y = 280* scale;
     public static final int START_X = 270* scale;
+    public static final int PLAYER_HP = 10;
+    public static final int PLAYER_SHOT_COOLDOWN = 5;
+    public static final int INVENCIBILITY_FRAMES = 30;
     
-    //Alien constants
+    //Enemy constants
     public static final int ALIEN_HEIGHT = 30* scale;
     public static final int ALIEN_WIDTH = 30* scale;
     public static final int ALIEN_INIT_X = 150* scale;
@@ -53,5 +50,11 @@ public interface Commons {
     //Game Messages
     public static final String LOST_GAME_MESSAGE = "You Lost";
     public static final String WON_GAME_MESSAGE = "You Won";
+    
+    //Damage Constants
+    public static final int PLAYER_BULLET_DAMAGE = 1;
+    public static final int CAN_BULLET_DAMAGE = 1;
+    public static final int WHEEL_DAMAGE = 1;
+    
     
 }
