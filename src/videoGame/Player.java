@@ -85,6 +85,7 @@ public class Player extends Sprite implements GameObject {
          * it straight down until it reaches the bottom
          */
         public void render(Graphics g) {
+            g.drawRect((int)position.getX(), (int)position.getY(), width, height);
             g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), Commons.PLAYER_BULLET_WIDTH, Commons.PLAYER_BULLET_HEIGHT, null);
         }
         

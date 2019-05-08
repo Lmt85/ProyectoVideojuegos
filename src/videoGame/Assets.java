@@ -55,6 +55,7 @@ public class Assets {
     public static BufferedImage prologue;
     public static BufferedImage objetivo;
     public static BufferedImage gameover;
+    public static BufferedImage gamewon;
     public static BufferedImage space;
     
     //Sound
@@ -95,10 +96,10 @@ public class Assets {
         prologue = ImageLoader.loadImage("/images/introscreen.png");   
         objetivo = ImageLoader.loadImage("/images/Objective.png"); 
 
-        gameover = ImageLoader.loadImage("/images/gameover.png"); 
+        gameover = ImageLoader.loadImage("/images/gameover.png");
+        gamewon = ImageLoader.loadImage("/images/win_screen.png");
         space = ImageLoader.loadImage("/images/space.png"); 
 
-        gameover = ImageLoader.loadImage("/images/gameover.png");
         seabackground = ImageLoader.loadImage("/images/sea-background.png");
         swimtoleftsheet = ImageLoader.loadImage("/images/swim_to_left_sheet.png");
         swimtorightsheet = ImageLoader.loadImage("/images/swim_to_right_sheet.png");

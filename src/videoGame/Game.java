@@ -288,13 +288,13 @@ public class Game implements Runnable, Commons {
             
             ////////////////////////////////game state renders
             if (gameState != 0) {
-                if (gameState == -1) {//lost screen
+                if (gameState == Commons.LOST_GAMESTATE) {//lost screen
 
                     g.drawString(Commons.LOST_GAME_MESSAGE, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
                     menu = 4;
 
-                } else if (gameState == 1) {//won screen
-                    g.drawString(Commons.WON_GAME_MESSAGE, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
+                } else if (gameState == Commons.WON_GAMESTATE) {//won screen
+                    g.drawImage(Assets.gamewon,0,0, Commons.BOARD_WIDTH, Commons.BOARD_HEIGHT, null);
                 }
             } else if (paused) { //triggers if paused and playing, displays paused message
                 g.drawString("<PAUSED>", 10, 10);
@@ -491,7 +491,6 @@ public class Game implements Runnable, Commons {
             } else {
                 setGameState(Commons.WON_GAMESTATE);
             }
-            
         }
         
 
