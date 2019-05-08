@@ -423,10 +423,15 @@ public class Game implements Runnable, Commons {
             //Ticks the manager that controls the enemies and their bullets
             enemyManager.tick();
             checkCollisions();
-        } else if(gameState == Commons.LOST_GAMESTATE && !registered) {
+            if (getEnemyManager().getEnemies().isEmpty()) {
+                setGameState(1);
+            }
+        } else if(!paused && gameState == Commons.LOST_GAMESTATE && !registered) {
             registered = true;
             endTime = System.currentTimeMillis();
-            db.registerGame(endTime-startTime);
+            db.registerGame(endTime - startTime);
+        } else if(gameState == Commons.WON_GAMESTATE) {
+            
         }
 
         //Triggers the pause of the game when 'P' is pressed
@@ -441,7 +446,6 @@ public class Game implements Runnable, Commons {
         
         if (keyManager.paused) pauseTrig = true;
         else pauseTrig = false;
-        
     }
 
     public LevelManager getLevelManager() {
