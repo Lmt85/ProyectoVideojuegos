@@ -21,6 +21,11 @@ public class Player extends Sprite implements GameObject {
     private int shotcd;
     private int hp;
     private int lives;
+    private Animation current;
+    private Animation leftAnim;
+    private Animation rightAnim;
+    private Animation upAnim;
+    private Animation downAnim;
     
     /**
      * Constructor with parameters, these parameters are passed directly to the Sprite class
@@ -35,6 +40,10 @@ public class Player extends Sprite implements GameObject {
     public Player(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game) {
         super(position, speed, visible, width, height, image, game);
         bullets = new LinkedList<>();
+        this.leftAnim = new Animation(Assets.swimtoleft, 100);
+        this.rightAnim = new Animation(Assets.swimtoright, 100);
+        this.upAnim = new Animation(Assets.swimup, 100);
+        this.downAnim = new Animation(Assets.swimdown, 100);
     }
     
     public class PlayerBullet extends Projectile implements GameObject{
@@ -80,7 +89,26 @@ public class Player extends Sprite implements GameObject {
         if(getHp() >= 0) {
             // moves player
             setPosition(getPosition().add(getSpeed()));
-
+            System.out.println(getSpeed().getX());
+            System.out.println(getSpeed().getY());
+            if(getSpeed().getX()==0){
+                if(getSpeed().getY()==0){
+                    current = rightAnim;
+                    rightAnim.tick();
+                }else if(getSpeed().getY()>0){
+                    current = upAnim;
+                    upAnim.tick();
+                }else if(getSpeed().getY()<0){
+                    current = downAnim;
+                    downAnim.tick();
+                }
+            }else if(getSpeed().getX()>0){
+                current = rightAnim;
+                rightAnim.tick();
+            }else if(getSpeed().getX()<0){
+                current = leftAnim;
+                leftAnim.tick();
+            }
             // every tick it restores shoot cooldown
             if(!canShoot()) {
                 shotcd--;
@@ -99,7 +127,7 @@ public class Player extends Sprite implements GameObject {
      */
     @Override
     public void render(Graphics g) {
-        g.drawImage(getImage(), (int)position.getX(), (int) position.getY(), width, height, null);
+        g.drawImage(current.getCurrentFrame(), (int)position.getX(), (int) position.getY(), width, height, null);
     }
     
     /**

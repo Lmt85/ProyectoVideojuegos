@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
  * encapsulates the game assets and provides the means to statically access them.
  * Also loads the assets.
  * 
- * @author Carlos Adrian Guerra Vazquez A00823198
+ * @author
  * @date 28/01/2019
  * @version 1.0
  */
@@ -31,6 +31,15 @@ public class Assets {
     public static BufferedImage wheelSheet;
     public static BufferedImage bubble;
     public static BufferedImage pirate;
+    public static BufferedImage seabackground;
+    public static BufferedImage swimtoleft[];
+    public static BufferedImage swimtoleftsheet;
+    public static BufferedImage swimtoright[];
+    public static BufferedImage swimtorightsheet;
+    public static BufferedImage swimup[];
+    public static BufferedImage swimupsheet;
+    public static BufferedImage swimdown[];
+    public static BufferedImage swimdownsheet;
     
     //Text
     public static BufferedImage movement;
@@ -80,14 +89,39 @@ public class Assets {
         title = ImageLoader.loadImage("/images/StartMenu.png");      
         prologue = ImageLoader.loadImage("/images/introscreen.png");   
         objetivo = ImageLoader.loadImage("/images/Objective.png"); 
-        gameover = ImageLoader.loadImage("/images/gameover.png"); 
+        gameover = ImageLoader.loadImage("/images/gameover.png");
+        seabackground = ImageLoader.loadImage("/images/sea-background.png");
+        swimtoleftsheet = ImageLoader.loadImage("/images/swim_to_left_sheet.png");
+        swimtorightsheet = ImageLoader.loadImage("/images/swim_to_right_sheet.png");
+        swimupsheet = ImageLoader.loadImage("/images/swim_up_sheet.png");
+        swimdownsheet = ImageLoader.loadImage("/images/swim_down_sheet.png");
         
         wheels = new BufferedImage[4];
         SpriteSheet spritesheet = new SpriteSheet(wheelSheet);
         for(int i = 0; i < 4; i++){
             wheels[i] = spritesheet.crop(i * 200, 0, 200, 200);
         }
-        
+        swimtoleft = new BufferedImage[6];
+        SpriteSheet spritesheetleft = new SpriteSheet(swimtoleftsheet);
+        for(int i = 0; i < 6; i++){
+            swimtoleft[i] = spritesheetleft.crop(i * 256, 0, 256, 256);
+        }
+        swimtoright = new BufferedImage[6];
+        SpriteSheet spritesheetright = new SpriteSheet(swimtorightsheet);
+        for(int i = 0; i < 6; i++){
+            swimtoright[i] = spritesheetright.crop(i * 256, 0, 256, 256);
+        }
+        swimup = new BufferedImage[6];
+        SpriteSheet spritesheetup = new SpriteSheet(swimupsheet);
+        for(int i = 0; i < 6; i++){
+            swimup[i] = spritesheetup.crop(0,i * 256, 256, 256);
+        }
+        swimdown = new BufferedImage[6];
+        SpriteSheet spritesheetdown = new SpriteSheet(swimdownsheet);
+        for(int i = 0; i < 6; i++){
+            swimdown[i] = spritesheetdown.crop(0,i * 256, 256, 256);
+        }
+           
         music = new SoundClip("/sound/DarkIntentions.WAV");
     }    
 }

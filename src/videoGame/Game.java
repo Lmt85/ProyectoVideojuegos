@@ -56,7 +56,7 @@ public class Game implements Runnable, Commons {
     private LevelManager levelManager;
     private Player player;              // to store the player
     private EnemyManager enemyManager;  // to manage each enemy
-    private dbManager db;
+  //  private dbManager db;
     
 
     //Game state
@@ -260,7 +260,7 @@ public class Game implements Runnable, Commons {
             g.setColor(Color.GREEN);   // sets the painting color to greenda
             g.setFont(font);           // sets the font
             
-            g.drawImage(Assets.sand, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
+            g.drawImage(Assets.seabackground, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
 
             
             
@@ -340,8 +340,8 @@ public class Game implements Runnable, Commons {
         System.out.println(Commons.PLAYER_WIDTH);
         getPlayer().init();
         enemyManager = new EnemyManager(this);
-        db = new dbManager(this);
-        db.init();
+       // db = new dbManager(this);
+       // db.init();
                    
         display.getJframe().addKeyListener(keyManager);
         display.getJframe().addMouseListener(mouseManager);
@@ -359,6 +359,7 @@ public class Game implements Runnable, Commons {
         while(playerid == null) {
             playerid = JOptionPane.showInputDialog("Enter your id");
         }
+      /*
         if(!db.searchPlayer()) {
             int dialogResult = JOptionPane.showConfirmDialog (null, "Id not registered \nSave entered id?","Warning",JOptionPane.YES_NO_OPTION);
             if(dialogResult == JOptionPane.YES_OPTION){
@@ -368,6 +369,7 @@ public class Game implements Runnable, Commons {
                 playerid = JOptionPane.showInputDialog("Enter your id");
             }
         }
+        */
         
         startTime = System.currentTimeMillis();
     }
@@ -435,7 +437,7 @@ public class Game implements Runnable, Commons {
             enemyManager.tick();
             checkCollisions();
         } else if(gameState == -1) {
-            db.registerGame(startTime - endTime);
+          //  db.registerGame(startTime - endTime);
         }
 
         // Saves game and loads game
