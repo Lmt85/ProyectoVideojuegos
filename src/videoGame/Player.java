@@ -48,9 +48,9 @@ public class Player extends Sprite implements GameObject {
         bullets = new LinkedList<>();
         
         setShoot(true);
-        setOrientation(Sprite.Orientation.NORTH);
+        setOrientation(Sprite.Orientation.EAST);
         this.leftAnim = new Animation(Assets.swimtoleft, 100);
-        this.rightAnim = new Animation(Assets.swimtoright, 100);
+        this.rightAnim = this.current = new Animation(Assets.swimtoright, 100);
         this.upAnim = new Animation(Assets.swimup, 100);
         this.downAnim = new Animation(Assets.swimdown, 100);
 
@@ -143,7 +143,9 @@ public class Player extends Sprite implements GameObject {
      */
     @Override
     public void render(Graphics g) {
-        g.drawImage(current.getCurrentFrame(), (int)position.getX(), (int) position.getY(), width, height, null);
+        if(this != null) {
+            g.drawImage(current.getCurrentFrame(), (int)position.getX(), (int) position.getY(), width, height, null);
+        }
     }
     
     /**

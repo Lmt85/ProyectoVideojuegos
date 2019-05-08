@@ -18,6 +18,7 @@ public class Assets {
     public static BufferedImage bomb;
     public static BufferedImage player;
     public static BufferedImage explosion;
+    public static BufferedImage[] levels;
     public static BufferedImage level1;
     public static BufferedImage level2;
     public static BufferedImage level3;
@@ -69,11 +70,7 @@ public class Assets {
     public static void init(){
         background = ImageLoader.loadImage("/images/background.png"); 
 
-        level1 = ImageLoader.loadImage("/images/Level1.png");
-        level2 = ImageLoader.loadImage("/images/Level2.png");
-        level3 = ImageLoader.loadImage("/images/Level3.png");
-
-        
+        levels = new BufferedImage[]{ImageLoader.loadImage("/images/Level1.png"),ImageLoader.loadImage("/images/Level2.png"),ImageLoader.loadImage("/images/Level3.png")};
         wall = ImageLoader.loadImage("/images/Wall.png");
         alien = ImageLoader.loadImage("/images/alien.png"); 
         shot = ImageLoader.loadImage("/images/shot.png"); 

@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import static java.lang.Math.abs;
 import static java.sql.Types.NULL;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import maths.Vector2;
 
@@ -66,6 +67,7 @@ public class Game implements Runnable, Commons {
     private boolean paused = false; // states whether or not the game is paused
     private boolean pauseTrig = false;
     private int gameState = 0; // 0 -> game playing, -1 -> game lost, 1 -> game won
+    private int currentLevel;
 
     //Internal game atributes
 
@@ -294,7 +296,6 @@ public class Game implements Runnable, Commons {
 
                 } else if (gameState == 1) {//won screen
                     g.drawString(Commons.WON_GAME_MESSAGE, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
-                    this.levelManager.loadLevel(Assets.level2);
                 }
             } else if (paused) { //triggers if paused and playing, displays paused message
                 g.drawString("<PAUSED>", 10, 10);
@@ -373,6 +374,7 @@ public class Game implements Runnable, Commons {
         Assets.music2.setLooping(true);
         
         //Creates and initializes game objects
+        currentLevel = 0;
         setPlayer(new Player(new Vector2(Commons.START_X, Commons.START_Y), new Vector2(), true, Commons.PLAYER_WIDTH, Commons.PLAYER_HEIGHT, Assets.player,this));
         System.out.println(Commons.PLAYER_WIDTH);
         getPlayer().init();
@@ -388,7 +390,7 @@ public class Game implements Runnable, Commons {
         
          // Level Manager
         levelManager = new LevelManager(this);
-        levelManager.loadLevel(Assets.level1);
+        levelManager.loadLevel(Assets.levels[currentLevel]);
         enemyManager.init();
 
         // Sets the score
@@ -475,15 +477,22 @@ public class Game implements Runnable, Commons {
             checkCollisions();
 
             if (getEnemyManager().getEnemies().isEmpty()) {
-                setGameState(1);
+                setGameState(Commons.LEVEL_PASSED_GAMESTATE);
             }
         } else if(!paused && gameState == Commons.LOST_GAMESTATE && !registered) {
             registered = true;
             endTime = System.currentTimeMillis();
             db.registerGame(endTime - startTime);
-        } else if(gameState == Commons.WON_GAMESTATE) {
+        } else if(gameState == Commons.LEVEL_PASSED_GAMESTATE) {
+            if(currentLevel < 3) {
+                setGameState(Commons.PLAYING_GAMESTATE);
+                getEnemyManager().setEnemies(new ArrayList<>());
+                getLevelManager().setLevel(new LinkedList<>());
+                getLevelManager().loadLevel(Assets.levels[++currentLevel]);
+            } else {
+                setGameState(Commons.WON_GAMESTATE);
+            }
             
-
         }
         
 
@@ -691,5 +700,6 @@ public class Game implements Runnable, Commons {
                 Assets.music1.stop();
             }
         }
+    
     
 }
