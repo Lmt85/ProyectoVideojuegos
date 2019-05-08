@@ -287,6 +287,7 @@ public class Game implements Runnable, Commons {
             if (gameState != 0) {
                 if (gameState == -1) {//lost screen
                     g.drawString(Commons.END_GAME_LOSE, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
+                    g.drawImage(Assets.gameover, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
                 } else if (gameState == 1) {//won screen
                     g.drawString(Commons.END_GAME_WIN, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
                 }
@@ -299,8 +300,8 @@ public class Game implements Runnable, Commons {
 
             //displays the amount of aliens destroyed
 //            g.drawString("Destroyed: " + alienManager.destroyed + "/24", 10, Commons.BOARD_HEIGHT - 10);
-
-            g.drawImage(Assets.hud, 0 , 0, Commons.TAB_WIDTH, Commons.TAB_HEIGHT, null);
+             if(gameState == 0){
+                 g.drawImage(Assets.hud, 0 , 0, Commons.TAB_WIDTH, Commons.TAB_HEIGHT, null);
             for(int o = 1; o < Commons.HEART_MAX; o += 2){
                 g.drawImage(Assets.heartEmpty, o * (Commons.HEART_SIZE /2) , Commons.HEART_SIZE / 2, Commons.HEART_SIZE, Commons.HEART_SIZE, null);
             }
@@ -314,6 +315,8 @@ public class Game implements Runnable, Commons {
             
             g.drawImage(Assets.hud2, Commons.BOARD_WIDTH - Commons.TAB_WIDTH , 0, Commons.TAB_WIDTH, Commons.TAB_HEIGHT, null);
             g.drawString("Score: ", 0, 0);
+             }
+            
             
             bs.show();
             g.dispose();
@@ -445,11 +448,14 @@ public class Game implements Runnable, Commons {
         if (keyManager.load && gameState == 0) loadGame("save.txt");
 
         // When restart key pressed, music is restarted, gameState is set as playing, and game is loaded
-        if (keyManager.restart) {   
+        //if( gameState == 0){
+            if (keyManager.restart) {   
             Assets.music.play();
             setGameState(0);
             loadGame("restartGame.txt");
+       // }
         }
+        
 
         //Triggers the pause of the game when 'P' is pressed
         if (!paused && keyManager.paused && !pauseTrig) paused = true;

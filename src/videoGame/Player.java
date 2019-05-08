@@ -96,11 +96,11 @@ public class Player extends Sprite implements GameObject {
                     current = rightAnim;
                     rightAnim.tick();
                 }else if(getSpeed().getY()>0){
-                    current = upAnim;
-                    upAnim.tick();
-                }else if(getSpeed().getY()<0){
                     current = downAnim;
                     downAnim.tick();
+                }else if(getSpeed().getY()<0){
+                    current = upAnim;
+                    upAnim.tick();         
                 }
             }else if(getSpeed().getX()>0){
                 current = rightAnim;
