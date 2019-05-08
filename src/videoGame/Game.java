@@ -190,7 +190,6 @@ public class Game implements Runnable, Commons {
             lastTime = now;
             //delta acumulates enogh tick fractions until a tick is completed and we can now advance in the tick
             if (delta >= 1) {
-                
                 //Lets try something
                 if(menu != 3){
                     render2();

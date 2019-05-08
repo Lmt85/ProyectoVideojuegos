@@ -46,7 +46,9 @@ public class Player extends Sprite implements GameObject {
     public Player(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game) {
         super(position, speed, visible, width, height, image, game);
         bullets = new LinkedList<>();
-
+        
+        setShoot(true);
+        setOrientation(Sprite.Orientation.NORTH);
         this.leftAnim = new Animation(Assets.swimtoleft, 100);
         this.rightAnim = new Animation(Assets.swimtoright, 100);
         this.upAnim = new Animation(Assets.swimup, 100);
@@ -90,8 +92,6 @@ public class Player extends Sprite implements GameObject {
     
     @Override
     public void init() {
-        setShoot(true);
-        setOrientation(Sprite.Orientation.NORTH);
     }
 
     @Override
@@ -99,25 +99,22 @@ public class Player extends Sprite implements GameObject {
         if(getHp() >= 0) {
             // moves player
             setPosition(getPosition().add(getSpeed()));
-            System.out.println(getSpeed().getX());
-            System.out.println(getSpeed().getY());
-            if(getSpeed().getX()==0){
-                if(getSpeed().getY()==0){
+            switch(getOrientation()) {
+                case NORTH:
+                    current = upAnim;
+                    upAnim.tick(); 
+                break;
+                case EAST:
                     current = rightAnim;
                     rightAnim.tick();
-                }else if(getSpeed().getY()>0){
+                break;
+                case SOUTH:
                     current = downAnim;
                     downAnim.tick();
-                }else if(getSpeed().getY()<0){
-                    current = upAnim;
-                    upAnim.tick();         
-                }
-            }else if(getSpeed().getX()>0){
-                current = rightAnim;
-                rightAnim.tick();
-            }else if(getSpeed().getX()<0){
-                current = leftAnim;
-                leftAnim.tick();
+                break;
+                case WEST:
+                    current = leftAnim;
+                    leftAnim.tick();
             }
             // every tick it restores shoot cooldown
             if(!canShoot()) {
