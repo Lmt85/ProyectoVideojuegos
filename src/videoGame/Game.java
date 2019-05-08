@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import static java.lang.Math.abs;
 import static java.sql.Types.NULL;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import maths.Vector2;
 
@@ -49,7 +50,11 @@ public class Game implements Runnable, Commons {
     private boolean running;               // to set the game running status (controls the in thread execution)
     private double tps;                    //ticks per second
     private final boolean showTPS = false; //controls if the tps will be show on the console
-    int fps = 50;                          //max frames per second the game will run at
+
+    int fps = 60;                          //max frames per second the game will run at
+    int frameData;
+    boolean keyPressed;
+
 
     //Game objects and managers
     private LevelManager levelManager;
@@ -62,8 +67,14 @@ public class Game implements Runnable, Commons {
     private boolean paused = false; // states whether or not the game is paused
     private boolean pauseTrig = false;
     private int gameState = 0; // 0 -> game playing, -1 -> game lost, 1 -> game won
+    private int currentLevel;
 
     //Internal game atributes
+
+    public String message;  // Stores endgame message
+
+    private int menu;
+
     private int score;      // Stores game score
     private ArrayList<String> playerRankings;
     private ArrayList<String> globalRankings;
@@ -172,15 +183,29 @@ public class Game implements Runnable, Commons {
         long now; //current frame time
         long lastTime = System.nanoTime(); //the previos frame time
         double initTickTime = lastTime;
+        menu = 0;
+        frameData = 1;
+        keyPressed = true;
         while (running) {
             now = System.nanoTime();
             delta += (now - lastTime) / timeTick;
             lastTime = now;
             //delta acumulates enogh tick fractions until a tick is completed and we can now advance in the tick
             if (delta >= 1) {
-
-                tick();
-                render();
+                //Lets try something
+                if(menu != 3){
+                    render2();
+                    tick2();
+                }
+                else{
+                    tick();
+                    render();
+                }
+                
+                frameData++;
+                if (frameData > 60){
+                    frameData = 1;
+                }
                 delta--;
 
                 tps = 1000000000 / (now - initTickTime);
@@ -240,7 +265,7 @@ public class Game implements Runnable, Commons {
             g.setColor(Color.GREEN);   // sets the painting color to greenda
             g.setFont(font);           // sets the font
             
-            g.drawImage(Assets.sand, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
+            g.drawImage(Assets.seabackground, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
 
             
             
@@ -262,9 +287,30 @@ public class Game implements Runnable, Commons {
             
             g2d.translate(camera.getX(), camera.getY());
             
-            ////////////////////////////////////
+            ////////////////////////////////game state renders
+            if (gameState != 0) {
+                if (gameState == -1) {//lost screen
 
-            g.drawImage(Assets.hud, 0 , 0, Commons.TAB_WIDTH, Commons.TAB_HEIGHT, null);
+                    g.drawString(Commons.LOST_GAME_MESSAGE, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
+                    menu = 4;
+
+                } else if (gameState == 1) {//won screen
+                    g.drawString(Commons.WON_GAME_MESSAGE, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
+                }
+            } else if (paused) { //triggers if paused and playing, displays paused message
+                g.drawString("<PAUSED>", 10, 10);
+            }
+            if (keyManager.save) { //displays saved message if saved
+                g.drawString("<SAVED>", Commons.BOARD_WIDTH - 100, 10);
+            }
+
+            //displays the amount of aliens destroyed
+//            g.drawString("Destroyed: " + alienManager.destroyed + "/24", 10, Commons.BOARD_HEIGHT - 10);
+
+
+             if(gameState == 0){
+                 g.drawImage(Assets.hud, 0 , 0, Commons.TAB_WIDTH, Commons.TAB_HEIGHT, null);
+
             for(int o = 1; o < Commons.HEART_MAX; o += 2){
                 g.drawImage(Assets.heartEmpty, o * (Commons.HEART_SIZE /2) , Commons.HEART_SIZE / 2, Commons.HEART_SIZE, Commons.HEART_SIZE, null);
             }
@@ -278,6 +324,8 @@ public class Game implements Runnable, Commons {
             
             g.drawImage(Assets.hud2, Commons.BOARD_WIDTH - Commons.TAB_WIDTH , 0, Commons.TAB_WIDTH, Commons.TAB_HEIGHT, null);
             g.drawString("Score: ", 0, 0);
+             }
+            
             
             //game state renders
             if (gameState != 0) {
@@ -322,9 +370,11 @@ public class Game implements Runnable, Commons {
         camera = new Camera(0,0,this);
         
         // Loads all the sound related assets
-        Assets.music.setLooping(true);
+        Assets.music1.setLooping(true);
+        Assets.music2.setLooping(true);
         
         //Creates and initializes game objects
+        currentLevel = 0;
         setPlayer(new Player(new Vector2(Commons.START_X, Commons.START_Y), new Vector2(), true, Commons.PLAYER_WIDTH, Commons.PLAYER_HEIGHT, Assets.player,this));
         System.out.println(Commons.PLAYER_WIDTH);
         getPlayer().init();
@@ -340,7 +390,7 @@ public class Game implements Runnable, Commons {
         
          // Level Manager
         levelManager = new LevelManager(this);
-        levelManager.loadLevel(Assets.map);
+        levelManager.loadLevel(Assets.levels[currentLevel]);
         enemyManager.init();
 
         // Sets the score
@@ -348,6 +398,7 @@ public class Game implements Runnable, Commons {
         while(playerid == null) {
             playerid = JOptionPane.showInputDialog("Enter your id");
         }
+      
         if(!db.searchPlayer()) {
             int dialogResult = JOptionPane.showConfirmDialog (null, "Id not registered \nSave entered id?","Warning",JOptionPane.YES_NO_OPTION);
             if(dialogResult == JOptionPane.YES_OPTION){
@@ -357,6 +408,7 @@ public class Game implements Runnable, Commons {
                 playerid = JOptionPane.showInputDialog("Enter your id");
             }
         }
+        
         
         startTime = System.currentTimeMillis();
     }
@@ -423,16 +475,26 @@ public class Game implements Runnable, Commons {
             //Ticks the manager that controls the enemies and their bullets
             enemyManager.tick();
             checkCollisions();
+
             if (getEnemyManager().getEnemies().isEmpty()) {
-                setGameState(1);
+                setGameState(Commons.LEVEL_PASSED_GAMESTATE);
             }
         } else if(!paused && gameState == Commons.LOST_GAMESTATE && !registered) {
             registered = true;
             endTime = System.currentTimeMillis();
             db.registerGame(endTime - startTime);
-        } else if(gameState == Commons.WON_GAMESTATE) {
+        } else if(gameState == Commons.LEVEL_PASSED_GAMESTATE) {
+            if(currentLevel < 3) {
+                setGameState(Commons.PLAYING_GAMESTATE);
+                getEnemyManager().setEnemies(new ArrayList<>());
+                getLevelManager().setLevel(new LinkedList<>());
+                getLevelManager().loadLevel(Assets.levels[++currentLevel]);
+            } else {
+                setGameState(Commons.WON_GAMESTATE);
+            }
             
         }
+        
 
         //Triggers the pause of the game when 'P' is pressed
         if (!paused && keyManager.paused && !pauseTrig) {
@@ -571,5 +633,73 @@ public class Game implements Runnable, Commons {
     public void setPlayerid(String playerid) {
         this.playerid = playerid;
     }
+    
+        private void render2() {
+        bs = display.getCanvas().getBufferStrategy();
+
+        /* if it is null, we define one with 3 buffers to display images of
+         * the game, if not null, then we display
+         * every image of the game but
+         * after clearing the Rectanlge, getting the graphic object from the
+         * buffer strategy element.
+         * show the graphic and dispose it to the trash system
+         */
+        if (bs == null) { //if we dont have a buffer strategy we make our Display's canvas crate one for itself.
+            display.getCanvas().createBufferStrategy(3);
+        } else {
+            g = bs.getDrawGraphics(); // gets the graphics of the buffer strategy
+            Graphics2D g2d = (Graphics2D) g;
+            g.setColor(Color.GREEN);   // sets the painting color to greenda
+            g.setFont(font);           // sets the font
+            switch(menu){
+                case 0:
+                    g.drawImage(Assets.title, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
+                    break;
+                case 1:
+                    g.drawImage(Assets.prologue, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
+                    break;
+                case 2:
+                    g.drawImage(Assets.objetivo, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
+                    break;
+                case 4:
+                    g.drawImage(Assets.gameover, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
+                    break;
+            }
+            
+            if(frameData > 25){
+                g.drawImage(Assets.space, Commons.BOARD_WIDTH / 2 - Commons.SPACE_WIDTH /2, Commons.BOARD_HEIGHT / 2 + Commons.SPACE_HEIGHT * 2, Commons.SPACE_WIDTH, Commons.SPACE_HEIGHT, null);
+            }
+            //g.drawString("Press SPACE to continue . . .", Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2 + 100);
+            
+            bs.show();
+            g.dispose();
+        }
+    }
+        private void tick2(){
+            getKeyManager().tick(); //key manager must precede all user ralated actions
+            if(getKeyManager().space && keyPressed){
+                menuSwitch();
+                keyPressed = false;
+            }
+            else if (!getKeyManager().space){
+                keyPressed = true;
+            }
+        }
+        
+        private void menuSwitch(){
+            this.menu++;
+            if(this.menu > 5){
+                this.menu = 0;
+            }
+            if(this.menu == 1){
+                Assets.music1.play();
+                Assets.music2.stop();
+            }
+            if(this.menu == 3){
+                Assets.music2.play();
+                Assets.music1.stop();
+            }
+        }
+    
     
 }

@@ -19,10 +19,19 @@ public class Player extends Sprite implements GameObject {
     private LinkedList<PlayerBullet> bullets;
     private boolean shoot;                      //stores whether or not the player can shoot;
     private int shotcd;
+
+
+    private Animation current;
+    private Animation leftAnim;
+    private Animation rightAnim;
+    private Animation upAnim;
+    private Animation downAnim;
+
     private int hp;
     private int lives;
     private boolean canTakeDmg;
     private int invencibilityFrames;
+
     
     /**
      * Constructor with parameters, these parameters are passed directly to the Sprite class
@@ -37,8 +46,17 @@ public class Player extends Sprite implements GameObject {
     public Player(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game) {
         super(position, speed, visible, width, height, image, game);
         bullets = new LinkedList<>();
+        
+        setShoot(true);
+        setOrientation(Sprite.Orientation.EAST);
+        this.leftAnim = new Animation(Assets.swimtoleft, 100);
+        this.rightAnim = this.current = new Animation(Assets.swimtoright, 100);
+        this.upAnim = new Animation(Assets.swimup, 100);
+        this.downAnim = new Animation(Assets.swimdown, 100);
+
         hp = Commons.PLAYER_HP;
         lives = 3;
+
     }
     
     public class PlayerBullet extends Projectile implements GameObject{
@@ -74,8 +92,6 @@ public class Player extends Sprite implements GameObject {
     
     @Override
     public void init() {
-        setShoot(true);
-        setOrientation(Sprite.Orientation.NORTH);
     }
 
     @Override
@@ -83,7 +99,23 @@ public class Player extends Sprite implements GameObject {
         if(getHp() >= 0) {
             // moves player
             setPosition(getPosition().add(getSpeed()));
-
+            switch(getOrientation()) {
+                case NORTH:
+                    current = upAnim;
+                    upAnim.tick(); 
+                break;
+                case EAST:
+                    current = rightAnim;
+                    rightAnim.tick();
+                break;
+                case SOUTH:
+                    current = downAnim;
+                    downAnim.tick();
+                break;
+                case WEST:
+                    current = leftAnim;
+                    leftAnim.tick();
+            }
             // every tick it restores shoot cooldown
             if(!canShoot()) {
                 shotcd--;
@@ -111,7 +143,9 @@ public class Player extends Sprite implements GameObject {
      */
     @Override
     public void render(Graphics g) {
-        g.drawImage(getImage(), (int)position.getX(), (int) position.getY(), width, height, null);
+        if(this != null) {
+            g.drawImage(current.getCurrentFrame(), (int)position.getX(), (int) position.getY(), width, height, null);
+        }
     }
     
     /**

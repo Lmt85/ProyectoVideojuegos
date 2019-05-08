@@ -15,6 +15,8 @@ import java.util.ArrayList;
 public class EnemyManager implements GameObject{
     private ArrayList<Enemy> enemies;
     private Game game;
+    private Animation explotion;
+
     
     /**
      * This constructor with params recieves a reference to the game and initializes an empty list
@@ -23,7 +25,7 @@ public class EnemyManager implements GameObject{
      */
     public EnemyManager(Game game) {
         enemies = new ArrayList<>();
-      
+        this.explotion = new Animation(Assets.explosions, 100);
         this.game = game;
     }
     
@@ -58,9 +60,16 @@ public class EnemyManager implements GameObject{
                 System.out.println(game.getScore());
             } else {
                 if(enemies.get(i).getHp() > 0 && enemies.get(i).isVisible()){
-                    enemies.get(i).tick();
+     
+                    enemies.get(i).tick();   
                 } else{
-                    enemies.get(i).setVisible(false);
+                    if(enemies.get(i).getExplotionSec()==0){
+                        enemies.get(i).setVisible(false);
+                    }else{
+                        explotion.tick();
+                        enemies.get(i).setExplotionSec(enemies.get(i).getExplotionSec()-1);
+                        
+                    }   
                 }
                 for(int j = 0; j < getEnemies().get(i).getBullets().size(); j++) {  //
                     if(getEnemies().get(i).getBullets().get(j).isVisible()) {   //If the bullet exists and doesnt collision with wall or p
@@ -96,5 +105,9 @@ public class EnemyManager implements GameObject{
 
     public ArrayList<Enemy> getEnemies() {
         return enemies;
+    }
+
+    void setEnemies(ArrayList<Enemy> e) {
+       this.enemies = e;
     }
 }

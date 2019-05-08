@@ -31,7 +31,12 @@ public class Wheel extends Enemy implements GameObject{
 
     private Animation wheelAnim;
     private Random gen;
+<<<<<<< HEAD
     private int maxForce = 2;
+=======
+    private int maxForce;
+
+>>>>>>> alvaro2
 
 
     public Wheel(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game, int hp){  
@@ -46,7 +51,7 @@ public class Wheel extends Enemy implements GameObject{
         this.wheelAnim = new Animation(Assets.wheels, 100);
         maxForce = 2;
         topSpeed = 4;
-        //this.maxHp = hp;
+        maxForce = 2;
         
     }
     

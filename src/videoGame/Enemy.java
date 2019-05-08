@@ -16,6 +16,8 @@ public abstract class Enemy extends Sprite implements GameObject{
     protected LinkedList<Projectile> bullets;
     protected int hp;
     protected int maxHp;
+    protected int explotionseconds;
+    protected Animation explotion;
     /**
      * Constructor with parameters, these parameters are passed directly to the Sprite class
      * @param position
@@ -33,6 +35,8 @@ public abstract class Enemy extends Sprite implements GameObject{
         bullets = new LinkedList<>();
         this.hp = hp;
         this.maxHp = hp;
+        this.explotionseconds=20;
+        this.explotion = new Animation(Assets.explosions, 100);
     }
 
     @Override
@@ -46,7 +50,12 @@ public abstract class Enemy extends Sprite implements GameObject{
      */
     @Override
     public void render(Graphics g) {
-        g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), width, height, null);
+        if(getExplotionSec()>0){
+            g.drawImage(explotion.getCurrentFrame(), (int)position.getX(), (int)position.getY(), width, height, null);            
+        }else{
+            g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), width, height, null);
+
+        }
         g.drawRect((int) position.getX(), (int) position.getY(), width, height);
         
         //g.fillRect((int) (position.getX() + 5), (int)position.getY() - 10,  (int) ((width - 10)), 5);
@@ -79,6 +88,14 @@ public abstract class Enemy extends Sprite implements GameObject{
 
     public void setHp(int hp) {
         this.hp = hp;
+    }
+    
+    public int getExplotionSec() {
+        return explotionseconds;
+    }
+
+    public void setExplotionSec(int es) {
+        this.explotionseconds = es;
     }
     
 }

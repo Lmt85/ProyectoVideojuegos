@@ -1,7 +1,7 @@
 package videoGame;
 
 public interface Commons {
-    public static int scale = 1;
+    public static int scale = 2;
     
     //Game constants
     public static final String GAME_NAME = "trashedy";
@@ -40,12 +40,17 @@ public interface Commons {
     public static final int TAB_WIDTH = 60 * scale;
     public static final int TAB_HEIGHT = 20 * scale;
     public static final int HEART_MAX = 10;
+    public static final int SPACE_WIDTH = 160 * scale;
+    public static final int SPACE_HEIGHT = 60 * scale;
+    
+
     public static final int FONT_WIDTH = 10 * scale;
     
     //GameState Constants
     public static final int PLAYING_GAMESTATE = 0;
     public static final int LOST_GAMESTATE = -1;
     public static final int WON_GAMESTATE = 1;
+    public static final int LEVEL_PASSED_GAMESTATE = 2;
     
     //Game Messages
     public static final String LOST_GAME_MESSAGE = "You Lost";
