@@ -42,4 +42,9 @@ public interface Commons {
     public static final int TAB_WIDTH = 60 * scale;
     public static final int TAB_HEIGHT = 20 * scale;
     public static final int HEART_MAX = 10;
+    
+    //String Constants
+    public static final String END_GAME_LOSE = "You lost!!!";
+    public static final String END_GAME_WIN = "You win!!!";
+    public static final String SCREEN_TITLE = "Trashedy";
 }

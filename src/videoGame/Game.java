@@ -87,8 +87,7 @@ public class Game implements Runnable, Commons {
      */
     public Game() {
         // Name of the game
-        this.title = "Trashedy";
-
+        this.title = Commons.SCREEN_TITLE;
         // Sets game dimensions
         this.width = Commons.BOARD_WIDTH;
         this.height = Commons.BOARD_HEIGHT;
@@ -287,9 +286,9 @@ public class Game implements Runnable, Commons {
             //game state renders
             if (gameState != 0) {
                 if (gameState == -1) {//lost screen
-                    g.drawString(message, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
+                    g.drawString(Commons.END_GAME_LOSE, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
                 } else if (gameState == 1) {//won screen
-                    g.drawString(message, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
+                    g.drawString(Commons.END_GAME_WIN, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
                 }
             } else if (paused) { //triggers if paused and playing, displays paused message
                 g.drawString("<PAUSED>", 10, 10);
