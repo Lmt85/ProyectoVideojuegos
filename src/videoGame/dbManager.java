@@ -63,10 +63,10 @@ public class dbManager {
         }
     }
     
-    public void registerGame() {
+    public void registerGame(long timeElapsed) {
         try {
             stmt = c.createStatement();
-            String sql = "INSERT INTO game (playerid, time) VALUES('" + getGame().getPlayerid() + "',"  + ");";
+            String sql = "INSERT INTO game (playerid, time) VALUES('" + getGame().getPlayerid() + "'," + timeElapsed + ");";
             stmt.executeUpdate(sql);
             sql = "INSERT INTO scores (playerid, scores) VALUES(" + getGame().getPlayerid() + ");";
             stmt.executeUpdate(sql);
