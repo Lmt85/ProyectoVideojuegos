@@ -264,7 +264,7 @@ public class Game implements Runnable, Commons {
             g.setColor(Color.GREEN);   // sets the painting color to greenda
             g.setFont(font);           // sets the font
             
-            g.drawImage(Assets.sand, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
+            g.drawImage(Assets.seabackground, 0, 0, BOARD_WIDTH, BOARD_HEIGHT, null);  //paints the background
 
             
             
@@ -289,8 +289,10 @@ public class Game implements Runnable, Commons {
             ////////////////////////////////game state renders
             if (gameState != 0) {
                 if (gameState == -1) {//lost screen
+
                     g.drawString(Commons.LOST_GAME_MESSAGE, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
                     menu = 4;
+
                 } else if (gameState == 1) {//won screen
                     g.drawString(Commons.WON_GAME_MESSAGE, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
                 }
@@ -305,7 +307,9 @@ public class Game implements Runnable, Commons {
 //            g.drawString("Destroyed: " + alienManager.destroyed + "/24", 10, Commons.BOARD_HEIGHT - 10);
 
 
-            g.drawImage(Assets.hud, 0 , 0, Commons.TAB_WIDTH, Commons.TAB_HEIGHT, null);
+             if(gameState == 0){
+                 g.drawImage(Assets.hud, 0 , 0, Commons.TAB_WIDTH, Commons.TAB_HEIGHT, null);
+
             for(int o = 1; o < Commons.HEART_MAX; o += 2){
                 g.drawImage(Assets.heartEmpty, o * (Commons.HEART_SIZE /2) , Commons.HEART_SIZE / 2, Commons.HEART_SIZE, Commons.HEART_SIZE, null);
             }
@@ -319,6 +323,8 @@ public class Game implements Runnable, Commons {
             
             g.drawImage(Assets.hud2, Commons.BOARD_WIDTH - Commons.TAB_WIDTH , 0, Commons.TAB_WIDTH, Commons.TAB_HEIGHT, null);
             g.drawString("Score: ", 0, 0);
+             }
+            
             
             //game state renders
             if (gameState != 0) {
@@ -390,6 +396,7 @@ public class Game implements Runnable, Commons {
         while(playerid == null) {
             playerid = JOptionPane.showInputDialog("Enter your id");
         }
+      
         if(!db.searchPlayer()) {
             int dialogResult = JOptionPane.showConfirmDialog (null, "Id not registered \nSave entered id?","Warning",JOptionPane.YES_NO_OPTION);
             if(dialogResult == JOptionPane.YES_OPTION){
@@ -399,6 +406,7 @@ public class Game implements Runnable, Commons {
                 playerid = JOptionPane.showInputDialog("Enter your id");
             }
         }
+        
         
         startTime = System.currentTimeMillis();
     }
@@ -465,7 +473,8 @@ public class Game implements Runnable, Commons {
             //Ticks the manager that controls the enemies and their bullets
             enemyManager.tick();
             checkCollisions();
-        } else if(gameState == Commons.LOST_GAMESTATE && !registered) {
+
+        } else if(gameState == -1) {
             registered = true;
             endTime = System.currentTimeMillis();
             db.registerGame(endTime-startTime);
@@ -476,11 +485,15 @@ public class Game implements Runnable, Commons {
         if (keyManager.load && gameState == Commons.PLAYING_GAMESTATE) loadGame("save.txt");
 
         // When restart key pressed, music is restarted, gameState is set as playing, and game is loaded
+
         if (keyManager.restart) {   
             
             setGameState(Commons.PLAYING_GAMESTATE);
+
             loadGame("restartGame.txt");
+       // }
         }
+        
 
         //Triggers the pause of the game when 'P' is pressed
         if (!paused && keyManager.paused && !pauseTrig) {
