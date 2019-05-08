@@ -70,7 +70,12 @@ public class Wheel extends Enemy implements GameObject{
      */
     @Override
     public void render(Graphics g) {
-        g.drawImage(wheelAnim.getCurrentFrame(), (int)position.getX(), (int)position.getY(), width, height, null);
+        if(getExplotionSec()>0 && getHp() < 0){
+            g.drawImage(explotion.getCurrentFrame(), (int)position.getX(), (int)position.getY(), width, height, null);            
+        }else{
+            g.drawImage(wheelAnim.getCurrentFrame(), (int)position.getX(), (int)position.getY(), width, height, null);
+        }
+
     }
 
     @Override

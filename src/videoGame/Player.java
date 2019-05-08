@@ -89,8 +89,6 @@ public class Player extends Sprite implements GameObject {
         if(getHp() >= 0) {
             // moves player
             setPosition(getPosition().add(getSpeed()));
-            System.out.println(getSpeed().getX());
-            System.out.println(getSpeed().getY());
             if(getSpeed().getX()==0){
                 if(getSpeed().getY()==0){
                     current = rightAnim;

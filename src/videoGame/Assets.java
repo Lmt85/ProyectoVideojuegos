@@ -97,7 +97,7 @@ public class Assets {
         swimtorightsheet = ImageLoader.loadImage("/images/swim_to_right_sheet.png");
         swimupsheet = ImageLoader.loadImage("/images/swim_up_sheet.png");
         swimdownsheet = ImageLoader.loadImage("/images/swim_down_sheet.png");
-        explosionsprite = ImageLoader.loadImage("/images/explosion-sprite.png");
+        explosionsprite = ImageLoader.loadImage("/images/smoke.png");
         
         wheels = new BufferedImage[4];
         SpriteSheet spritesheet = new SpriteSheet(wheelSheet);
@@ -124,10 +124,10 @@ public class Assets {
         for(int i = 0; i < 6; i++){
             swimdown[i] = spritesheetdown.crop(0,i * 256, 256, 256);
         }
-        explosions = new BufferedImage[6];
-        SpriteSheet spritesheetexplotions = new SpriteSheet(swimdownsheet);
-        for(int i = 0; i < 3; i++){
-            explosions[i] = spritesheetexplotions.crop(0,i * 256, 256, 256);
+        explosions = new BufferedImage[10];
+        SpriteSheet spritesheetexplotions = new SpriteSheet(explosionsprite);
+        for(int i = 0; i < 10; i++){
+            explosions[i] = spritesheetexplotions.crop(i * 128,0, 128, 128);
         }
            
         music = new SoundClip("/sound/DarkIntentions.WAV");

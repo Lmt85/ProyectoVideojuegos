@@ -25,7 +25,7 @@ public class EnemyManager implements GameObject{
      */
     public EnemyManager(Game game) {
         enemies = new ArrayList<>();
-        this.explotion = new Animation(Assets.explosions, 100);
+        this.explotion = new Animation(Assets.swimtoright, 100);
         this.game = game;
     }
     
@@ -59,16 +59,14 @@ public class EnemyManager implements GameObject{
                 enemies.remove(i);
                 System.out.println(game.getScore());
             } else {
+                explotion.tick();
                 if(enemies.get(i).getHp() > 0 && enemies.get(i).isVisible()){
-     
                     enemies.get(i).tick();   
                 } else{
                     if(enemies.get(i).getExplotionSec()==0){
                         enemies.get(i).setVisible(false);
                     }else{
-                        explotion.tick();
-                        enemies.get(i).setExplotionSec(enemies.get(i).getExplotionSec()-1);
-                        
+                        enemies.get(i).setExplotionSec(enemies.get(i).getExplotionSec()-1);                        
                     }   
                 }
                 for(int j = 0; j < getEnemies().get(i).getBullets().size(); j++) {  //

@@ -35,7 +35,7 @@ public abstract class Enemy extends Sprite implements GameObject{
         bullets = new LinkedList<>();
         this.hp = hp;
         this.maxHp = hp;
-        this.explotionseconds=20;
+        this.explotionseconds=50;
         this.explotion = new Animation(Assets.explosions, 100);
     }
 
@@ -50,15 +50,11 @@ public abstract class Enemy extends Sprite implements GameObject{
      */
     @Override
     public void render(Graphics g) {
-        if(getExplotionSec()>0){
-            g.drawImage(explotion.getCurrentFrame(), (int)position.getX(), (int)position.getY(), width, height, null);            
-        }else{
-            g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), width, height, null);
 
-        }
+       g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), width, height, null);  
         g.drawRect((int) position.getX(), (int) position.getY(), width, height);
         
-        //g.fillRect((int) (position.getX() + 5), (int)position.getY() - 10,  (int) ((width - 10)), 5);
+        // g.fillRect((int) (position.getX() + 5), (int)position.getY() - 10,  (int) ((width - 10)), 5);
     }
 
     @Override
