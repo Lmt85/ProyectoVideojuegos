@@ -43,6 +43,7 @@ public class Can extends Enemy implements GameObject{
             
             public CanBullet(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image,Game game){ 
                 super(position,speed,visible,width,height,image,1,game);
+                double topSpeed = 3;
             }
         
         @Override
@@ -57,6 +58,7 @@ public class Can extends Enemy implements GameObject{
         public void tick() {
             setPosition(getPosition().add(getSpeed()));
             setSpeed(getSpeed().scalar(1.05));
+            getSpeed().limit(topSpeed);
         }
         
         /**
@@ -112,6 +114,7 @@ public class Can extends Enemy implements GameObject{
         */
         
         }
+        
         for(int i = 0; i < getBullets().size(); i++) {
             getBullets().get(i).render(g);
         }

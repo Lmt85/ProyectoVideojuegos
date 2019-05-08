@@ -5,10 +5,12 @@
  */
 package videoGame;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import maths.Vector2;
 import java.util.Random;
+import static jdk.nashorn.internal.objects.NativeMath.random;
 
 
 /**
@@ -59,8 +61,13 @@ public abstract class Sprite implements GameObject {
     protected int height;           //to store the object's width
     protected Orientation o;        //to store the object's orientation
     protected Game game;            //to store a reference to the game
+    protected Random gen;
+    protected double mass;
+    protected Vector2 center;
+    protected double topSpeed;
     
     public Sprite(Vector2 position, Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game) {
+        mass = 1;
         this.position = position;
         this.speed = speed;
         this.width = width;
@@ -190,6 +197,10 @@ public abstract class Sprite implements GameObject {
 
     public void setAcceleration(Vector2 acceleration) {
         this.acceleration = acceleration;
+    }
+    
+    public void applyForce(Vector2 force) {
+        setAcceleration(getAcceleration().add(force.div(mass)));
     }
     
 }

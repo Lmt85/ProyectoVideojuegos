@@ -5,8 +5,9 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import static java.lang.Math.abs;
+import javax.swing.JOptionPane;
 import maths.Vector2;
-import java.sql.*;
 
 /**
  * Here lies all objects that belong to a particular instance of a Game,
@@ -29,24 +30,30 @@ public class Game implements Runnable, Commons {
     //Display variables
     private Camera camera;      // to create a camera that follows the player
     private Display display;    // to display in the game in its canvas
-    String title;               // title of the window
+    private String title;               // title of the window
+    private String playerid;            // to store the playerid
+    private String playerName;          // to store the player name
     private int height;         // height og the window
     private int width;          // width of the window
+    private long startTime;         // for time elapsed
+    private long endTime;           // for time elapsed
     private KeyManager keyManager;  // key manager asociated with the display
     private MouseManager mouseManager; // mouse manager asociated with the display
-    Font font; // font used to display the score and game over message
+    private Font font; // font used to display the score and game over message
 
     //Thread variables
     private Thread thread;                 // thread to create the game. points to the instance of this Game as a Runnable
     private boolean running;               // to set the game running status (controls the in thread execution)
     private double tps;                    //ticks per second
     private final boolean showTPS = false; //controls if the tps will be show on the console
-    int fps = 60;                          //max frames per second the game will run at
+    int fps = 50;                          //max frames per second the game will run at
 
-    //Game objects
-    LevelManager levelManager;
-    Player player;              // to store the player
-    EnemyManager enemyManager;  // to manage each enemy
+    //Game objects and managers
+    private LevelManager levelManager;
+    private Player player;              // to store the player
+    private EnemyManager enemyManager;  // to manage each enemy
+    private dbManager db;
+    
 
     //Game state
     private boolean paused = false; // states whether or not the game is paused
@@ -63,8 +70,6 @@ public class Game implements Runnable, Commons {
 
 
     private int score;      // Stores game score
-    Connection c;           // Database connection
-    Statement stmt;         // Sql statement to execute
     
 
     /**
@@ -78,7 +83,7 @@ public class Game implements Runnable, Commons {
      */
     public Game() {
         // Name of the game
-        this.title = "OxiLife";
+        this.title = "Trashedy";
 
         // Sets game dimensions
         this.width = Commons.BOARD_WIDTH;
@@ -317,6 +322,8 @@ public class Game implements Runnable, Commons {
         System.out.println(Commons.PLAYER_WIDTH);
         getPlayer().init();
         enemyManager = new EnemyManager(this);
+        db = new dbManager(this);
+        db.init();
                    
         display.getJframe().addKeyListener(keyManager);
         display.getJframe().addMouseListener(mouseManager);
@@ -331,18 +338,20 @@ public class Game implements Runnable, Commons {
 
         // Sets the score
         score = 0;
-        
-        // Database
-        c = null;
-        try {
-           Class.forName("org.sqlite.JDBC");
-           c = DriverManager.getConnection("jdbc:sqlite:test.db");
-           c.setAutoCommit(false);
-        } catch ( Exception e ) {
-           System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-           System.exit(0);
+        while(playerid == null) {
+            playerid = JOptionPane.showInputDialog("Enter your id");
         }
-        System.out.println("Opened database successfully");
+        if(!db.searchPlayer()) {
+            int dialogResult = JOptionPane.showConfirmDialog (null, "Id not registered \nSave entered id?","Warning",JOptionPane.YES_NO_OPTION);
+            if(dialogResult == JOptionPane.YES_OPTION){
+                  playerName = JOptionPane.showInputDialog("Enter your name");
+                  db.registerPlayer();
+            } else {
+                playerid = JOptionPane.showInputDialog("Enter your id");
+            }
+        }
+        
+        startTime = System.currentTimeMillis();
     }
 
     /**
@@ -404,18 +413,18 @@ public class Game implements Runnable, Commons {
                     else getPlayer().getBullets().remove(i);
                 }
             }
-            
             //Ticks the manager that controls the enemies and their bullets
             enemyManager.tick();
             checkCollisions();
+        } else if(gameState == -1) {
         }
 
         // Saves game and loads game
-        if (keyManager.save && gameState == 0) dbTest();
+        if (keyManager.save && gameState == 0) 
         if (keyManager.load && gameState == 0) loadGame("save.txt");
 
         // When restart key pressed, music is restarted, gameState is set as playing, and game is loaded
-        if (keyManager.restart) {
+        if (keyManager.restart) {   
             Assets.music.play();
             setGameState(0);
             loadGame("restartGame.txt");
@@ -531,12 +540,29 @@ public class Game implements Runnable, Commons {
 
     private void checkCollisions() {
         getLevelManager().getLevel().stream().map((s) -> {
+            
+            Vector2 wallCenter = s.getPosition().add(new Vector2(s.getWidth()/2,s.getHeight()/2));
             //Collisions that involve walls
             getEnemyManager().getEnemies().forEach((e) -> {
                 //Collisions between walls and enemies
                 if(e.getClass().equals(Wheel.class) && checkCollision((Sprite) s, (Sprite) e)) {    // Makes the wheels bounce when touching walls
-                    e.setPosition(e.getPosition().add(e.getSpeed().scalar(-1)));
-                    e.setSpeed(e.getSpeed().scalar(-.5));
+                    Vector2 enemyCenter = e.getPosition().add(new Vector2(e.getWidth()/2,e.getHeight()/2));
+                    Vector2 pos = enemyCenter.sub(wallCenter);
+                    if(abs(pos.getX()) > abs(pos.getY())) {
+                        if(pos.getX() > 0) {
+                            e.setPosition(new Vector2(s.getPosition().getX() - e.getWidth() - 1,e.getPosition().getY()));
+                        } else {
+                            e.setPosition(new Vector2(s.getPosition().getX() + s.getWidth() + 1,e.getPosition().getY()));
+                        }
+                        e.setSpeed(new Vector2(e.getSpeed().getX() * -1, e.getSpeed().getY()));
+                    } else {
+                        if(pos.getY() > 0) {
+                            e.setPosition(new Vector2(e.getPosition().getX(),s.getPosition().getY() - e.getHeight() - 1));
+                        } else {
+                            e.setPosition(new Vector2(e.getPosition().getX(),s.getPosition().getY() + s.getHeight() + 1));
+                        }
+                        e.setSpeed(new Vector2(e.getSpeed().getX(), e.getSpeed().getY() * -1));
+                    }
                 } else if(e.getClass().equals(Can.class)|| e.getClass().equals(Boss.class)){
                     for(int i = 0; i < e.getBullets().size(); i++) {
                         if(checkCollision((Sprite) e.getBullets().get(i), (Sprite) s)) {
@@ -548,12 +574,9 @@ public class Game implements Runnable, Commons {
             return s;
         }).map((s) -> {
             //Collisions between walls that are on screen and player
-            for (Projectile p : getPlayer().getBullets()) {
-                // Colllisions between walls and player projectiles
-                if(checkCollision((Sprite) p, (Sprite) s)) {
-                    p.setVisible(false);
-                }
-            }
+            getPlayer().getBullets().stream().filter((p) -> (checkCollision((Sprite) p, (Sprite) s))).forEachOrdered((p) -> {
+                p.setVisible(false);
+            }); // Colllisions between walls and player projectiles
             return s;
         }).filter((s) -> (s.onScreen())).filter((s) -> ( checkCollision((Sprite) s, (Sprite) getPlayer()))).forEachOrdered((_item) -> {
             //Makes player bounce
@@ -605,21 +628,20 @@ public class Game implements Runnable, Commons {
         this.score = score;
     }
     
-    public void dbTest() {
-        try {
-            stmt = c.createStatement();
-            String sql = "INSERT INTO Highscore (Name,Score,Time) VALUES('Marcelo'," + score + ",50);";
-            stmt.executeUpdate(sql);
-            
-            stmt.close();
-            c.commit();
-            c.close();
+    public String getPlayerName() {
+        return playerName;
+    }
 
-        } catch ( Exception e ) {
-           System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-           System.exit(0);
-        }
-        
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
+    public String getPlayerid() {
+        return playerid;
+    }
+
+    public void setPlayerid(String playerid) {
+        this.playerid = playerid;
     }
     
 }
