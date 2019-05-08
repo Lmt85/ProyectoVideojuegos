@@ -50,6 +50,7 @@ public interface Commons {
     public static final int PLAYING_GAMESTATE = 0;
     public static final int LOST_GAMESTATE = -1;
     public static final int WON_GAMESTATE = 1;
+    public static final int LEVEL_PASSED_GAMESTATE = 2;
     
     //Game Messages
     public static final String LOST_GAME_MESSAGE = "You Lost";

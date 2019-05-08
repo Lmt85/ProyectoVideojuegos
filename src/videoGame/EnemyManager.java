@@ -106,4 +106,8 @@ public class EnemyManager implements GameObject{
     public ArrayList<Enemy> getEnemies() {
         return enemies;
     }
+
+    void setEnemies(ArrayList<Enemy> e) {
+       this.enemies = e;
+    }
 }
