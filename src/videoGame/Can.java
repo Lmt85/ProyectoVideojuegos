@@ -34,8 +34,6 @@ public class Can extends Enemy implements GameObject{
     public Can(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game,int hp){  
         super(position,speed,visible,width,height,image,game,hp);
         bullets = new LinkedList<>();
-        //this.hp = hp;
-        //this.maxHp = hp;
     }
     
         public class CanBullet extends Projectile implements GameObject{
@@ -58,7 +56,6 @@ public class Can extends Enemy implements GameObject{
         public void tick() {
             setPosition(getPosition().add(getSpeed()));
             setSpeed(getSpeed().scalar(1.05));
-            getSpeed().limit(topSpeed);
         }
         
         /**
@@ -106,13 +103,6 @@ public class Can extends Enemy implements GameObject{
     public void render(Graphics g) {
         if(onScreen()) {
             g.drawImage(getImage(), (int)position.getX(), (int)position.getY(), width, height, null);
-            //g.drawRect((int) position.getX(), (int) position.getY(), width, height);
-        /*    
-        if(maxHp != hp){
-            g.fillRect((int) (position.getX() + 5), (int)position.getY() - 10,  (int) (width - 10) * (hp / maxHp), 5);
-        }
-        */
-        
         }
         
         for(int i = 0; i < getBullets().size(); i++) {

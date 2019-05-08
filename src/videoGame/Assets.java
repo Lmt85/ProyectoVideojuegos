@@ -18,7 +18,9 @@ public class Assets {
     public static BufferedImage bomb;
     public static BufferedImage player;
     public static BufferedImage explosion;
-    public static BufferedImage map;
+    public static BufferedImage level1;
+    public static BufferedImage level2;
+    public static BufferedImage level3;
     public static BufferedImage wall;
     
     public static BufferedImage heartFull;
@@ -67,7 +69,9 @@ public class Assets {
     public static void init(){
         background = ImageLoader.loadImage("/images/background.png"); 
 
-        map = ImageLoader.loadImage("/images/Level2.png");
+        level1 = ImageLoader.loadImage("/images/Level1.png");
+        level2 = ImageLoader.loadImage("/images/Level2.png");
+        level3 = ImageLoader.loadImage("/images/Level3.png");
 
         
         wall = ImageLoader.loadImage("/images/Wall.png");
