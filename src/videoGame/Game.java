@@ -295,7 +295,8 @@ public class Game implements Runnable, Commons {
 
                 } else if (gameState == 1) {//won screen
                     g.drawString(Commons.WON_GAME_MESSAGE, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
-                    this.levelManager.loadLevel(Assets.level2);
+                    
+                    //this.levelManager.loadLevel(Assets.level2);
                 }
             } else if (paused) { //triggers if paused and playing, displays paused message
                 g.drawString("<PAUSED>", 10, 10);
