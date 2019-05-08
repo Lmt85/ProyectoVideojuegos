@@ -417,6 +417,7 @@ public class Game implements Runnable, Commons {
             enemyManager.tick();
             checkCollisions();
         } else if(gameState == -1) {
+            db.registerGame(startTime - endTime);
         }
 
         // Saves game and loads game
