@@ -59,9 +59,7 @@ public class Assets {
     //Sound
     public static SoundClip music1;    // Stores looping music
     public static SoundClip music2;    // Stores looping music
-    SoundClip laser;    // Stores the laser sound
-    SoundClip alienOof; // Stores alien death sound
-    SoundClip dead;     // Stores player death sound
+    public static SoundClip drop;
     
     /**
      * loads all of the game assets as images
@@ -119,6 +117,7 @@ public class Assets {
         
         music1 = new SoundClip("/sound/aquatic.wav");
         music2 = new SoundClip("/sound/cave.wav");
+        drop = new SoundClip("/sound/drop.wav");
 
         swimtoleft = new BufferedImage[6];
         SpriteSheet spritesheetleft = new SpriteSheet(swimtoleftsheet);

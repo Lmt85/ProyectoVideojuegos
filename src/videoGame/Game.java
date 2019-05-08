@@ -294,8 +294,9 @@ public class Game implements Runnable, Commons {
 
                 } else if (gameState == 1) {//won screen
                     g.drawString(Commons.WON_GAME_MESSAGE, Commons.BOARD_WIDTH / 2 - 50, Commons.BOARD_HEIGHT / 2);
-                    
-                    //this.levelManager.loadLevel(Assets.level2);
+                    this.levelManager = new LevelManager(this);
+                    this.player = new Player(new Vector2(Commons.START_X, Commons.START_Y), new Vector2(), true, Commons.PLAYER_WIDTH, Commons.PLAYER_HEIGHT, Assets.player,this);
+                    this.levelManager.loadLevel(Assets.level2);
                 }
             } else if (paused) { //triggers if paused and playing, displays paused message
                 g.drawString("<PAUSED>", 10, 10);
@@ -679,6 +680,7 @@ public class Game implements Runnable, Commons {
         }
         
         private void menuSwitch(){
+            Assets.drop.play();
             this.menu++;
             if(this.menu > 5){
                 this.menu = 0;
