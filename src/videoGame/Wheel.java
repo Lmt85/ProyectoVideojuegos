@@ -31,7 +31,7 @@ public class Wheel extends Enemy implements GameObject{
 
     private Animation wheelAnim;
     private Random gen;
-
+    private int maxForce = 2;
 
 
     public Wheel(maths.Vector2 position, maths.Vector2 speed, boolean visible, int width, int height, BufferedImage image, Game game, int hp){  
@@ -44,6 +44,7 @@ public class Wheel extends Enemy implements GameObject{
         this.width = (int)(mass*width);
         this.height = (int)(mass*height);
         this.wheelAnim = new Animation(Assets.wheels, 100);
+        maxForce = 2;
         topSpeed = 4;
         //this.maxHp = hp;
         
@@ -51,14 +52,18 @@ public class Wheel extends Enemy implements GameObject{
     
     @Override
     public void tick() {
-            Vector2 force = getPosition().sub(game.getPlayer().getPosition());
-            force.set(force.norm().scalar(0.5));
-            this.applyForce(force);
+            Vector2 desired = game.getPlayer().getPosition().sub(getPosition());
+            desired = desired.norm().scalar(topSpeed);
+            
+            Vector2 steering = desired.sub(getSpeed());
+            steering.limit(maxForce);
+            applyForce(steering);
             
             setSpeed(getSpeed().add(getAcceleration()));
             getSpeed().limit(topSpeed);
             setPosition(getPosition().add(getSpeed()));
             setAcceleration(getAcceleration().scalar(0));
+            
             
             wheelAnim.tick();
 //        }
